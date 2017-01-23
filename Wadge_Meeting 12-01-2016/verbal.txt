@@ -1,0 +1,119 @@
+﻿========
+GREETING
+========
+Hello, I am Orestis Melkonian and I will talk to you about a dataflow framework for robot programming I started developing during my internship at the "Demokritos" Research Institute and I continue to work on as part of my bachelor thesis. 
+1. I'll start by giving you 2 concepts in robot programming that motivated my work.
+2. Then I'll give you a brief overview of the framework
+3. I'll also tell you a bit about what I plan to do in the following 3 months
+4. And to conclude we'll see 2 simple demo applications of the framework
+
+==========
+MOTIVATION
+==========
+	RPA
+	===
+	Robots are essentially systems that interface with their environment, either by perceiving it with sensors or by acting on it with actuators.
+	Almost robotic applications follow the so-called Robot Perception Architecture (RPA), where inputs to the system are the robot's sensor data and outputs are commands to the robot actuators.
+	As even the simplest application requires some data manipulation, the sensor data first pass through a network of computational nodes, before exiting to actuator commands.
+
+	Feedback
+	========
+	Additionally, in control theory cycles in the computational network mentioned above are frequently used to represent what robotists call Feedback Loop Controllers.	
+	One such controller is the PID controller depicted here.
+	// e.g. PID controller
+	So the computational network must be represented as a general cyclic graph.
+	
+	From the above, we can cleary see that representing such architectures as dataflow graphs is suitable and intuitive, and we can confirm this by the amount of dataflow diagrams depicted in relative bibliography.
+
+	ROS
+	===
+	A significant issue in robot software is that of reusability, as every single robot needs different hardware drivers so writing a generic robot application from scratch or adopting an already-existing one is tedious.	
+	
+	To confront this issue, middlewares have been developed to provide hardware abstraction and software reusability through the use of standard protocols, package management, etc...
+	One such popular open-source middleware is ROS(Robot Operating System) which has widely being adopted by the research community and there exist tons of software packages already.
+	
+	In ROS, units of functionality are encapsulated in "ROS nodes", which can communicate with each other through "ROS topics", which are just named fifo queues bound to a specific message type. 
+	It is also language-agnostic and client libraries in different languages have been implemented, although most packages are written in c++ and python. 
+
+	The main problem with the current state of ROS is that handling of the topics is achieved through callbacks, that is when a new message arrives, an appropriate callback function is called asynchronously to handle that message. Unfortunately, such design is inappropriate for most applications, where combining and sychronizing different topics is mandatory and to achieve this with callbacks we need to have some kind of nasty "internal plumbing".
+
+	The fortunate thing is that the ROS architecture can also be represented nicely by a dataflow graph, where nodes are the ROS nodes and edges are the ROS topics.	
+
+	So why doesnt a dataflow language/framework exist in ROS??	
+
+================
+STREAM FRAMEWORK
+================
+And thats the main motivation for the Stream Framework I developed, which is a Java library that provides the programmer with a rich set of stream operators so as to define an arbitrary cyclic dataflow graph and allows viewing ros topics as streams.
+
+At a micro-level, topics are transformed into Streams, so the nasty "internal plumbing", which is essentially spaghetti code, is replaced with clean stream manipulation through functional operators. 
+The result is much better looking, more meaningful and more maintanable code. Also a node implemented with streams can further undergo fission, in order to increase the overall granularity, so it will be executed by multiple ROS nodes and these can be distributed across the network.
+// In other words, each ROS node's internal RPA is defined through dataflow programming.
+
+At a macro-level, the stream language can be thought of as a coordinating languages, acting as glue code for already existing ROS nodes, combining them in any way to further promote reusability. These nodes can also be legacy ROS nodes (eg written in c++)
+// In other words, the ROS architecture itself is defined through dataflow programming.
+
+An important feature is the complete decoupling of design(what to do) from execution(how to do it), so as the framework can be easily extended with different evaluation back-ends, in order to be unbiased to a specific execution model(e.g. data-/demand-driven). As I previously mentioned, these evaluation backends arent restricted to one machine, but can distribute computation of different parts of the dataflow graph across multiple machine in a network.
+
+This programming paradigm provides a more abstract point of view to the programmer, conceiling how and even where the dataflow graph that he defined will be executed. 
+
+Also, the coder does not have to handle threads/processes to achieve concurrency, because such opportunities can be automatically deduced from the definition of the dataflow graph itself, and generally concurrency is inherent in the dataflow computational model and that's why it has such an appeal to the Big Data field.
+
+Another advantage is that the framework takes care of boring repeated biolerplate code, such as messsage setup and topic definitions. 
+
+So now lets see what I am about to work on.
+
+=========================
+FUTURE WORK: Optimization
+=========================
+Some general optimization, independent of the evaluation backend, would improve performance, such as semantic-preserving dataflow transformation with some heuristics.
+// e.g. filters as soon as possible in the pipeline
+The backends of course, are free to continue optimizing more specific aspects, according to their execution model.
+
+Concerning the placement of the nodes, network awareness can provide us with a target granularity for the graph, and we can reach it using fusion/fission. 
+// e.g. 10 machines with 4 cores each ---> divide dataflow in at most 80 ROS nodes
+
+Also, it would be nice for the graph to be able to be dynamically reconfigured, for example when a machine/robot loses its WiFi signal we want to continue running the node that was on it to allow a more robust system behavior.
+
+================
+FUTURE WORK: DSL
+================
+Apart from this, I intend to wrap the framework's functionality in a convenient DSL, such that the syntax is more compact and appropriate (eg arrow notation) and maybe enriched with specific annotations 
+// e.g. operator properties, placement constraints,... which would allow 
+
+I consider implementing it as a DSL embedded in Scala, which is designed with DSL implementation in mind (due to metaprogramming facilities).
+- This is nice, because my DSL will inherit Scala's rich type system and functional nature (instead of semi-imperative functional Java 8) [we'll a hint of this in the demos as one is implemented in Java and the other in Scala]
+- And it's pretty easy to code, so little effort from me will lead to great convenience for the users
+
+Additionally, being currently a plain library of a general-purpose language(java), it allows the user to do meaningless things like reassign a variable of type Stream or use shared variables in closures used inside second-order operators (map, filter...). So we want the embedded DSL to restrict the host language. 
+Another possible restriction is having designated places in an operator definition to define resources used, that is internal memory. [we'll see such case in the 2nd demo]
+
+One more thing to notice, is that all such programs have a specific program structure. You first define the input/output topics, then you select which EvaluationStrategy to use for execution and then you define the dataflow through a series of operators. So we could minimize design flaws by having the DSL impose this specific structure to the program.
+
+Finally, it is easy to generate a visual language from a DSL with specific technologies, which would be really useful for domain-experts with little software engineering knowledge for rapid prototyping of simple apps.
+
+====
+DEMO
+====
+
+Control Panel
+=============
+So now let's see a simple application of the framework for vizualing a robot's sensors and providing meaningful information.
+The robot has a camera that streams colored images in one topic and depth images in another. Also it has a laser scanner that publishes to another topic. And we have the tf topic, that publishes hierarchy relationships concerning the robot's internal packages. 
+
+At first we define the topics involved. Note that we do not have any output topics.
+Then we set the EvaluationStrategy to use rxjava, which is a stream library for java and runs on 1 machine.
+Then we derive Streams from these topics, converting and filtering as needed.
+We display the depth image immediately after converting.
+We embed the laser scan on the colored image while detecting faces and display it.
+We then accumulate some tf messages in order to "collect" a HashMap which is given to the Visualizer to display in a directory tree format.
+Finally, we "mock up" a battery as a monotonically decreasing function and send it to the Visualizer. 
+
+We can see the very nice separation of concerns regarding the main logic (stream manipulation) and nasty side-effects (visualizer), which drives us towards better software quality.
+
+Now lets see an example written in Scala
+
+Hamming Numbers
+===============
+We want to enumerate the hamming numbers which are produced by this formula. This dataflow graph correctly enumerates the Hamming Numbers in ascending order and we see that it contains a cycle. Merge is a built-in operator but we have to implement multiply and mergeSort, which merges 2 monotonically increasing functions and produces a single monotonically increasing function.
+
