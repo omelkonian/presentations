@@ -6,6 +6,7 @@
 \usepackage{xcolor}
 \definecolor{dark}{HTML}{23373b}
 \definecolor{bright}{HTML}{EB811B}
+\definecolor{white}{HTML}{FFFFFF}
 
 % Tikz
 \usepackage{tikz}
@@ -38,17 +39,30 @@
 \author{Orestis Melkonian}
 \institute{CERN, IT-CDA-DR}
 
-\begin{document}
-  \metroset{block=fill}
+% Box macro
+\newcommand{\contrib}[1]{
+  \vfill
+  \begin{alertblock}{Invenio Framework}
+    #1
+  \end{alertblock}
+}
+
+\begin{document}  
+  \metroset{block=fill, background=dark}
+  \setbeamercolor{block body}{fg=white}
 	\maketitle
-  
-	\begin{frame}{Table of contents}
-		\setbeamertemplate{section in toc}[sections numbered]
-		\tableofcontents[hideallsubsections]
+	
+	\begin{frame}{Overview}
+    \begin{itemize}
+      \item{Currently, submission is handled externally}
+      \item{Moved towards an in-house solution}
+      \item{Single page with multiple deposits (i.e. \alert{Project})}
+      \item{Specific workflow in the background for each project}
+    \end{itemize}
 	\end{frame}
   
 	\section{The AV Workflow}
-  \begin{frame}{Workflow}  
+  \begin{frame}{Workflow}
     \begin{tikzpicture}
       \node         (I) at (-2, 0) {};
       \node[vertex] (V) at (0,  0) {};
@@ -73,8 +87,8 @@
     \end{tikzpicture}
 	\end{frame}
   
-	\section{Invenio Video Toolkit}
-  \begin{frame}{API}
+	\section{Invenio Video Toolkit \newline \it{(Name in Progress)}}
+  \begin{frame}{Video Processing API}
     	\begin{itemize}
 		  \item{Transcoding}
 		  \begin{itemize}
@@ -86,10 +100,10 @@
 		  \item{\emph{extract_frames}}
 		  \item{Configured as import strings, in order to allow \alert{multiple backends}}
 	  \end{itemize}
-	  \vfill
-	  \begin{alertblock}{Contribution}
-		  This work will lead to the creation of a general video toolkit for \emph{Invenio}, which will include the wrappers for \alert{FFmpeg} and \alert{Sorenson}.
-    	\end{alertblock}
+
+	  \contrib{
+	    This work will lead to the creation of a general video toolkit for \emph{Invenio}, which will include the wrappers for \alert{FFmpeg} and \alert{Sorenson}.
+	  }
 	\end{frame}
 
 	\section{Server-sent Events (SSE)}
@@ -103,6 +117,7 @@
 	  	  \end{itemize}
 	  \end{itemize}
 	\end{frame}
+	
 	\begin{frame}{Usage}
     	\begin{itemize}
     		\item{Channel per project}
@@ -110,10 +125,9 @@
     		\item{Access rights}
 	  \end{itemize}
 	  
-	  \vfill
-	  \begin{alertblock}{Contribution}
+	  \contrib{
 		  Basic SSE functionality and integration with \emph{InvenioDeposit} is implemented on the new \emph{Invenio} module \alert{InvenioSSE}.
-    	\end{alertblock}
+		}
 	\end{frame}
 
 	\section{Tasks}
@@ -127,19 +141,19 @@
       \end{itemize}
 	\end{frame}
 	\begin{frame}{SSE Tasks}
-      	Extended \textit{Celery's} task base class for SSE integration. \\
+      	Extended \emph{Celery's} task base class for SSE integration. \\
       	\vfill
       	Overloaded some task methods to additionally send appropriate SSE:
   	    \begin{itemize}
-    	    \item{\textit{update_state}}
-    	    \item{\textit{on_success}}
-    	    \item{\textit{on_failure}}
-    	    \item{\textit{on_revoke}}
+    	    \item{\emph{update_state}}
+    	    \item{\emph{on_success}}
+    	    \item{\emph{on_failure}}
+    	    \item{\emph{on_revoke}}
   	    \end{itemize}
 	\end{frame}
 	
-	\begin{frame}{Cancelable/Undoable Tasks}
-	  Extended \textit{Celery's} task base class for safe cancel/undo. \\
+	\begin{frame}{Cancelable \& Undo-able Tasks}
+	  Extended \emph{Celery's} task base class for safe cancel/undo. \\
 	  \begin{itemize}
 	    \item{Every task must implement the \alert{clean} method}, which should undo any side-effects from its execution.
 	    \item{Imposes explicit resource management}
@@ -150,19 +164,19 @@
   	\begin{frame}{File Tags}
     	\begin{itemize}
     	  \item{Store video's metadata}
-    	  \item{File relationships (e.g. \textit{master}, \emph{slave})}
+    	  \item{File relationships (e.g. \emph{master file})}
     	  \item{File types (e.g. \emph{video}, \emph{frame})}
 	  \end{itemize}
-	  \vfill
-	  \begin{alertblock}{Contribution}
+
+	  \contrib{
 		  Tags were added as an extra feature in \alert{InvenioFilesRest}.
-    	\end{alertblock}
+    	}
 	\end{frame}
 
   	\begin{frame}{Data Model}
     	\begin{itemize}
     	  \item{Defined new schemas for \alert{Project} and \alert{Video}}
-   	  \item{Inspired by widely-used solutions (e.g. Google, YouTube, schema.org)}
+   	  \item{Inspired by widely-used solutions (e.g. schema.org)}
 	  \end{itemize}
 	\end{frame}
 	
@@ -175,10 +189,14 @@
     	  \end{itemize}
     	  \item{\alert{Video}}
       	\begin{itemize}
-      	  \item{Utilizes the hierarchical sequences, offered by \emph{InvenioSequenceGenerator}}
+      	  \item{Utilizes the hierarchical sequences}
       	  \item{Child sequence of \emph{Project}}
     	  \end{itemize}
   	  \end{itemize}
+
+  	   \contrib{
+		  Complete rewrite of \alert{InvenioSequenceGenerator}.
+		}    	
 	\end{frame}
 
 \end{document}
