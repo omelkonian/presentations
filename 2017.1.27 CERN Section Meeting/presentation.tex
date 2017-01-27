@@ -1,6 +1,10 @@
 \documentclass{beamer}
-\usetheme{metropolis}
-%\usecolortheme{owl}
+\usetheme[
+  block=fill, 
+  background=dark, 
+  titleformat=smallcaps,
+  numbering=none,
+]{metropolis}
 \usepackage{url}
 \usepackage{underscore}
 \usepackage{xcolor}
@@ -10,11 +14,11 @@
 
 % Tikz
 \usepackage{tikz}
-\usetikzlibrary{fit,backgrounds}
+\usetikzlibrary{fit,backgrounds, arrows, shapes}
 \tikzset{
     vertex/.style = {
       circle,
-      fill = black,
+      fill = bright,
       outer sep = 2pt,
       inner sep = 1pt,
     },
@@ -25,12 +29,19 @@
       text width=2cm,
       align=center
     },
-    input/.style = {
-    },
     stepp/.style = {
       fill=bright!80,
       rounded corners
-    }
+    },
+    --/.style = {
+      -,
+      thick
+    },
+    -->/.style = {
+      ->,
+      thick,
+      -stealth
+    },
 }
 % Beamer
 \title{CDS}
@@ -48,7 +59,6 @@
 }
 
 \begin{document}  
-  \metroset{block=fill, background=dark}
   \setbeamercolor{block body}{fg=white}
 	\maketitle
 	
@@ -72,13 +82,13 @@
       \node[task]   (T) at (8,  1) {Transcode Video};
       \node[task]   (F) at (8, -1) {Extract Frames};
  
-      \draw[->] (I) -- node[above] {Video} node[below] {URL} (V);
-      \draw[->] (V) to[bend left] (D.west);
-      \draw[->] (V) to[bend right] (M.west);
-      \draw[-] (D.east) -- (J);
-      \draw[-] (M.east) -- (J);
-      \draw[->] (J) -- (T.west);
-      \draw[->] (J) -- (F.west);
+      \draw[-->] (I) -- node[above] {Video} node[below] {URL} (V);
+      \draw[-->] (V) to[bend left] (D.west);
+      \draw[-->] (V) to[bend right] (M.west);
+      \draw[--] (D.east) -- (J);
+      \draw[--] (M.east) -- (J);
+      \draw[-->] (J) -- (T.west);
+      \draw[-->] (J) -- (F.west);
       
       \begin{scope}[on background layer]
         \node[stepp, fit=(D) (M), label=above:\bf{Step 1}] {};
@@ -189,7 +199,7 @@
     	  \end{itemize}
     	  \item{\alert{Video}}
       	\begin{itemize}
-      	  \item{Utilizes the hierarchical sequences}
+      	  \item{Utilizes hierarchical sequences}
       	  \item{Child sequence of \emph{Project}}
     	  \end{itemize}
   	  \end{itemize}
