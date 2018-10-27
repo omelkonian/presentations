@@ -1,0 +1,12 @@
+\begin{adjustbox}{width=.9\columnwidth}
+\begin{tikzpicture}
+  [every matrix/.append style={column sep=0.05cm}]
+  \matrix{
+    \& \node[dataflow] (ini) {\small 1..10}; \\
+    \node[dataflow] (map) {\small map $f$};
+    \& \& \node[dataflow] (fil) {\small filter $g$}; \\
+  };
+  \draw[to] (ini) -- (map);
+  \draw[to] (ini) -- (fil);
+\end{tikzpicture}
+\end{adjustbox}

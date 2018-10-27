@@ -1,0 +1,5 @@
+\begin{tikzpicture}
+  \matrix{
+  	\node[dataflow] {exists $f \circ g$}; \\
+  };
+\end{tikzpicture}

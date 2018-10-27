@@ -1,0 +1,428 @@
+\documentclass{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+
+%----------------------------------------------------------------------------
+% From dyck-paper
+%----------------------------------------------------------------------------
+\usepackage{caption}
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+% Code listing
+\usepackage{minted}
+\usemintedstyle{friendly}
+%\usemintedstyle{tango}
+% Colors
+\usepackage{xcolor}
+\colorlet{CodeBg}{gray!90}
+\usepackage{color, colortbl}
+\definecolor{Gray}{rgb}{0.9,0.9,0.9}
+\definecolor{bblue}{HTML}{1D577A}
+\definecolor{rred}{HTML}{C03425}
+\definecolor{ggreen}{HTML}{4F932F}
+\definecolor{ppurple}{HTML}{6B1B7F}
+\definecolor{pblack}{HTML}{000000}
+\definecolor{pyellow}{HTML}{C0B225}
+% Graphs
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{trees}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots}
+% Graphics
+\usepackage{graphics}
+\graphicspath{{figures/}} % Location of the graphics files
+% Macros
+\newcommand\todo[1]{\textcolor{red}{#1}}
+\newcommand{\w}[1]{\textit{"#1"}}
+\newcommand{\sm}[1]{\text{\small{#1}}}
+\newcommand\s{\textsc}
+\newcommand{\Order}[5]{
+	\[ \mathcal{#1}_{#5}\llbracket #2 \leftarrow #3 \mid \{ #4 \} \rrbracket. \]
+}
+\newcommand{\OrderT}[5]{
+	\[ \mathcal{#1}_{#5}\llbracket \text{#2} \leftarrow \text{#3} \mid \text{#4} \rrbracket. \]
+}
+\newcommand{\Orderr}[5]{
+	\mathcal{#1}_{#5}\llbracket #2 \leftarrow #3 \mid \{ #4 \} \rrbracket.
+}
+\newcommand{\Ord}[4]{\Order{O}{#1}{#2}{#3}{#4}}
+\newcommand{\OrdT}[4]{\OrderT{O}{#1}{#2}{#3}{#4}}
+\newcommand{\Or}[4]{\Orderr{O}{#1}{#2}{#3}{#4}}
+\newcommand{\Con}[4]{\Order{C}{#1}{#2}{#3}{#4}}
+% Box macro
+\newcommand{\ex}[2]{
+  \vfill
+  \begin{alertblock}{#1}
+    #2
+  \end{alertblock}
+}
+\newcommand\tsc[1]{\alert{\textsc{#1}}}
+\newcommand\charth{4cm}
+\newcommand\bb[1]{\scriptsize \textcolor{black}{$n=#1$}}
+\newcommand\rr[1]{\textcolor{rred}{#1}}
+\newcommand\gr[1]{\textcolor{ggreen}{#1}}
+\renewcommand\cdot{\textcolor{black}{$\centerdot$}}
+\newcommand\tableau[6]{
+  \begin{tabular}{|c|c|c|c|c|c|}
+    	\hline
+	  \rr{#1} & \gr{#4} \\
+    \hline
+	  \rr{#2} & \gr{#5} \\
+	  \hline
+	  \rr{#3} & \gr{#6} \\
+    \hline
+  \end{tabular}
+}	    
+%----------------------------------------------------------------------------
+
+% Beamer
+\title{$D^3$ as a 2-MCFL}
+\subtitle{}
+\author{Orestis Melkonian, Konstantinos Kogkalidis}
+\date{August 8, 2018}
+\institute{Utrecht University}
+
+\begin{document}
+	\maketitle
+
+	\begin{frame}{Introduction/Definition}
+	% Define M-MCFG and D^N or 2-MCFG and D^3?
+		\tsc{2-MCFG}\\
+			Generalization of the CFG over tuples of strings	
+	
+	\pause
+		\tsc{N-dimensional Dyck Language $D^N$}\\
+			Defined over an ordered alphabet of $N$ symbols: \{$\alpha_1 < \dots < \alpha_N$\} s.t. words satisfy two conditions:
+			\begin{enumerate}
+				\item Equal number of occurrences of all alphabet symbols
+				\item Any prefix of a word must contain at least as many $\alpha_i$ as $\alpha_{i+1} \quad \forall \ i \ \leq N-1$
+			\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{$D^3$ - Some examples}
+		\hspace{1cm}
+		\begin{minipage}{.4\textwidth}
+		\textsc{Dyck words}
+		\begin{itemize}
+			\item \textcolor{ggreen}{abc}
+			\item \textcolor{ggreen}{aabbcc}
+			\item \textcolor{ggreen}{abcabcabacbc}
+		\end{itemize}
+		\end{minipage}
+		\pause
+		\begin{minipage}{.4\textwidth}
+		\textsc{Non-dyck words}
+		\begin{itemize}
+			\item \textcolor{rred}{aabb}
+			\pause
+			\item \textcolor{rred}{aabbbcc}
+			\pause
+			\item \textcolor{rred}{abcacb}
+		\end{itemize}
+		\end{minipage}
+		\vspace{1cm}
+		\pause
+		\begin{figure}[h!]
+		\centering
+		\input{diagrams/fmp.tikz}
+		\caption*{First-match policy}
+		\end{figure}
+	\end{frame}
+	
+	
+	\begin{frame}{Motivation}
+		\tsc{Natural Languages}\\
+			Free word order respecting linear order constraints
+		
+		\pause 
+				
+		\tsc{Programming Languages}\\
+			Static Analysis of non-standard control flows (e.g. \textit{yield})
+	\end{frame}
+
+	\begin{frame}{G$_0$: Grammar of triple insertions}
+		\begin{figure}[h!]
+		\begin{align}
+		\setcounter{equation}{0}
+		\s{S}(xy) \leftarrow \s{W}(x,y)&. \\
+		\s{W}(\epsilon, xy\textbf{abc}) \leftarrow \s{W}(x,y)&. \\
+		\s{W}(\epsilon, x\textbf{a}y\textbf{bc}) \leftarrow \s{W}(x,y)&. \\
+		\dots \nonumber \\
+		\setcounter{equation}{59}
+		\s{W}(\textbf{ab}x\textbf{c}y, \epsilon) \leftarrow \s{W}(x,y)&. \\
+		\s{W}(\textbf{abc}xy, \epsilon) \leftarrow \s{W}(x,y)&. \\
+		\s{W}(\epsilon, \textbf{abc})&. \\
+		\s{W}(\textbf{a}, \textbf{bc})&. \\
+		\s{W}(\textbf{ab}, \textbf{c})&. \\
+		\s{W}(\textbf{abc}, \epsilon)&.
+		\end{align}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{G$_0$: Grammar of triple insertions}
+		\begin{figure}[h!]
+		\centering
+		\input{diagrams/straddling.tikz}
+		\caption*{Straddling counter-example}
+		\end{figure}
+	\end{frame}
+
+  	\begin{frame}{Meta-grammars: Introduction}
+	  	\vspace{.7cm}
+	  	\center \tsc{Notation}
+  		\OrdT{conclusion}{premises}{partial orders}{m}
+  		\vspace{.1cm}
+  		\pause
+  		\begin{center}\tsc{Meta-grammar G$_1$}\end{center}
+  		  \[ \left . \
+  		  	\begin{array}{ll}
+				\Or{W}{\epsilon}{a < b < c}{2} \\
+               		\Or{W}{W_{xy}}{x < y,\ a < b < c}{2}
+	           \end{array}
+           	\right\} \
+           	\begin{array}{c}
+           		\tsc{triple} \\
+	           	\tsc{insertion}
+     		      \end{array}
+		  \]
+  		\pause
+  		\hspace{-4cm} \textcolor{ggreen}{+} \vspace{-3mm}
+  		\[ \left . \
+  		   \hspace{.75cm}
+  		   \begin{array}{ll}
+		       \Or{W}{W_{xy}, W_{zw}}{x < y,\ z < w}{2}
+         	   \end{array}
+             \right\} \
+             \begin{array}{c}
+         		  \tsc{interleaving} \\
+           	  \tsc{words}
+	        \end{array}
+		\]
+  		\vspace{.7cm}
+  	\end{frame}
+
+  	\begin{frame}{G$_2$: Adding states}
+   	\small
+   	\begin{flalign*}
+ 		&\left . \ \begin{array}{lr}
+					\Or{A^+}{\epsilon}{a}{2} \\
+					\Or{B^+}{\epsilon}{b}{2} \\
+					\Or{C^+}{\epsilon}{c}{2}
+           \end{array}
+           \right\} \tsc{base cases} \\
+  		&\noindent\rule{11cm}{0.4pt}\\
+ 		&\left . \ \begin{array}{lr}
+					\Or{C^-}{A^+, B^+}{x < y < z < w}{2} \\
+					\Or{B^-}{A^+, C^+}{x < y < z < w}{2} \\
+					\Or{A^-}{B^+, C^+}{x < y < z < w}{2} \\
+					\Or{A^+}{C^-, B^-}{x < y < z < w}{2} \\
+					\Or{B^+}{C^-, A^-}{x < y < z < w}{2} \\
+					\Or{C^+}{B^-, A^-}{x < y < z < w}{2} \\
+					\forall \ \s{K} \in \mathcal{S} \setminus \s{W}:\ \Or{\s{K}}{\s{K}_{xy}, \s{W}_{zw}}{x < y,\ z < w}{2}
+           \end{array}
+           \right\} \tsc{combinations} \\
+		&\noindent\rule{11cm}{0.4pt}\\
+  		&\left . \ \begin{array}{lr}
+					\Or{W}{A^+, A^-}{x < y < z < w}{2} \\
+					\Or{W}{C^-, C^+}{x < y < z < w}{2}
+           \end{array}
+           \right\} \tsc{closures}
+	\end{flalign*}
+  	\end{frame}
+
+  	\begin{frame}{G$_3$: G$_2$ + Universal triple insertion}
+  	\begin{align*}
+  		&\text{G}_3 = \text{G}_2\ \textcolor{ggreen}{+}\ \forall \ \s{K} \in \mathcal{S} \setminus \s{W}:\\
+&\hspace{3cm}\Or{\s{K}}{\s{K}_{xy}}{x < y,\ a < b < c}{2}
+  	\end{align*}
+  	\end{frame}
+
+{\usebackgroundtemplate{%
+  \includegraphics[width=\paperwidth,height=\paperheight]{demo.png}}
+	\begin{frame}{}\end{frame}
+}
+
+  	\begin{frame}{Refining states}
+  		\center \tsc{Example}
+  		\begin{figure}[h!]
+		\centering
+		\input{diagrams/refined_states.tikz}
+		\end{figure}
+		\vspace{2.2cm}
+  	\end{frame}
+  	\begin{frame}{Refining states}
+  		\center \tsc{Example}
+  		\begin{figure}[h!]
+		\centering
+		\input{diagrams/refined_states.tikz}
+		\end{figure}
+		\center \tsc{Why? \\New orders in interactions}
+		\[ C^-(xz,\ wy) \leftarrow A^{+}_{left}(x,\ y),\ B^+(z,\ w). \]
+  	\end{frame}
+
+   \metroset{background=dark}
+  	\begin{frame}{Refining states: Interactions}
+  	  \vspace{.4cm}
+  		\centering
+    \input{diagrams/interactions.tikz}
+  	\end{frame}
+ 	\metroset{background=light}
+
+  	\begin{frame}{G$_4$: Automatic Rule Inference}
+  		\center \tsc{State descriptors $\mathcal{D}$}\\
+	  	\begin{minipage}{.49\textwidth}
+		\begin{align*}
+		\s{W} &\mapsto (\epsilon, \epsilon) \\
+		\s{A}^+_{l} &\mapsto (a, \epsilon) \\
+		\s{A}^+_{r} &\mapsto (\epsilon, a) \\
+		\s{B}^+_{l} &\mapsto (b, \epsilon) \\
+		\s{B}^+_{r} &\mapsto (\epsilon, b) \\
+		\s{C}^+_{l} &\mapsto (c, \epsilon) \\
+		\s{C}^+_{r} &\mapsto (\epsilon, c) \\
+		\s{A}^-_{l} &\mapsto (bc, \epsilon)
+		\end{align*}
+		\end{minipage}
+		\begin{minipage}{.49\textwidth}
+		\begin{align*}
+		\s{A}^-_{r} &\mapsto (\epsilon, bc) \\
+		\s{A}^-_{lr} &\mapsto (b, c) \\
+		\s{B}^-_{l} &\mapsto (ac, \epsilon) \\
+		\s{B}^-_{r} &\mapsto (\epsilon, ac) \\
+		\s{B}^-_{lr} &\mapsto (a, c) \\
+		\s{C}^-_{l} &\mapsto (ab, \epsilon) \\
+		\s{C}^-_{r} &\mapsto (\epsilon, ab) \\
+		\s{C}^-_{lr} &\mapsto (a, b)
+		\end{align*}
+		\end{minipage}
+  	\end{frame}
+
+  	\begin{frame}{Automatic Rule Inference: Example}
+  		\center \tsc{Case of} $\s{A}^-_{lr}(x_{\textcolor{ggreen}{b}},\ y_{\textcolor{ggreen}{c}})$ \tsc{+} $\s{B}^-_{lr}(z_{\textcolor{ggreen}{a}},\ w_{\textcolor{ggreen}{c}})$
+		\begin{figure}[h!]
+		\centering
+		\input{diagrams/aris.tikz}
+		\end{figure}
+  	\end{frame}
+
+  \begin{frame}{DSL in Python (\texttt{\$ pip install dyck})}
+	  \inputminted[fontsize=\scriptsize]{python}{code/dyck.py}
+  \end{frame}
+
+  	\begin{frame}{Results}
+  	\begin{figure}[h!]
+    \input{diagrams/results_counters.tikz}
+		\\[12pt]
+		\input{diagrams/results_size.tikz}
+		\hspace*{1cm}
+    \input{diagrams/results_time.tikz}
+		\end{figure}
+  	\end{frame}
+  	  
+  %-------------------------------------------------------------------------------------------------------
+  
+  \begin{frame}{Correspondences: Promotion on Young Tableaux}
+		\centering
+		\setlength{\tabcolsep}{3\tabcolsep}
+    		\begin{tabular}{lr}
+    			\input{diagrams/tableau.tikz} &
+    			\phantom{\input{diagrams/tableau2.tikz}} \\
+				\tableau{1}{3}{5}{2}{4}{6} &
+				\phantom{\tableau{\cdot}{2}{4}{1}{3}{5}}
+    		\end{tabular}
+	\end{frame}
+  \begin{frame}{Correspondences: Promotion on Young Tableaux}
+		\centering
+		\setlength{\tabcolsep}{3\tabcolsep}
+    		\begin{tabular}{lr}
+    			\input{diagrams/tableau.tikz} &
+    			\phantom{\input{diagrams/tableau2.tikz}} \\
+				\tableau{1}{3}{5}{2}{4}{6} &
+				\tableau{\cdot}{2}{4}{1}{3}{5}
+    		\end{tabular}
+	\end{frame}
+	\begin{frame}{Correspondences: Promotion on Young Tableaux}
+		\centering
+		\setlength{\tabcolsep}{3\tabcolsep}
+    		\begin{tabular}{lr}
+    			\input{diagrams/tableau.tikz} &
+    			\phantom{\input{diagrams/tableau2.tikz}} \\
+				\tableau{1}{3}{5}{2}{4}{6} &
+				\tableau{1}{2}{4}{\cdot}{3}{5}
+    		\end{tabular}
+	\end{frame}
+	\begin{frame}{Correspondences: Promotion on Young Tableaux}
+		\centering
+		\setlength{\tabcolsep}{3\tabcolsep}
+    		\begin{tabular}{lr}
+    			\input{diagrams/tableau.tikz} &
+    			\phantom{\input{diagrams/tableau2.tikz}} \\
+				\tableau{1}{3}{5}{2}{4}{6} &
+				\tableau{1}{2}{4}{3}{\cdot}{5}
+    		\end{tabular}
+	\end{frame}	
+	\begin{frame}{Correspondences: Promotion on Young Tableaux}
+		\centering
+		\setlength{\tabcolsep}{3\tabcolsep}
+    		\begin{tabular}{lr}
+    			\input{diagrams/tableau.tikz} &
+    			\phantom{\input{diagrams/tableau2.tikz}} \\
+				\tableau{1}{3}{5}{2}{4}{6} &
+				\tableau{1}{2}{4}{3}{5}{\cdot}
+    		\end{tabular}
+	\end{frame}
+	\begin{frame}{Correspondences: Promotion on Young Tableaux}
+		\centering
+		\setlength{\tabcolsep}{3\tabcolsep}
+    		\begin{tabular}{lr}
+    			\input{diagrams/tableau.tikz} &
+    			\input{diagrams/tableau2.tikz} \\
+			  \tableau{1}{3}{5}{2}{4}{6} &
+			  \tableau{1}{2}{4}{3}{5}{6}
+    		\end{tabular}
+	\end{frame}  
+  
+  \begin{frame}{Correspondences: Spider Webs}
+		\center \tsc{Growth rules}
+		\vspace{-.6cm}
+		\begin{figure}[h!]
+			\[ \input{diagrams/webs0.tikz} \]
+		\end{figure}
+	\end{frame}  
+	\begin{frame}{Correspondences: Spider Webs}
+		\center \tsc{Growth rules}
+		\vspace{-.6cm}
+		\begin{figure}[h!]
+			\[ \input{diagrams/webs.tikz} \]
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}{Python Visualization Package (\texttt{\$ pip install dyckviz})}
+	  \includegraphics[width=.5\textwidth]{terminal.png}
+	  \includegraphics[width=.55\textwidth]{web.pdf}
+  \end{frame}
+  
+  \begin{frame}{Conclusion}
+    \begin{itemize}
+    \item Conjecture still open :(
+    \item Lots of fun along the way
+    \item We are confident we have a complete 3-MCFG, though
+      \begin{itemize}
+      \item Currently mechanizing the proof using \textsc{coq}\includegraphics[scale=0.075]{coq.png}
+      \end{itemize}
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}[standout]
+    Questions?
+  \end{frame}
+  
+  	
+\end{document}

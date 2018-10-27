@@ -1,0 +1,24 @@
+\begin{adjustbox}{width=.8\columnwidth}
+\begin{tikzpicture}
+      % Publishers
+      \draw [red,fill] (-2.5,0) circle [radius=0.2] node [black,left=0.5] {Publisher};
+      \draw [red,fill] (-2.5,1) circle [radius=0.2] node [black,left=0.5] {Publisher};
+      \draw [red,fill] (-2.5,2) circle [radius=0.2] node [black,left=0.5] {Publisher};
+
+      % Broker
+      \draw [fill] (-0.2,0.5) rectangle (0.2, 1.5) node [black,below=1] {Broker};
+
+      % Subscribers
+      \draw [orange,fill] (2.5,0.5) circle [radius=0.2] node [black,right=0.5] {Subscriber};
+      \draw [orange,fill] (2.5,1.5) circle [radius=0.2] node [black,right=0.5] {Subscriber};
+
+      % Edges
+      \draw [thick] (-2.5,0)
+      to [out=10,in=190] (0,1)
+      to [out=10,in=190] (2.5,0.5);
+      \draw [thick] (-2.5,2)
+      to [out=10,in=170] (0,1)
+      to [out=10,in=190] (2.5,1.5);
+      \draw [thick] (-2.5,1) to (0,1);
+\end{tikzpicture}
+\end{adjustbox}

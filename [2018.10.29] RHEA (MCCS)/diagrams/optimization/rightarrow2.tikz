@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+  \matrix{
+    \node[empty] {}; \\
+  	\node[inner sep=.3cm] {$\rightsquigarrow$}; \\
+    \node[empty] {}; \\
+  };
+\end{tikzpicture}

@@ -1,0 +1,427 @@
+\documentclass{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,fit,backgrounds,positioning,calc,trees,decorations.pathreplacing}
+%\usetikzlibrary{arrows,mindmap,trees,fit,backgrounds,}
+\usepackage{environ}
+\makeatletter
+\newsavebox{\measure@tikzpicture}
+\NewEnviron{scaletikzpicturetowidth}[1]{%
+  \def\tikz@width{#1}%
+  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
+  \BODY
+  \end{lrbox}%
+  \pgfmathparse{#1/\wd\measure@tikzpicture}%
+  \edef\tikzscale{\pgfmathresult}%
+  \BODY
+}
+\makeatother
+
+% Fonts
+\usepackage{fontspec}
+\setmainfont{LinLibertine}[
+  Extension = .otf,
+  Path = ./fonts/,
+  UprightFont = *_R,
+  BoldFont = *_RB,
+  ItalicFont = *_RI
+]
+\setsansfont{LinBiolinum}[
+  Extension = .otf,
+  Path = ./fonts/,
+  UprightFont = *_R,
+  BoldFont = *_RB,
+  ItalicFont = *_RI
+]
+
+% Colors
+\usepackage{xcolor,color,colortbl}
+\definecolor{Gray}{rgb}{0.9,0.9,0.9}
+\definecolor{mybl}{HTML}{1D577A}
+\definecolor{myrd}{HTML}{C03425}
+\definecolor{mygr}{HTML}{4F932F}
+\definecolor{mypr}{HTML}{6B1B7F}
+\definecolor{mybk}{HTML}{000000}
+\definecolor{myye}{HTML}{F9F668}
+\definecolor{num}{HTML}{FF7506}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{figures/}}
+
+% Code
+\usepackage{minted}
+\usemintedstyle{friendly}
+%\usemintedstyle{tango}
+
+% Extra
+\usepackage{adjustbox}
+\usepackage{multicol}
+
+% Checklist
+\usepackage{ifthen}
+\usepackage{pifont}
+\newcommand{\done}{\ding{51}}
+
+% Macros
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+
+\newcommand{\framepic}[1]{{\usebackgroundtemplate{%
+  \includegraphics[width=\paperwidth,height=\paperheight]{#1}}
+	\begin{frame}{}\end{frame}
+}}
+\newcommand{\checklist}[4]{
+  \begin{frame}[standout]
+	  \begin{itemize}
+    \item Reactive \ifnum #1=1 \done \fi
+    \item Heterogeneous \ifnum #2=1 \done \fi
+    \item Extensible \ifnum #3=1 \done \fi
+    \item Abstract \ifnum #4=1 \done \fi
+    \end{itemize}
+  \end{frame}
+}
+%----------------------------------------------------------------------------
+
+% Beamer
+\title{RHEA}
+\subtitle{A Reactive, Heterogeneous, Extensible, and Abstract Framework for Dataflow Programming}
+\author{\alert{Orestis Melkonian}, Angelos Charalambidis}
+\date{October 29, 2018}
+\institute{Utrecht University, National Center for Scientific Research "Demokritos"}
+
+\begin{document}
+  \input{MACROS.tex}
+	\maketitle
+
+  \framepic{heraclitus}
+  \framepic{heraclitus2}
+
+	\begin{frame}{Dataflow computational model}
+		\begin{itemize}
+		\item Completely decentralized
+		  \begin{itemize}
+		  \item Independent nodes communicating with each other
+		  \end{itemize}
+		\item Demand-driven
+		\item No control-flow
+		\item Implicit concurrency
+		\end{itemize}
+		\mydiag{nat}
+	\end{frame}
+	
+	\begin{frame}{Motivation}
+	  \begin{itemize}
+	  \item Sensor-based systems
+	    \begin{itemize}
+	    \item Robotics (ROS)
+	    \item IoT (MQTT)
+	    \end{itemize}
+	  \item Big Data
+	    \begin{itemize}
+	    \item Apache Flink
+	    \item Map-Reduce
+	    \item RX framework
+	    \end{itemize}
+    \item Interactive Systems
+      \begin{itemize}
+      \item UIs (ReactJS)
+      \item Games (Yampa)
+      \end{itemize}
+	  \item Neural Networks (TensorFlow)
+	  \end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Motivation: Robotics}
+		\begin{itemize}
+		\item Robot Perception Architecture (RPA)
+		\item Many dataflow examples in control theory
+		  \myimage{pid}{0.35}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Robot Operating System (ROS)}
+    \begin{itemize}    	  
+		\item Most popular middleware for robotic applications
+	  \item Provides a Publish-Subscribe messaging platform \vspace{1cm}
+	      \mydiag{pubsub}
+	  \end{itemize} 
+	\end{frame}
+	
+	\begin{frame}{ROS Code}
+	  \cp{code/ros.cpp}
+	\end{frame}
+	
+	\begin{frame}{RHEA}
+    	\myimage{architecture}{0.4}
+	  \begin{itemize}
+	  \item Dataflow framework for the JVM
+	  \item Current frontends only in Java \& Scala
+	  \item Set of libraries in \alert{github.com/rhea-flow}
+	  \end{itemize}
+	\end{frame}
+
+	\begin{frame}{RHEA Ecosystem}
+		\begin{multicols}{2}
+			\begin{itemize} %[noitemsep]
+				\item \alert{rhea-core}
+				\item graph-viz
+				\item rx-eval
+				\item ros-eval
+				\item mqtt-eval
+				
+				\item hazelcast-distribution
+				\item scala-wrapper
+				\item rhea-music
+				\item example applications$\dots$
+			\end{itemize}
+		\end{multicols}
+	\end{frame}
+	
+	\checklist{0}{0}{0}{1}
+	
+	\begin{frame}{Stream Language: Sources and single-input nodes}
+	  \begin{minipage}{.5\textwidth}\centering
+		  \jvsf{code/singleinput.java}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{.4\textwidth}\centering
+		  \input{diagrams/singleinput.tikz}
+	  \end{minipage}
+  \end{frame}
+  \begin{frame}{Stream Language: Multiple-input nodes}
+	  \begin{minipage}{.5\textwidth}\centering
+		  \jvsf{code/multipleinput.java}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{.4\textwidth}\centering
+		  \input{diagrams/multipleinput.tikz}
+	  \end{minipage}
+	\end{frame}
+  \begin{frame}{Stream Language: Split}
+	  \begin{minipage}{.5\textwidth}\centering
+		  \jvsf{code/split.java}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{.4\textwidth}\centering
+		  \input{diagrams/split.tikz}
+	  \end{minipage}
+	\end{frame}
+	\begin{frame}{Stream Language: Cycle}
+	  \begin{minipage}{.5\textwidth}\centering
+		  \jvsf{code/nat2.java}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{.4\textwidth}\centering
+		  \input{diagrams/nat2.tikz}
+	  \end{minipage}
+	\end{frame}
+	\begin{frame}{Stream Language: Actions}
+	  \begin{minipage}{.5\textwidth}\centering
+		  \jvsf{code/nat3.java}
+		\end{minipage}
+		\hspace{1cm}
+		\begin{minipage}{.3\textwidth}\centering
+		  \input{diagrams/nat3.tikz}
+	  \end{minipage}
+	\end{frame}
+	
+	\begin{frame}{Stream Language: Marble Diagrams}
+	  \input{diagrams/operators/merge.tikz}
+    \input{diagrams/operators/zip.tikz}
+  \end{frame}
+  \begin{frame}{Stream Language: Marble Diagrams}
+		\input{diagrams/operators/filter.tikz}
+		\input{diagrams/operators/takeWhile.tikz}
+	\end{frame}
+  \begin{frame}{Stream Language: Marble Diagrams}
+		\input{diagrams/operators/scan.tikz}
+		\input{diagrams/operators/sample.tikz}
+	\end{frame}
+	
+	\begin{frame}{Optimizations}
+	  Series of semantics-preserving graph transformations
+	  \begin{itemize}
+	  \item Proactive filtering
+	  \item Granularity adjustment
+	  \end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Optimizations: Proactive Filtering}
+		Transfer as few elements as possible
+		\optimization{1}{maptake}
+	  \optimization{1}{mapfilter}
+	  \optimization{3}{concatdistinct}
+	\end{frame}
+	
+	\begin{frame}{Optimizations: Granularity Adjustment}
+	  Merge nodes
+		\optimizationS{1}{mergemap}
+	  \optimizationS{1}{combfilterexists}
+	  \optimizationS{1}{combmapexists}
+	  \optimizationS{2}{combmapzip}
+	\end{frame}
+	
+	\begin{frame}{Application: Robot Panel}
+	  \mydiag{control_panel}
+	\end{frame}
+	
+	\begin{frame}[standout]
+	  Robot panel demo
+	\end{frame}
+	
+	\checklist{1}{0}{1}{0}
+	
+	\begin{frame}{Application: Robot Hospital Guide}
+	  \begin{enumerate}
+	  \item Robot guides patients to parts of the hospital
+	  \item Patient holds a smartphone that broadcasts bluetooth signals
+	  \item Robot adjusts its speed, according to distance
+	  \end{enumerate}
+	\end{frame}
+	\begin{frame}{Application: Robot Hospital Guide}
+	  \mydiag{hospital}
+	\end{frame}
+	\begin{frame}{Application: Robot Hospital Guide}
+	  \jvs{code/hospital.java}
+	\end{frame}
+	
+	\begin{frame}{RHEA as a coordination language}
+	  \begin{itemize}
+	  \item Declarative glue code
+	  \item Multiple heterogeneous devices/streams
+	  \item Dataflow in the large, whatever in the small
+	  \end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Distribution: Task Fusion}
+    \begin{enumerate}
+    \item If desired granularity not reached, perform task fusion:
+      \optimizationL{1}{fusion}
+    \end{enumerate}	
+   \end{frame}
+    
+  \begin{frame}{Distribution: Node Placement}
+	  \begin{enumerate} \setcounter{enumi}{1}
+	  \item Place nodes in the available machines, in order to:
+		  \begin{itemize}
+		  \item minimize communication overhead
+		  \item satisfy hard constraints (e.g. ROS not available on raspberry)
+		  \end{itemize}
+	  \optimizationL{2}{partition}
+	  \end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Distribution: Serialization}
+	  \begin{enumerate} \setcounter{enumi}{2}
+	  \item Streams can terminate either with \cd{Complete} or \cd{Error}. 
+	    \begin{itemize}
+	    \item Necessary to materialize them when transferring
+      \end{itemize}
+	  \mydiag{serialization}
+	  \end{enumerate}
+	\end{frame}
+	
+	\checklist{1}{1}{0}{1}
+
+  \framepic{monty}
+  
+  \begin{frame}{Algorithmic Music DSL}
+    \begin{itemize}
+    \item Music datatypes defined in \alert{rhea-flow/rhea-music}
+      \begin{itemize}
+      \item e.g. \cd{Tone}, \cd{Pitch}, \cd{Scale}, etc...
+      \end{itemize}
+    \item Scala's implicit conversions for music-specific operators
+      \begin{itemize}
+      \item working only on type \cd{Stream<Music>}
+      \end{itemize}
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}{Chaotic Functions}
+    \begin{itemize}
+    \item Chaotic functions (1 variable)
+      \[ x = 1 - \alpha * x^2 \]
+    \item Complex functions (multiple variables)
+      \[ x = y - \alpha * x^2 \]
+      \[ y = \beta * x \]
+    \item Hence, these functions have type
+      \[ f :: (\alpha, \beta) \rightarrow ([Double] \rightarrow [Double]) \]
+    \item Slight change of initial values leads to drastic change in output
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}{Chaotic Functions as Dataflows}
+    \begin{minipage}{.5\textwidth}\centering
+		  \jvsf{code/chaos.java}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{.45\textwidth}\centering
+		  \input{diagrams/chaos.tikz}
+	  \end{minipage}
+  \end{frame}
+  
+  \begin{frame}[standout]
+	  Chaos music demo
+	\end{frame}
+  
+  \checklist{1}{1}{1}{1}
+  
+  \begin{frame}{Limitations}
+    \begin{itemize}
+    \item Difficult to extend the available operators
+    \item The surface syntax is not strict enough
+      \begin{itemize}
+      \item Only single-assignment in \cd{Stream} variables
+      \item Specific program structure (configuration $\rightarrow$ dataflow)
+      \item Only pure functions as arguments to higher-order operators
+      \end{itemize}
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}{Future Work}
+    \begin{itemize}
+    \item More sophisticated optimizations
+    \item Reinforcement learning for node placement
+    \item Dynamic reconfiguration (hot-swapping code)
+    \item Erlang-style error handling
+    \item Machine-learning backend
+    \item $\dots$
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}{Ziria}
+    \begin{itemize}
+    \item A dataflow DSL for wireless system programming
+    \item Compiles to highly optimal vectorized C code
+    \item In constrast to SORA (low-level C++ library):
+      \begin{itemize}
+      \item Wifi Receiver: 3k vs 23k LOC
+      \item Scrambler: 20 vs 90 LOC
+      \item Same performance!
+      \end{itemize}
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}{Conclusion}
+    \begin{itemize}
+    \item Some domains are still full of low-level techniques
+    \item The FP paradigm can overcome this quite nicely
+    \item Higher, higher, higher!
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}[standout]
+    Questions?
+  \end{frame}
+  
+  	
+\end{document}

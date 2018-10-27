@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+  [every matrix/.append style={column sep=0.2cm}]
+  \matrix{
+    \node[dataflow] (ini) {\small just [$x_0$, $y_0$]};
+    \& \node[dataflow] (con) {\small concat};
+    \& \node (fin) {$\dots$}; \\
+    \& \node[dataflow] (map) {\small map \{f($\alpha$, $\beta$)\}}; \\
+  };
+  \draw[to] (ini) -- (con);
+  \draw[to] (con) -- (fin);
+  \draw[to] (con) to[bend left=50] (map);
+  \draw[to] (map) to[bend left=50] (con);
+\end{tikzpicture}

@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+  \matrix{
+    \node[empty] {}; \\
+    \node {$\rightsquigarrow$}; \\
+    \node[empty] {}; \\
+  };
+\end{tikzpicture}
