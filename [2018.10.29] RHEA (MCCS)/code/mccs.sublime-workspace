@@ -251,10 +251,6 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
-	"expanded_folders":
-	[
-		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code"
-	],
 	"file_history":
 	[
 		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Panel.java",
@@ -1005,9 +1001,13 @@
 	"select_project":
 	{
 		"height": 496.0,
-		"last_filter": "mc",
+		"last_filter": "mcc",
 		"selected_items":
 		[
+			[
+				"mcc",
+				"~/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/mccs.sublime-project"
+			],
 			[
 				"mc",
 				"~/git/presentations/[2018.10.29] RHEA (MCCS)/code/mccs.sublime-workspace"

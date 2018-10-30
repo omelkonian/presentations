@@ -57,7 +57,7 @@ public class RobotPanel {
         Stream.combineLatest(laser, camera, this::embedLaser)
               .subscribe(viz::displayRGB);
 
-        // TF relations
+        // TF hierarchy
         tf.take(50)
           .collect((Func0<HashMap<String, Set<String>>>) HashMap::new, (m, msg) -> {
               for (TransformStamped transform : msg.getTransforms()) {

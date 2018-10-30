@@ -163,6 +163,31 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "Chaos.scala",
+			"settings":
+			{
+				"buffer_size": 1494,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Chaos2.scala",
+			"settings":
+			{
+				"buffer_size": 1433,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Panel.java",
+			"settings":
+			{
+				"buffer_size": 4510,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -253,6 +278,10 @@
 	],
 	"file_history":
 	[
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/script.md",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/Chaos.scala",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/Chaos2.scala",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/Panel.java",
 		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/chaos.java",
 		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/chaos.tikz",
 		"/home/omelkonian/git/rhea-flow/rhea-music/src/test/scala/Adhoc.scala",
@@ -376,15 +405,11 @@
 		"/home/omelkonian/ghc/compiler/types/TyCoRep.hs",
 		"/home/omelkonian/ghc/compiler/typecheck/TcHsSyn.hs",
 		"/home/omelkonian/ghc/compiler/typecheck/TcSMonad.hs",
-		"/home/omelkonian/ghc/next.md",
-		"/home/omelkonian/ghc/current.md",
-		"/home/omelkonian/ghc/report.md",
-		"/home/omelkonian/ghc/questions.md",
-		"/home/omelkonian/ghc/test.hs"
+		"/home/omelkonian/ghc/next.md"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 36.0
 	},
 	"find_in_files":
 	{
@@ -415,14 +440,150 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "Chaos.scala",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1494,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								923,
+								923
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.sublime-syntax",
+							"vintage":
+							{
+								"_vintageous_glue_until_normal_mode": false,
+								"_vintageous_non_interactive": false,
+								"_vintageous_processing_notation": false,
+								"action": null,
+								"action_count": "",
+								"mode": "mode_normal",
+								"motion": null,
+								"motion_count": "",
+								"must_capture_register_name": false,
+								"partial_sequence": "",
+								"register": "\"",
+								"sequence": "",
+								"xpos": 2
+							}
+						},
+						"translation.x": 0.0,
+						"translation.y": 600.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Chaos2.scala",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1433,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1423,
+								1423
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Scala/Scala.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"vintage":
+							{
+								"action": null,
+								"action_count": "",
+								"mode": "mode_normal",
+								"motion": null,
+								"motion_count": "",
+								"must_capture_register_name": false,
+								"partial_sequence": "",
+								"register": "\"",
+								"sequence": "",
+								"xpos": 22
+							}
+						},
+						"translation.x": 0.0,
+						"translation.y": 675.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Panel.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4510,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2893,
+								2893
+							]
+						],
+						"settings":
+						{
+							"_nv_visual_sel_mode": "mode_visual",
+							"syntax": "Packages/Java/Java.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"vintage":
+							{
+								"_vintageous_glue_until_normal_mode": false,
+								"_vintageous_non_interactive": false,
+								"_vintageous_processing_notation": false,
+								"action": null,
+								"action_count": "",
+								"mode": "mode_visual",
+								"motion": null,
+								"motion_count": "",
+								"must_capture_register_name": false,
+								"normal_insert_count": "1",
+								"partial_sequence": "",
+								"register": "\"",
+								"sequence": "",
+								"xpos": 8
+							}
+						},
+						"translation.x": 0.0,
+						"translation.y": 1500.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 36.0
 	},
 	"input":
 	{
@@ -467,7 +628,7 @@
 	"project": "mccs.sublime-project",
 	"replace":
 	{
-		"height": 50.0
+		"height": 68.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -476,6 +637,42 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"chaos2",
+				"Chaos2.scala"
+			],
+			[
+				"chao",
+				"Chaos.scala"
+			],
+			[
+				"panel",
+				"Panel.java"
+			],
+			[
+				"scir",
+				"script.md"
+			],
+			[
+				"ch",
+				"Chaos.scala"
+			],
+			[
+				"pna",
+				"Panel.java"
+			],
+			[
+				"chaos",
+				"Chaos.scala"
+			],
+			[
+				"cha",
+				"Chaos.scala"
+			],
+			[
+				"pan",
+				"Panel.java"
+			],
 			[
 				"instrum",
 				"src/main/scala/rhea_music/constants/Instruments.scala"
@@ -951,42 +1148,6 @@
 			[
 				"quest",
 				"questions.md"
-			],
-			[
-				"mkcore",
-				"compiler/coreSyn/MkCore.hs"
-			],
-			[
-				"tcerr",
-				"compiler/typecheck/TcErrors.hs"
-			],
-			[
-				"dsutil",
-				"compiler/deSugar/DsUtils.hs"
-			],
-			[
-				"tcsimpli",
-				"compiler/typecheck/TcSimplify.hs"
-			],
-			[
-				"tcinte",
-				"compiler/typecheck/TcInteract.hs"
-			],
-			[
-				"tcm",
-				"compiler/typecheck/TcMType.hs"
-			],
-			[
-				"tchstype",
-				"compiler/typecheck/TcHsType.hs"
-			],
-			[
-				"tcrnTy",
-				"compiler/typecheck/TcRnTypes.hs"
-			],
-			[
-				"tcerror",
-				"compiler/typecheck/TcErrors.hs"
 			]
 		],
 		"width": 0.0
@@ -994,16 +1155,16 @@
 	"select_project":
 	{
 		"height": 496.0,
-		"last_filter": "",
+		"last_filter": "dyck",
 		"selected_items":
 		[
 			[
-				"rhe",
-				"~/SublimeWorkspaces/rhea-flow.sublime-project"
-			],
-			[
 				"dyck",
 				"~/SublimeWorkspaces/dyck.sublime-project"
+			],
+			[
+				"rhe",
+				"~/SublimeWorkspaces/rhea-flow.sublime-project"
 			],
 			[
 				"ghc",
@@ -1044,14 +1205,16 @@
 	"selected_group": 0,
 	"settings":
 	{
+		"_vintageous_reset_during_init": true,
 		"vintage":
 		{
+			"_cmdline_cd": "/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc"
 		}
 	},
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 283.0,
 	"status_bar_visible": true,
 	"template_settings":
