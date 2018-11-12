@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+  \matrix{    
+    \node[dataflow] (take) {take $n$}; 
+    \& \node[dataflow] (map) {map $f$}; \\  
+  };
+  \draw[to] (take) -- (map);
+\end{tikzpicture}

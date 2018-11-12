@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+  \matrix{
+    \node[dataflow] (map) {map $f$};
+    \& \node[dataflow] (filter) {filter $g$}; \\
+  };
+  \draw[to] (map) -- (filter);
+  \draw[opt] (map) to[bend left] (filter);
+  \draw[opt] (filter) to[bend left] (map);
+\end{tikzpicture}

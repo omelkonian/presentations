@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+  [every matrix/.append style={column sep=.4cm, row sep=.5cm}]
+  \matrix{
+    \node[dataflow] (zero) {0};
+    \& \node[dataflow] (concat) {concat};
+    \& \node (res) {$1,\ 2,\ 3,\ \dots$}; \\
+    \& \node[dataflow] (inc) {map \{$+1$\}}; \\
+  };
+  \draw[to] (zero) -- (concat);
+  \draw[to] (concat) -- (res);
+  \draw[to] (concat) to[bend left=50] (inc);
+  \draw[to] (inc) to[bend left=50] (concat);
+\end{tikzpicture}

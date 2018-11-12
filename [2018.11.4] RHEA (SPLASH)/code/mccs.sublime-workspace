@@ -1,0 +1,1071 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"TFMe",
+				"TFMessage"
+			],
+			[
+				"Inst",
+				"Instrument"
+			],
+			[
+				"mkInst",
+				"mkInstanceOfPred"
+			],
+			[
+				"tcLoo",
+				"tcLookupFlavor"
+			],
+			[
+				"ASS",
+				"ASSERT2"
+			],
+			[
+				"tcLookup",
+				"tcLookupIdFlavor"
+			],
+			[
+				"tcLookupIdFla",
+				"tcLookupIdFlavor_maybe"
+			],
+			[
+				"tcInstSkolTy",
+				"tcInstSkolTyVarsX"
+			],
+			[
+				"tcInst",
+				"tcInstSkolTyVars"
+			],
+			[
+				"emitWor",
+				"emitWorkNC"
+			],
+			[
+				"EvInst",
+				"EvInstanceOf"
+			],
+			[
+				"can_inst",
+				"can_instance_of_inst_eq"
+			],
+			[
+				"Instance",
+				"InstanceOfPred"
+			],
+			[
+				"zonkId",
+				"zonkIdOcc"
+			],
+			[
+				"WpIn",
+				"WpEvInstOf"
+			],
+			[
+				"mkIn",
+				"mkInstanceOfEq"
+			],
+			[
+				"emitWante",
+				"emitNewWantedEq"
+			],
+			[
+				"Cont",
+				"ContinueWith"
+			],
+			[
+				"When",
+				"whenTrue"
+			],
+			[
+				"pre",
+				"preCondition"
+			],
+			[
+				"VariableDec",
+				"VariableDeclarators"
+			],
+			[
+				"Binar",
+				"BinaryOperator"
+			],
+			[
+				"Unary",
+				"UnaryOperator"
+			],
+			[
+				"Varai",
+				"VariableDeclarator"
+			],
+			[
+				"Variable",
+				"VariableDeclaration"
+			],
+			[
+				"Variab",
+				"VariableDeclaration"
+			],
+			[
+				"instanceOf",
+				"instanceOfPrimTyConName"
+			],
+			[
+				"left",
+				"lefthandside"
+			],
+			[
+				"Functio",
+				"FunctionBindings"
+			],
+			[
+				"right",
+				"righthandside"
+			],
+			[
+				"sugge",
+				"suggestions"
+			],
+			[
+				"sugg",
+				"suggestionMessages_Syn_Module"
+			],
+			[
+				"suggestion",
+				"suggestionMessages"
+			],
+			[
+				"Function",
+				"FunctionBinding"
+			],
+			[
+				"ARS",
+				"ARS_USER"
+			],
+			[
+				"exp",
+				"export"
+			],
+			[
+				"choice",
+				"choice_index"
+			],
+			[
+				"gramm",
+				"grammar_utils"
+			],
+			[
+				"xmobar",
+				"xmobarEscape"
+			],
+			[
+				"myTitle",
+				"myTitleLength"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 345.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove package",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove p",
+				"Package Control: Remove Channel"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"preview",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"remove ",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"About"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			]
+		],
+		"width": 587.0
+	},
+	"console":
+	{
+		"height": 124.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Panel.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/hospital.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Chaos2.scala",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Chaos.scala",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Chaos2.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Chaos.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/hospital.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/Visualizer.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/serialization.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/nat.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/nat2.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/nat3.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/multipleinput.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/pubsub.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/singleinput.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/control_panel.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/split.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/nat3.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/nat2.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/split.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/multipleinput.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/singleinput.java",
+		"/home/omelkonian/git/bsc-thesis/MACROS.tex",
+		"/home/omelkonian/git/bsc-thesis/thesis.tex",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/natt.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/operators/scan.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/operators/merge.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/operators/zip.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/MACROS.tex",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/rxbeacon.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/ControlPanel.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/code/control_panel.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/optimization/fusionB.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/optimization/fusionA.tikz",
+		"/home/omelkonian/git/rhea-rebls/rhea.tex",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/optimization/mapfilterB.tikz",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/diagrams/optimization/mapfilterA.tikz",
+		"/home/omelkonian/git/rhea-rebls/diagrams/control_panel.tikz",
+		"/home/omelkonian/git/rhea-flow/ros-eval/src/main/java/ros_eval/RosEvaluationStrategy.java",
+		"/home/omelkonian/git/presentations/[2018.10.29] RHEA (MCCS)/script.txt",
+		"/home/omelkonian/git/rhea-flow/robot-control-panel/build.gradle",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/util/ImplicitConversions.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/distribution/DistributionStrategy.java",
+		"/home/omelkonian/git/rhea-flow/cv-bridge/src/main/java/cv_bridge/CvImage.java",
+		"/home/omelkonian/git/rhea-flow/cv-bridge/src/main/java/cv_bridge/Encoding.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/Stream.java",
+		"/home/omelkonian/git/rhea-flow/robot-control-panel/src/main/java/control_panel/Visualizer.java",
+		"/home/omelkonian/git/rhea-flow/hazelcast-distribution/src/main/java/hazelcast_distribution/HazelcastDistributionStrategy.java",
+		"/home/omelkonian/git/rhea-flow/hazelcast-distribution/src/main/java/hazelcast_distribution/HazelcastTopic.java",
+		"/home/omelkonian/git/rhea-flow/hazelcast-distribution/src/main/java/hazelcast_distribution/HazelcastTask.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/distribution/SingleMachineDistributionStrategy.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/distribution/graph/TopicEdge.java",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_types/MusicString.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_streams/MusicStream.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/constants/Instruments.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/constants/Notes.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/constants/ScaleTypes.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/test/scala/Tester.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_types/Interval.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_types/Voice.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/util/VoiceMinter.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_types/Wrapper.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_types/Instrument.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/constants/Durations.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/chaos/ComplexFunction.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/constants/Chords.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/build.gradle",
+		"/home/omelkonian/git/rhea-flow/rx-eval/src/test/java/Tester.java",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/chaos/ChaosStream.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-music/src/main/scala/rhea_music/music_streams/ChordStream.scala",
+		"/home/omelkonian/git/rhea-flow/laser-viz/Makefile",
+		"/home/omelkonian/git/rhea-flow/laser-viz/build.gradle",
+		"/home/omelkonian/git/rhea-flow/laser-viz/src/main/java/laser_viz/StreamMerger.java",
+		"/home/omelkonian/git/rhea-flow/robot-control-panel/Makefile",
+		"/home/omelkonian/git/rhea-flow/ros-eval/src/main/java/ros_eval/RosSerializationStrategy.java",
+		"/home/omelkonian/git/rhea-flow/ros-eval/src/main/java/ros_eval/RosTopic.java",
+		"/home/omelkonian/git/rhea-flow/ros-eval/build.gradle",
+		"/home/omelkonian/R-3.4.4/INSTALL",
+		"/home/omelkonian/R-3.4.4/Makefile",
+		"/home/omelkonian/.histfile",
+		"/home/omelkonian/git/rhea-flow/rx-eval/src/main/java/rx_eval/RxjavaEvaluationStrategy.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/test/java/Adhoc.java",
+		"/home/omelkonian/git/rhea-flow/rx-eval/src/test/java/Adhoc.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/expressions/feedback/ExitPointExpr.java",
+		"/home/omelkonian/git/rhea-flow/scala-wrapper/src/test/scala/HammingNumbers.scala",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/test/java/Tester.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/expressions/Transformer.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/graph/FlowGraph.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/expressions/feedback/EntryPointExpr.java",
+		"/home/omelkonian/git/rhea-flow/rx-eval/build/docs/javadoc/rx_eval/RxjavaEvaluationStrategy.html",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/output/ActionOutput.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/expressions/combining/ZipExpr.java",
+		"/home/omelkonian/git/rhea-flow/rx-eval/Makefile",
+		"/home/omelkonian/git/rhea-flow/rx-eval/README.md",
+		"/home/omelkonian/git/rhea-flow/rx-eval/build.gradle",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/output/Output.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/expressions/MultipleInputExpr.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/internal/expressions/WithId.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/src/main/java/org/rhea_core/BlockingStream.java",
+		"/home/omelkonian/git/rhea-flow/test-data/src/main/java/test_data/TestData.java",
+		"/home/omelkonian/git/rhea-flow/scala-wrapper/src/main/scala/scala_wrapper/ImplicitConversions.scala",
+		"/home/omelkonian/git/rhea-flow/rx-eval/src/test/java/HammingNumbers.java",
+		"/home/omelkonian/git/rhea-flow/scala-wrapper/src/test/scala/Tester.scala",
+		"/home/omelkonian/git/rhea-flow/scala-wrapper/src/test/scala/Adhoc.scala",
+		"/home/omelkonian/git/rhea-flow/rx-eval/src/main/java/rx_eval/Converter.java",
+		"/home/omelkonian/git/rhea-flow/graph-viz/src/main/java/graph_viz/GraphVisualizer.java",
+		"/home/omelkonian/git/rhea-flow/hazelcast-distribution/src/test/java/Tester.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/build.gradle",
+		"/home/omelkonian/git/rhea-flow/hazelcast-distribution/src/test/java/Adhoc.java",
+		"/home/omelkonian/git/rhea-flow/scala-wrapper/Makefile",
+		"/home/omelkonian/git/rhea-flow/scala-wrapper/build.gradle",
+		"/home/omelkonian/git/rhea-flow/rhea-core/Makefile",
+		"/home/omelkonian/git/rhea-flow/test-data/src/main/java/test_data/Collections.java",
+		"/home/omelkonian/git/rhea-flow/rhea-core/.travis.yml",
+		"/home/omelkonian/git/rhea-flow/cv-bridge/build.gradle",
+		"/home/omelkonian/git/rhea-flow/camera-surveillance/build.gradle",
+		"/home/omelkonian/git/rhea-flow/hazelcast-distribution/src/main/java/hazelcast_distribution/HazelcastMain.java",
+		"/home/omelkonian/git/.dotfiles/.gitconfig",
+		"/home/omelkonian/git/.dotfiles/bash/inactive/arsnova.symlink",
+		"/home/omelkonian/git/.dotfiles/bash/inactive/cds_utils.symlink",
+		"/home/omelkonian/git/.dotfiles/bash/language.symlink",
+		"/home/omelkonian/git/.dotfiles/bash/audio.symlink",
+		"/home/omelkonian/git/.dotfiles/bash/1-functions.symlink",
+		"/home/omelkonian/git/dsss18/verdi/lec1/StructTact/README.md",
+		"/home/omelkonian/git/LoLa/Presentation (ESSLLI)/diagrams/results_size.tikz",
+		"/home/omelkonian/Dropbox/FormalZ/ArsNova.md",
+		"/home/omelkonian/git/LoLa/Presentation (ESSLLI)/script.txt",
+		"/home/omelkonian/git/dsss18/verdi/lec1/StructTact/StructTactics.v"
+	],
+	"find":
+	{
+		"height": 56.0
+	},
+	"find_in_files":
+	{
+		"height": 130.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"faceDetector",
+			"faces",
+			"codefig",
+			"nat}",
+			"num",
+			"myitem",
+			"Control"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 50.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.elm_type":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "mccs.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"hosp",
+				"hospital.java"
+			],
+			[
+				"panel",
+				"Panel.java"
+			],
+			[
+				"chaos2",
+				"Chaos2.java"
+			],
+			[
+				"chaos",
+				"Chaos.java"
+			],
+			[
+				"vis",
+				"Visualizer.java"
+			],
+			[
+				"visu",
+				"Visualizer.java"
+			],
+			[
+				"Panel",
+				"Panel.java"
+			],
+			[
+				"nat3",
+				"nat3.java"
+			],
+			[
+				"nat2.",
+				"nat2.java"
+			],
+			[
+				"split",
+				"split.java"
+			],
+			[
+				"nat2",
+				"nat2.java"
+			],
+			[
+				"mul",
+				"multipleinput.java"
+			],
+			[
+				"singlein",
+				"singleinput.java"
+			],
+			[
+				"nat3.",
+				"nat3.java"
+			],
+			[
+				"nat",
+				"nat2.java"
+			],
+			[
+				"rx",
+				"rxbeacon.java"
+			],
+			[
+				"",
+				"hospital.java"
+			],
+			[
+				"viz",
+				"Visualizer.java"
+			],
+			[
+				"contr",
+				"ControlPanel.java"
+			],
+			[
+				"contro",
+				"control_panel.java"
+			],
+			[
+				"makefile music",
+				"rhea-music/Makefile"
+			],
+			[
+				"build.gra",
+				"rhea-music/build.gradle"
+			],
+			[
+				"interval.sc",
+				"rhea-music/src/main/scala/rhea_music/music_types/Interval.scala"
+			],
+			[
+				"voice.sc",
+				"rhea-music/src/main/scala/rhea_music/music_types/Voice.scala"
+			],
+			[
+				"tester.scala",
+				"rhea-music/src/test/scala/Tester.scala"
+			],
+			[
+				"instrum",
+				"rhea-music/src/main/scala/rhea_music/music_types/Instrument.scala"
+			],
+			[
+				"Instr",
+				"rhea-music/src/main/scala/rhea_music/constants/Instruments.scala"
+			],
+			[
+				"tester.scal",
+				"rhea-music/src/test/scala/Tester.scala"
+			],
+			[
+				"tester",
+				"rx-eval/src/test/java/Tester.java"
+			],
+			[
+				"instru",
+				"rhea-music/src/main/scala/rhea_music/music_types/Instrument.scala"
+			],
+			[
+				"build.gradle musi",
+				"rhea-music/build.gradle"
+			],
+			[
+				"makefile robo",
+				"robot-control-panel/Makefile"
+			],
+			[
+				"makefile laz",
+				"laser-viz/Makefile"
+			],
+			[
+				"build.grad",
+				"laser-viz/build.gradle"
+			],
+			[
+				"vizua",
+				"robot-control-panel/src/main/java/control_panel/Visualizer.java"
+			],
+			[
+				"makefile robot",
+				"robot-control-panel/Makefile"
+			],
+			[
+				"build.grade",
+				"laser-viz/build.gradle"
+			],
+			[
+				"StreamM",
+				"laser-viz/src/main/java/laser_viz/StreamMerger.java"
+			],
+			[
+				"build.grade ros",
+				"ros-eval/build.gradle"
+			],
+			[
+				"roseva",
+				"ros-eval/src/main/java/ros_eval/RosEvaluationStrategy.java"
+			],
+			[
+				"makefile laser",
+				"laser-viz/Makefile"
+			],
+			[
+				"exitpo",
+				"rhea-core/src/main/java/org/rhea_core/internal/expressions/feedback/ExitPointExpr.java"
+			],
+			[
+				"transfor",
+				"rhea-core/src/main/java/org/rhea_core/internal/expressions/Transformer.java"
+			],
+			[
+				"adhoc core",
+				"rhea-core/src/test/java/Adhoc.java"
+			],
+			[
+				"rxeva",
+				"rx-eval/src/main/java/rx_eval/RxjavaEvaluationStrategy.java"
+			],
+			[
+				"rxev",
+				"rx-eval/build/docs/javadoc/rx_eval/RxjavaEvaluationStrategy.html"
+			],
+			[
+				"tester rx",
+				"rx-eval/src/test/java/Tester.java"
+			],
+			[
+				"tester rhea-core",
+				"rhea-core/src/test/java/Tester.java"
+			],
+			[
+				"adhoc",
+				"hazelcast-distribution/src/test/java/Adhoc.java"
+			],
+			[
+				"graph",
+				"rhea-core/src/main/java/org/rhea_core/internal/graph/FlowGraph.java"
+			],
+			[
+				"stream.ja",
+				"rhea-core/src/main/java/org/rhea_core/Stream.java"
+			],
+			[
+				"makefile scala",
+				"scala-wrapper/Makefile"
+			],
+			[
+				"stream.jav",
+				"rhea-core/src/main/java/org/rhea_core/Stream.java"
+			],
+			[
+				"cv-bridge/bui",
+				"cv-bridge/build.gradle"
+			],
+			[
+				"makefile core",
+				"rhea-core/Makefile"
+			],
+			[
+				"build.gr",
+				"camera-surveillance/build.gradle"
+			],
+			[
+				"main.j",
+				"hazelcast-distribution/src/main/java/hazelcast_distribution/HazelcastMain.java"
+			],
+			[
+				"gitcon",
+				".gitconfig"
+			],
+			[
+				"gitco",
+				".gitconfig"
+			],
+			[
+				"xmond",
+				".xmonad/xmonad.hs"
+			],
+			[
+				"aliases",
+				"bash/2-aliases.symlink"
+			],
+			[
+				"ghc",
+				"bash/ghc.symlink"
+			],
+			[
+				"netwo",
+				"bash/networking.symlink"
+			],
+			[
+				"next",
+				"orestis/next.md"
+			],
+			[
+				"dsbi",
+				"compiler/deSugar/DsBinds.hs"
+			],
+			[
+				"dsbin",
+				"compiler/deSugar/DsBinds.hs"
+			],
+			[
+				"tccano",
+				"compiler/typecheck/TcCanonical.hs"
+			],
+			[
+				"tcevi",
+				"compiler/typecheck/TcEvidence.hs"
+			],
+			[
+				".gi",
+				".gitignore"
+			],
+			[
+				"tctyp",
+				"compiler/typecheck/TcType.hs"
+			],
+			[
+				"type.hs",
+				"compiler/types/Type.hs"
+			],
+			[
+				"build.mk",
+				"mk/build.mk"
+			],
+			[
+				".gitconf",
+				"~/.gitconfig"
+			],
+			[
+				"Type.hs",
+				"compiler/types/Type.hs"
+			],
+			[
+				"tycon",
+				"compiler/types/TyCon.hs"
+			],
+			[
+				"tcvalid",
+				"compiler/typecheck/TcValidity.hs"
+			],
+			[
+				"tctype",
+				"compiler/typecheck/TcType.hs"
+			],
+			[
+				"TysWi",
+				"compiler/prelude/TysWiredIn.hs-boot"
+			],
+			[
+				"tyswi",
+				"compiler/prelude/TysWiredIn.hs"
+			],
+			[
+				"prelname",
+				"compiler/prelude/PrelNames.hs"
+			],
+			[
+				"tcmty",
+				"compiler/typecheck/TcMType.hs"
+			],
+			[
+				"tchssy",
+				"compiler/typecheck/TcHsSyn.hs"
+			],
+			[
+				"tccan",
+				"compiler/typecheck/TcCanonical.hs"
+			],
+			[
+				"tcsmo",
+				"compiler/typecheck/TcSMonad.hs"
+			],
+			[
+				"tcrnty",
+				"compiler/typecheck/TcRnTypes.hs"
+			],
+			[
+				"type",
+				"compiler/types/Type.hs"
+			],
+			[
+				"tcvali",
+				"compiler/typecheck/TcValidity.hs"
+			],
+			[
+				"tyswire",
+				"compiler/prelude/TysWiredIn.hs"
+			],
+			[
+				"cur",
+				"current.md"
+			],
+			[
+				"ques",
+				"questions.md"
+			],
+			[
+				"tycore",
+				"compiler/types/TyCoRep.hs"
+			],
+			[
+				"var",
+				"compiler/basicTypes/Var.hs"
+			],
+			[
+				"datacon",
+				"compiler/basicTypes/DataCon.hs"
+			],
+			[
+				"tycorep",
+				"compiler/types/TyCoRep.hs"
+			],
+			[
+				"typere",
+				"testsuite/tests/typecheck/should_run/TypeRep.hs"
+			],
+			[
+				"tcrnt",
+				"compiler/typecheck/TcRnTypes.hs"
+			],
+			[
+				"report",
+				"report.md"
+			],
+			[
+				"smonad",
+				"compiler/typecheck/TcSMonad.hs"
+			],
+			[
+				"curre",
+				"current.md"
+			],
+			[
+				"tcuni",
+				"compiler/typecheck/TcUnify.hs"
+			],
+			[
+				"tcrnmon",
+				"compiler/typecheck/TcRnMonad.hs"
+			],
+			[
+				"tcmtype",
+				"compiler/typecheck/TcMType.hs"
+			],
+			[
+				"tce",
+				"compiler/typecheck/TcEnv.hs"
+			],
+			[
+				"tcsmon",
+				"compiler/typecheck/TcSMonad.hs"
+			],
+			[
+				"ioe",
+				"compiler/utils/IOEnv.hs"
+			],
+			[
+				"tcunif",
+				"compiler/typecheck/TcUnify.hs"
+			],
+			[
+				"tcunf",
+				"compiler/stage1/build/TcUnify.hi-boot"
+			],
+			[
+				"tcun",
+				"compiler/typecheck/TcUnify.hs"
+			],
+			[
+				"tcunfi",
+				"compiler/stage1/build/TcUnify.hi-boot"
+			],
+			[
+				"tcexpr",
+				"compiler/typecheck/TcExpr.hs"
+			],
+			[
+				"tccanoni",
+				"compiler/typecheck/TcCanonical.hs"
+			],
+			[
+				"question",
+				"questions.md"
+			],
+			[
+				"Var",
+				"compiler/basicTypes/Var.hs"
+			],
+			[
+				"tcexp",
+				"compiler/typecheck/TcExpr.hs"
+			],
+			[
+				"tyenv",
+				"compiler/typecheck/TcEnv.hs"
+			],
+			[
+				"name",
+				"compiler/basicTypes/Name.hs"
+			],
+			[
+				"uniqfm",
+				"compiler/utils/UniqFM.hs"
+			],
+			[
+				"nameenv",
+				"compiler/basicTypes/NameEnv.hs"
+			],
+			[
+				"tcspli",
+				"compiler/typecheck/TcSplice.hs"
+			],
+			[
+				"TcRnDr",
+				"compiler/typecheck/TcRnDriver.hs"
+			],
+			[
+				"tctycls",
+				"compiler/typecheck/TcTyClsDecls.hs"
+			],
+			[
+				"tcbinds",
+				"compiler/typecheck/TcBinds.hs"
+			],
+			[
+				"tcev",
+				"compiler/typecheck/TcEnv.hs"
+			],
+			[
+				"tcrndri",
+				"compiler/typecheck/TcRnDriver.hs"
+			],
+			[
+				"var.hs",
+				"compiler/basicTypes/Var.hs"
+			],
+			[
+				"tcinter",
+				"compiler/typecheck/TcInteract.hs"
+			],
+			[
+				"quest",
+				"questions.md"
+			],
+			[
+				"mkcore",
+				"compiler/coreSyn/MkCore.hs"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 496.0,
+		"last_filter": "mcc",
+		"selected_items":
+		[
+			[
+				"mcc",
+				"~/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/mccs.sublime-project"
+			],
+			[
+				"mc",
+				"~/git/presentations/[2018.10.29] RHEA (MCCS)/code/mccs.sublime-workspace"
+			],
+			[
+				"dyck",
+				"~/SublimeWorkspaces/dyck.sublime-project"
+			],
+			[
+				"ghc",
+				"~/SublimeWorkspaces/ghc.sublime-workspace"
+			],
+			[
+				"hs",
+				"~/SublimeWorkspaces/hs-mirex.sublime-project"
+			],
+			[
+				"hs-mir",
+				"~/SublimeWorkspaces/hs-mirex.sublime-project"
+			],
+			[
+				"hs-",
+				"~/ghc/compiler/typecheck/hs-mirex.sublime-workspace"
+			],
+			[
+				"hs-mire",
+				"~/git/hs-mirex.sublime-workspace"
+			],
+			[
+				"",
+				"~/SublimeWorkspaces/cco-mf.sublime-workspace"
+			]
+		],
+		"width": 376.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"vintage":
+		{
+		}
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 283.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

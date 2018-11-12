@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+  \matrix{
+  	\node[dataflow] (never) {never}; \& \& \node (A) {x}; \\
+  	\& \node[dataflow] (concat) {concat}; \\
+  };
+  \draw[to] (never) -- (concat);
+  \draw[to] (A) -- (concat);
+  \draw[opt] (never) to[bend right] (concat);
+\end{tikzpicture}

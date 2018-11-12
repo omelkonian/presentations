@@ -1,0 +1,111 @@
+% Marble Diagrams
+\newcommand{\op}[1]{
+  	\node[draw,rounded corners,thick,fit={(0,.8)(5,1.4)}] (id) {};
+  	\node[anchor=base,inner sep=0pt] at (id.center) {#1};
+}
+\newcommand{\stream}[1]{
+	\draw[->,very thick] (0,#1) -- (5,#1);
+}
+\newcommand{\dotstream}[2]{
+	\draw[->,very thick] (0,#1) -- (#2,#1);
+	\draw[dotted] (#2,#1) -- (5,#1);
+}
+\newcommand{\onnext}[4]{
+	\draw (#1,#2) node [draw,circle,fill=#3] {\tiny #4};
+}
+\newcommand{\error}[2]{
+	\draw[myrd, line width=1mm] (#1-0.3,#2-0.3) -- (#1+0.3,#2+0.3) (#1+0.3,#2-0.3) -- (#1-0.3,#2+0.3);
+}
+\newcommand{\complete}[2]{
+	\draw[mygr, line width=1mm] (#1,#2-0.2) -- (#1,#2+0.2);
+}
+\newcommand\mat[2]{
+	\node [rectangle,minimum size=5.5mm,inner sep=0pt,outer sep=0pt,thick,fill=mybr,opacity=.8] at (#1,#2) {};
+}
+\newcommand\llist[2]{
+	\node[draw,rounded corners,thick,fit={(#1-0.1,-0.3)(#2+0.1,0.3)}]{};
+}
+
+% Dataflow graphs
+\tikzset{
+	dataflow/.style={draw, fill=myye!70, rounded corners, thick},
+	empty/.style={draw=none, inner sep=.3cm},
+  	machine/.style={draw, fill=myrd!80, rounded corners, thick, inner sep=.3cm},
+  	task/.style={draw, fill=mygr!80, rounded corners, thick, inner sep=.5cm},
+  	to/.style={->,>=stealth',shorten >=1pt,semithick},
+  	net/.style={to, red, dotted},
+  	opt/.style={->,>=stealth',shorten >=1pt,semithick,draw=red},
+  	point/.style={draw, inner sep=0pt, circle, fill=black},
+  	every matrix/.style={ampersand replacement=\&, column sep=.7cm, row sep=.35cm},
+  	every node/.style={align=center, anchor=base}
+}
+
+\newcommand\myimage[2]{
+	\begin{figure}
+		\centering
+	 	\includegraphics[scale=#2]{#1}
+	  	\label{fig:#1}
+	\end{figure}
+}
+
+\newcommand\mydiag[1]{
+	\begin{figure}
+		\centering
+	 	\input{diagrams/#1.tikz}
+	  	\label{fig:#1}
+	\end{figure}
+}
+
+\newcommand\optim[3]{
+	\begin{figure}
+	  \begin{adjustbox}{width=#1}
+	  \input{diagrams/optimization/#3B.tikz}
+	  \hspace{-.4cm}
+	  \input{diagrams/optimization/rightarrow#2.tikz}
+	  \hspace{-.4cm}
+	  \input{diagrams/optimization/#3A.tikz}
+	  \end{adjustbox}
+		\label{fig:#3}
+	\end{figure}
+}
+
+\newcommand\optimizationS[2]{
+	\optim{.5\columnwidth}{#1}{#2}
+}
+
+\newcommand\optimization[2]{
+	\optim{.7\columnwidth}{#1}{#2}
+}
+
+\newcommand\optimizationL[2]{
+	\optim{.9\columnwidth}{#1}{#2}
+}
+
+\newcommand\codefig[2]{
+  \begin{figure}
+    \begin{minipage}{.3\columnwidth}
+    	  \input{diagrams/#1.tikz}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.7\columnwidth}
+      \jvsf{code/#1.java}
+    \end{minipage}
+  \end{figure}
+}
+
+% Source Code
+\usemintedstyle{friendly}
+\newcommand{\cd}[1]{\mintinline{java}{#1}}
+\newcommand\mintedfs{0.2cm}
+\newmintedfile[hs]{hs}{frame=lines, framesep=\mintedfs}
+\newmintedfile[hssm]{hs}{fontsize=\footnotesize, frame=lines, framesep=\mintedfs}
+\newmintedfile[jv]{java}{frame=lines, framesep=\mintedfs}
+\newmintedfile[scala]{scala}{frame=lines, framesep=\mintedfs}
+\newmintedfile[scalas]{scala}{fontsize=\footnotesize, frame=lines, framesep=\mintedfs}
+\newmintedfile[scalaxs]{scala}{fontsize=\tiny, frame=lines, framesep=\mintedfs}
+\newmintedfile[lscalaxs]{scala}{numberblanklines=false, numbers=right, numbersep=0pt, fontsize=\tiny, frame=lines, framesep=\mintedfs}
+\newmintedfile[jvsf]{java}{fontsize=\footnotesize, frame=lines, framesep=\mintedfs}
+\newmintedfile[jvs]{java}{fontsize=\footnotesize, baselinestretch=0.8}
+\newmintedfile[jvxs]{java}{fontsize=\tiny, frame=lines, framesep=\mintedfs}
+\newmintedfile[ljvxs]{java}{numberblanklines=false, numbers=right, numbersep=0pt, , fontsize=\tiny, frame=lines, framesep=\mintedfs}
+\newmintedfile[cp]{cpp}{fontsize=\tiny}

@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+  \matrix{
+    \node[dataflow] (filter) {filter $g \circ f$};
+    \& \node[dataflow] (map) {map $f$}; \\
+  };
+  \draw[to] (filter) -- (map);
+\end{tikzpicture}

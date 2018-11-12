@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+  [every matrix/.append style={column sep=0.05cm}]
+  \matrix{
+    \node[dataflow] (fst) {\small 1..10};
+    \& \& \node[dataflow] (snd) {\small 1..10}; \\
+    \& \node[dataflow] (zip) {\small zip \{$+$\}};  \\
+  };
+  \draw[to] (fst) -- (zip);
+  \draw[to] (snd) -- (zip);
+\end{tikzpicture}
