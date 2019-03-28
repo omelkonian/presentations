@@ -1001,9 +1001,13 @@
 	"select_project":
 	{
 		"height": 496.0,
-		"last_filter": "mcc",
+		"last_filter": "form",
 		"selected_items":
 		[
+			[
+				"form",
+				"~/SublimeWorkspaces/formal-utxo.sublime-project"
+			],
 			[
 				"mcc",
 				"~/git/presentations/[2018.10.29] RHEA (MCCS)/code/adhoc/mccs.sublime-project"

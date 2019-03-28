@@ -1,0 +1,335 @@
+\documentclass{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+\setbeamersize{text margin left=.5cm,text margin right=.5cm} 
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{chains,arrows,automata,fit,positioning,calc}
+
+% Colors
+\usepackage{xcolor,color,colortbl}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{figures/}}
+
+% Macros
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+
+% Import Agda code
+\input{code}
+  
+% Fonts
+\usepackage{dsfont}
+\usepackage{relsize}
+\usepackage{fontspec}
+\usepackage[utf8]{inputenc}
+\setmainfont{LinLibertine}[
+  Extension = .otf,
+  Path = ./fonts/,
+  UprightFont = *_R,
+  BoldFont = *_RB,
+  ItalicFont = *_RI
+]
+\setsansfont{LinBiolinum}[
+  Extension = .otf,
+  Path = ./fonts/,
+  UprightFont = *_R,
+  BoldFont = *_RB,
+  ItalicFont = *_RI
+]
+
+%----------------------------------------------------------------------------
+
+% Beamer
+\title{The UTxO Model and the BitML Calculus}
+\subtitle{A Formal Investigation in Agda}
+\author{Orestis Melkonian}
+\date{March 28, 2019}
+\institute{Utrecht University, The Netherlands}
+
+\begin{document}
+
+\maketitle
+
+%%%%%%%%%%%%	
+% Overview %
+%%%%%%%%%%%%
+\begin{frame}{Overview}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents
+\end{frame}
+
+%%%%%%%%
+% UTxO %
+%%%%%%%%
+\section{UTxO}
+\subsection{Transactions/Ledgers}
+\begin{frame}{Basic Types}
+\UTXObasicTypes{}
+\end{frame}
+
+\begin{frame}{Inputs and Output References}
+\UTXOinsOutRefs{}
+\end{frame}
+
+\begin{frame}{Transactions}
+\UTXOoutTx{}
+\end{frame}
+
+\begin{frame}{Unspent Outputs}
+\UTXOutxo{}
+\end{frame}
+
+\subsection{Validity}
+\begin{frame}{Validity I}
+\UTXOvalidA{}
+\end{frame}
+
+\begin{frame}{Validity II}
+\UTXOvalidB{}
+\end{frame}
+
+\begin{frame}{Valid Ledgers}
+\UTXOvalidLedgers{}
+\end{frame}
+
+\subsection{Example}
+\newcommand\forge[1]{forge: \bitcoin ~#1}
+\newcommand\fee[1]{fee:\hspace{7pt} \bitcoin ~#1}
+\begin{frame}{Example: Transaction Graph}
+\begin{figure}
+\begin{tikzpicture}
+  [basic box/.style = {
+     draw,
+     shape = rectangle,
+     align = left,
+     minimum width=1.5cm,
+     minimum height=2cm,
+     rounded corners},
+   redge/.style = {
+     bend right = 50},
+   upedge/.style = {
+     transform canvas={yshift=17pt}},
+   downedge/.style = {
+     transform canvas={yshift=-17pt}},
+   to/.style = {
+     ->,
+     >=stealth',
+     semithick},
+  every matrix/.style={row sep=1cm, column sep=1.2cm, ampersand replacement=\&},
+  font=\footnotesize
+  ]
+  \matrix{
+    \node[basic box, label = $t_1$] (t)
+      {\forge{1000}\\ \fee{0}};
+    \& \node[basic box, label = $t_2$] (tt)
+      {\forge{0}\\ \fee{0}};
+    \& \node[basic box, label = $t_5$] (tfive)
+      {\forge{0}\\ \fee{7}};
+    \& \node[basic box, label = $t_6$] (tsix)
+      {\forge{0}\\ \fee{1}};
+    \& \node (end) {}; \\
+    
+    \node {};
+    \& \node[basic box, label = $t_3$] (ttt)
+      {\forge{0}\\ \fee{1}};
+    \& \node[basic box, label = $t_4$] (tfour)
+      {\forge{10}\\ \fee{2}};
+    \& \node {};
+    \& \node {};
+    \& \node {}; \\
+  };
+
+  \path
+  (t)     edge[to]           node[anchor=south,above]{\bitcoin ~1000}
+                             node[anchor=north,below]{@1} (tt)
+  (tt)    edge[to, redge]    node[left]{\bitcoin ~200}
+                             node[right]{@1} (ttt)
+  (tt)    edge[to]           node[anchor=south,above]{\bitcoin ~800}
+                             node[anchor=north,below]{@2} (tfive)  
+  (ttt)   edge[to]           node[anchor=south,above]{\bitcoin ~199}
+                             node[anchor=north,below]{@3} (tfour)
+  (tfour) edge[to, redge]    node[left]{\bitcoin ~207}
+                             node[right]{@2} (tfive)
+  (tfive) edge[to, upedge]   node[anchor=south,above]{\bitcoin ~500}
+                             node[anchor=north,below]{@2} (tsix)
+  (tfive) edge[to, downedge] node[anchor=south,above]{\bitcoin ~500}
+                             node[anchor=north,below]{@3} (tsix)
+  (tsix)  edge[to, red]      node[anchor=south,above]{\bitcoin ~999}
+                             node[anchor=north,below]{@3} (end)
+  ;
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Example: Setting Up}
+\UTXOexampleSetup{}
+\end{frame}
+
+\begin{frame}{Example: Definitions of Transactions I}
+\UTXOexampleAA{}
+\end{frame}
+
+\begin{frame}{Example: Definitions of Transactions II}
+\UTXOexampleAB{}
+\end{frame}
+
+\begin{frame}{Example: Correct-by-construction Ledger}
+\UTXOexampleB{}
+\end{frame}
+
+\subsection{Weakening Lemma}
+\begin{frame}{Weakening Lemma}
+\UTXOweakening{}
+\end{frame}
+  
+%%%%%%%%%
+% BitML %
+%%%%%%%%%
+\section{BitML}
+
+\subsection{Contracts}
+
+\begin{frame}{Basic Types}
+\BITbasicTypes{}
+\end{frame}
+
+\begin{frame}{Contract Preconditions}
+\BITpreconditions{}
+\end{frame}
+
+\begin{frame}{Contracts I}
+\BITcontractsA{}
+\end{frame}
+
+\begin{frame}{Contracts II}
+\BITcontractsB{}
+\end{frame}
+
+\begin{frame}{Advertisements}
+\BITadvertisements{}
+\end{frame}
+
+\begin{frame}{Example Advertisement}
+\BITexampleAdvertisement{}
+\end{frame}
+
+\subsection{Small-step Semantics}
+
+\begin{frame}{Small-step Semantics: Actions I}
+\BITactionsA{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Actions II}
+\BITactionsB{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Actions Example}
+\BITactionExample{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Configurations I}
+\BITconfigurationsA{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Configurations II}
+\BITconfigurationsB{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Configurations III}
+\BITconfigurationsC{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Closed Configurations}
+\BITclosedConfigurations{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Inference Rules I}
+\BITrulesA{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Inference Rules II}
+\BITrulesB{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Timed Inference Rules I}
+\BITtimedRulesA{}
+\end{frame}
+  
+\begin{frame}{Small-step Semantics: Timed Inference Rules II}
+\BITtimedRulesB{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Reordering I}
+\BITreordering{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Reordering II}
+\BITgeneralRule{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Equational Reasoning}
+\BITeqReasoning{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Example I}
+\BITexampleA{}
+\end{frame}
+
+\begin{frame}{Small-step Semantics: Example II}
+\BITexampleB{}
+\end{frame}
+
+\subsection{Example}
+
+%%%%%%%%%%%%
+% Planning %
+%%%%%%%%%%%%
+\section{Next Steps}
+
+\begin{frame}{Next Steps: UTxO}
+\begin{enumerate}
+\item Multi-currency support
+\item Integrate \alert{plutus-metatheory}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Next Steps: BitML}
+\begin{enumerate}
+\item Further formalization of the meta-theory
+  \begin{itemize}
+  \item Traces, Strategies
+  \end{itemize}
+\item Compilation correctness
+  \begin{itemize}
+  \item Compile to abstract UTxO model instead of concrete Bitcoin transactions?
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Next Steps: Others}
+\begin{enumerate}
+\item Proof automation via domain-specific tactics
+\item Featherweight Solidity
+  \begin{itemize}
+  \item Provide proof-of-concept model in Agda
+  \item Perform some initial comparison
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%
+% The End %
+%%%%%%%%%%%
+\begin{frame}[standout]
+  Discussion
+\end{frame}
+  
+\end{document}

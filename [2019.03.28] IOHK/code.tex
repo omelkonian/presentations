@@ -1,0 +1,1831 @@
+%% ODER: format ==         = "\mathrel{==}"
+%% ODER: format /=         = "\neq "
+%
+%
+\makeatletter
+\@ifundefined{lhs2tex.lhs2tex.sty.read}%
+  {\@namedef{lhs2tex.lhs2tex.sty.read}{}%
+   \newcommand\SkipToFmtEnd{}%
+   \newcommand\EndFmtInput{}%
+   \long\def\SkipToFmtEnd#1\EndFmtInput{}%
+  }\SkipToFmtEnd
+
+\newcommand\ReadOnlyOnce[1]{\@ifundefined{#1}{\@namedef{#1}{}}\SkipToFmtEnd}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\DeclareFontFamily{OT1}{cmtex}{}
+\DeclareFontShape{OT1}{cmtex}{m}{n}
+  {<5><6><7><8>cmtex8
+   <9>cmtex9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmtex10}{}
+\DeclareFontShape{OT1}{cmtex}{m}{it}
+  {<-> ssub * cmtt/m/it}{}
+\newcommand{\texfamily}{\fontfamily{cmtex}\selectfont}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+  {<5><6><7><8>cmtt8
+   <9>cmbtt9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmbtt10}{}
+\DeclareFontShape{OT1}{cmtex}{bx}{n}
+  {<-> ssub * cmtt/bx/n}{}
+\newcommand{\tex}[1]{\text{\texfamily#1}}	% NEU
+
+\newcommand{\Sp}{\hskip.33334em\relax}
+
+
+\newcommand{\Conid}[1]{\mathit{#1}}
+\newcommand{\Varid}[1]{\mathit{#1}}
+\newcommand{\anonymous}{\kern0.06em \vbox{\hrule\@width.5em}}
+\newcommand{\plus}{\mathbin{+\!\!\!+}}
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}% suggested by Neil Mitchell
+\newcommand{\sequ}{\mathbin{>\!\!\!>}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\usepackage{polytable}
+
+%mathindent has to be defined
+\@ifundefined{mathindent}%
+  {\newdimen\mathindent\mathindent\leftmargini}%
+  {}%
+
+\def\resethooks{%
+  \global\let\SaveRestoreHook\empty
+  \global\let\ColumnHook\empty}
+\newcommand*{\savecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\savecolumns[#1]}}
+\newcommand*{\restorecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\restorecolumns[#1]}}
+\newcommand*{\aligncolumn}[2]%
+  {\g@addto@macro\ColumnHook{\column{#1}{#2}}}
+
+\resethooks
+
+\newcommand{\onelinecommentchars}{\quad-{}- }
+\newcommand{\commentbeginchars}{\enskip\{-}
+\newcommand{\commentendchars}{-\}\enskip}
+
+\newcommand{\visiblecomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \let\commentbegin=\commentbeginchars
+  \let\commentend=\commentendchars}
+
+\newcommand{\invisiblecomments}{%
+  \let\onelinecomment=\empty
+  \let\commentbegin=\empty
+  \let\commentend=\empty}
+
+\visiblecomments
+
+\newlength{\blanklineskip}
+\setlength{\blanklineskip}{0.66084ex}
+
+\newcommand{\hsindent}[1]{\quad}% default is fixed indentation
+\let\hspre\empty
+\let\hspost\empty
+\newcommand{\NB}{\textbf{NB}}
+\newcommand{\Todo}[1]{$\langle$\textbf{To do:}~#1$\rangle$}
+
+\EndFmtInput
+\makeatother
+%
+%
+%
+%
+%
+%
+% This package provides two environments suitable to take the place
+% of hscode, called "plainhscode" and "arrayhscode". 
+%
+% The plain environment surrounds each code block by vertical space,
+% and it uses \abovedisplayskip and \belowdisplayskip to get spacing
+% similar to formulas. Note that if these dimensions are changed,
+% the spacing around displayed math formulas changes as well.
+% All code is indented using \leftskip.
+%
+% Changed 19.08.2004 to reflect changes in colorcode. Should work with
+% CodeGroup.sty.
+%
+\ReadOnlyOnce{polycode.fmt}%
+\makeatletter
+
+\newcommand{\hsnewpar}[1]%
+  {{\parskip=0pt\parindent=0pt\par\vskip #1\noindent}}
+
+% can be used, for instance, to redefine the code size, by setting the
+% command to \small or something alike
+\newcommand{\hscodestyle}{}
+
+% The command \sethscode can be used to switch the code formatting
+% behaviour by mapping the hscode environment in the subst directive
+% to a new LaTeX environment.
+
+\newcommand{\sethscode}[1]%
+  {\expandafter\let\expandafter\hscode\csname #1\endcsname
+   \expandafter\let\expandafter\endhscode\csname end#1\endcsname}
+
+% "compatibility" mode restores the non-polycode.fmt layout.
+
+\newenvironment{compathscode}%
+  {\par\noindent
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed\)%
+   \par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\compaths}{\sethscode{compathscode}}
+
+% "plain" mode is the proposed default.
+% It should now work with \centering.
+% This required some changes. The old version
+% is still available for reference as oldplainhscode.
+
+\newenvironment{plainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newenvironment{oldplainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+% Here, we make plainhscode the default environment.
+
+\newcommand{\plainhs}{\sethscode{plainhscode}}
+\newcommand{\oldplainhs}{\sethscode{oldplainhscode}}
+\plainhs
+
+% The arrayhscode is like plain, but makes use of polytable's
+% parray environment which disallows page breaks in code blocks.
+
+\newenvironment{arrayhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\parray}%
+  {\endparray\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newcommand{\arrayhs}{\sethscode{arrayhscode}}
+
+% The mathhscode environment also makes use of polytable's parray 
+% environment. It is supposed to be used only inside math mode 
+% (I used it to typeset the type rules in my thesis).
+
+\newenvironment{mathhscode}%
+  {\parray}{\endparray}
+
+\newcommand{\mathhs}{\sethscode{mathhscode}}
+
+% texths is similar to mathhs, but works in text mode.
+
+\newenvironment{texthscode}%
+  {\(\parray}{\endparray\)}
+
+\newcommand{\texths}{\sethscode{texthscode}}
+
+% The framed environment places code in a framed box.
+
+\def\codeframewidth{\arrayrulewidth}
+\RequirePackage{calc}
+
+\newenvironment{framedhscode}%
+  {\parskip=\abovedisplayskip\par\noindent
+   \hscodestyle
+   \arrayrulewidth=\codeframewidth
+   \tabular{@{}|p{\linewidth-2\arraycolsep-2\arrayrulewidth-2pt}|@{}}%
+   \hline\framedhslinecorrect\\{-1.5ex}%
+   \let\endoflinesave=\\
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \framedhslinecorrect\endoflinesave{.5ex}\hline
+   \endtabular
+   \parskip=\belowdisplayskip\par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\framedhslinecorrect}[2]%
+  {#1[#2]}
+
+\newcommand{\framedhs}{\sethscode{framedhscode}}
+
+% The inlinehscode environment is an experimental environment
+% that can be used to typeset displayed code inline.
+
+\newenvironment{inlinehscode}%
+  {\(\def\column##1##2{}%
+   \let\>\undefined\let\<\undefined\let\\\undefined
+   \newcommand\>[1][]{}\newcommand\<[1][]{}\newcommand\\[1][]{}%
+   \def\fromto##1##2##3{##3}%
+   \def\nextline{}}{\) }%
+
+\newcommand{\inlinehs}{\sethscode{inlinehscode}}
+
+% The joincode environment is a separate environment that
+% can be used to surround and thereby connect multiple code
+% blocks.
+
+\newenvironment{joincode}%
+  {\let\orighscode=\hscode
+   \let\origendhscode=\endhscode
+   \def\endhscode{\def\hscode{\endgroup\def\@currenvir{hscode}\\}\begingroup}
+   %\let\SaveRestoreHook=\empty
+   %\let\ColumnHook=\empty
+   %\let\resethooks=\empty
+   \orighscode\def\hscode{\endgroup\def\@currenvir{hscode}}}%
+  {\origendhscode
+   \global\let\hscode=\orighscode
+   \global\let\endhscode=\origendhscode}%
+
+\makeatother
+\EndFmtInput
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Agda Styling
+%%
+%% TODO: Figure out spacing!
+
+% Bitcoin symbol
+\def\bitcoin{%
+  \leavevmode
+  \vtop{\offinterlineskip %\bfseries
+    \setbox0=\hbox{B}%
+    \setbox2=\hbox to\wd0{\hfil\hskip-.03em
+    \vrule height .9ex width .4ex\hskip .1em
+    \vrule height .9ex width .4ex\hfil}
+    \vbox{\copy2\box0}\box2}}
+
+% Horizontal lines for inference rules
+\newcommand\inferSmall{\rule[3pt]{2cm}{.6pt}}
+\newcommand\inferMedium{\rule[3pt]{5cm}{.6pt}}
+\newcommand\inferLarge{\rule[3pt]{8cm}{.6pt}}
+\newcommand\inferVeryLarge{\rule[3pt]{11cm}{.6pt}}
+
+%% Colors (from duo-tone light syntax)
+\definecolor{hsblack}{RGB}{45,32,3}
+\definecolor{hsgold1}{RGB}{179,169,149}
+\definecolor{hsgold2}{RGB}{177,149,90}
+\definecolor{hsgold3}{RGB}{190,106,13}%{192,96,4}%{132,97,19}
+\definecolor{hsblue1}{RGB}{173,176,182}
+\definecolor{hsblue2}{RGB}{113,142,205}
+\definecolor{hsblue3}{RGB}{0,33,132}
+\definecolor{hsblue4}{RGB}{97,108,132}
+\definecolor{hsblue5}{RGB}{34,50,68}
+\definecolor{hsred2}{RGB}{191,121,103}
+\definecolor{hsred3}{RGB}{171,72,46}
+
+%% LaTeX Kerning nastiness. By using curly braces to delimit color group,
+%% it breaks spacing. The following seems to work:
+%%
+%% https://tex.stackexchange.com/questions/85033/colored-symbols/85035#85035
+%%
+\newcommand*{\mathcolor}{}
+\def\mathcolor#1#{\mathcoloraux{#1}}
+\newcommand*{\mathcoloraux}[3]{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+
+\newenvironment{myagda}
+{}
+{}
+
+\newcommand{\HSKeyword}[1]{\mathcolor{hsgold3}{\textbf{#1}}}
+\newcommand{\HSNumeral}[1]{\mathcolor{hsred3}{#1}}
+\newcommand{\HSChar}[1]{\mathcolor{hsred2}{#1}}
+\newcommand{\HSString}[1]{\mathcolor{hsred2}{#1}}
+\newcommand{\HSSpecial}[1]{\mathcolor{hsblue4}{\ensuremath{#1}}}
+\newcommand{\HSSym}[1]{\mathcolor{hsblue4}{\ensuremath{#1}}}
+\newcommand{\HSCon}[1]{\mathcolor{hsblue3}{#1}}
+\newcommand{\HSVar}[1]{\mathcolor{hsblue5}{\mathit{\ensuremath{#1}}}}
+\newcommand{\HSComment}[1]{\mathcolor{hsgold2}{\small\textit{#1}}}
+
+
+
+
+%%format :          = "\HSCon{\mathbin{:}}"
+
+%%format [          = "\HSSym{[\mskip1.5mu} "
+%%format ]          = "\HSSym{\mskip1.5mu]}"
+%%format .          = "\HSSym{\mathbin{\circ}}"
+
+%%% Datatype Promotion
+
+%%% Agda things
+%%format as         = "\HSKeyword{as}"
+
+
+%%% Formatting
+
+%%% Usefull Notation
+%%format λ       = "\HSSym{\lambda\ }"
+
+\newcommand\trir{\mathsmaller{\vartriangleright}}
+
+
+
+
+
+
+\def\commentbegin{}
+\def\commentend{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                  UTxO                                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\UTXObasicTypes{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSCon{Address}{}\<[10]%
+\>[10]{}\HSSym{\mathrel{=}}\HSSym{\mathds{N}}{}\<[E]%
+\\
+\>[B]{}\HSCon{Value}{}\<[10]%
+\>[10]{}\HSSym{\mathrel{=}}\HSSym{\mathds{N}}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{record}\;\HSCon{State}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSVar{height}\mathbin{:}\HSSym{\mathds{N}}{}\<[E]%
+\\
+\>[10]{}\HSSym{\vdots}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{postulate}\;{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_\!}\;\HSSym{\mathsmaller{\#}}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{A}\mathbin{:}\HSCon{Set}\HSSpecial{\HSSym{\mskip1.5mu\}}}\HSSym{\to} \HSCon{A}\HSSym{\to} \HSCon{Address}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\!\HSSym{\mathsmaller{\#}}\HSSym{\text{\textit{-}}}\HSVar{injective}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{x}\;\HSVar{y}\mathbin{:}\HSCon{A}\HSSpecial{\HSSym{\mskip1.5mu\}}}\HSSym{\to} \HSVar{x}\;\HSSym{\mathsmaller{\#}}\HSSym{\mathrel{\equiv}}\HSVar{y}\;\HSSym{\mathsmaller{\#}}\HSSym{\to} \HSVar{x}\HSSym{\mathrel{\equiv}}\HSVar{y}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOinsOutRefs{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{33}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{43}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{49}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{55}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{record}\;\HSCon{TxOutputRef}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{constructor}\;\HSSym{\_\!}\;\HSSym{@}\;\HSSym{\!\_}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSVar{id}{}\<[17]%
+\>[17]{}\mathbin{:}\HSCon{Address}{}\<[E]%
+\\
+\>[10]{}\HSVar{index}{}\<[17]%
+\>[17]{}\mathbin{:}\HSSym{\mathds{N}}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{record}\;\HSCon{TxInput}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{R}\;\HSCon{D}\mathbin{:}\HSCon{Set}\HSSpecial{\HSSym{\mskip1.5mu\}}}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSVar{outputRef}{}\<[21]%
+\>[21]{}\mathbin{:}\HSCon{TxOutputRef}{}\<[E]%
+\\
+\>[10]{}\HSVar{redeemer}{}\<[21]%
+\>[21]{}\mathbin{:}\HSCon{State}\HSSym{\to} \HSCon{R}{}\<[E]%
+\\
+\>[10]{}\HSVar{validator}{}\<[21]%
+\>[21]{}\mathbin{:}\HSCon{State}\HSSym{\to} {}\<[33]%
+\>[33]{}\HSCon{Value}\HSSym{\to} {}\<[43]%
+\>[43]{}\HSCon{R}\HSSym{\to} {}\<[49]%
+\>[49]{}\HSCon{D}\HSSym{\to} {}\<[55]%
+\>[55]{}\HSCon{Bool}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOoutTx{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{module}\;\HSCon{UTxO}\;\HSSpecial{(}\HSVar{addresses}\mathbin{:}\HSCon{List}\;\HSCon{Address}\HSSpecial{)}\;\HSKeyword{where}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{record}\;\HSCon{TxOutput}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{D}\mathbin{:}\HSCon{Set}\HSSpecial{\HSSym{\mskip1.5mu\}}}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSVar{value}{}\<[22]%
+\>[22]{}\mathbin{:}\HSCon{Value}{}\<[E]%
+\\
+\>[10]{}\HSVar{address}{}\<[22]%
+\>[22]{}\mathbin{:}\HSCon{Index}\;\HSVar{addresses}{}\<[E]%
+\\
+\>[10]{}\HSVar{dataScript}{}\<[22]%
+\>[22]{}\mathbin{:}\HSCon{State}\HSSym{\to} \HSCon{D}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{record}\;\HSCon{Tx}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSVar{inputs}{}\<[19]%
+\>[19]{}\mathbin{:}\HSCon{Set}\HSSym{\langle\ }\HSCon{TxInput}\HSSym{\ \rangle}{}\<[E]%
+\\
+\>[10]{}\HSVar{outputs}{}\<[19]%
+\>[19]{}\mathbin{:}\HSCon{List}\;\HSCon{TxOutput}{}\<[E]%
+\\
+\>[10]{}\HSVar{forge}{}\<[19]%
+\>[19]{}\mathbin{:}\HSCon{Value}{}\<[E]%
+\\
+\>[10]{}\HSVar{fee}{}\<[19]%
+\>[19]{}\mathbin{:}\HSCon{Value}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSCon{Ledger}\mathbin{:}\HSCon{Set}{}\<[E]%
+\\
+\>[B]{}\HSCon{Ledger}\HSSym{\mathrel{=}}\HSCon{List}\;\HSCon{Tx}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOutxo{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{16E}{@{}l@{}}%
+\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{26}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{29}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSVar{unspentOutputs}\mathbin{:}\HSCon{Ledger}\HSSym{\to} \HSCon{Set}\HSSym{\langle\ }\HSCon{TxOutputRef}\HSSym{\ \rangle}{}\<[E]%
+\\
+\>[B]{}\HSVar{unspentOutputs}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[29]%
+\>[29]{}\HSSym{\mathrel{=}}\HSSym{\varnothing}{}\<[E]%
+\\
+\>[B]{}\HSVar{unspentOutputs}\;\HSSpecial{(}\HSVar{tx}\HSSym{::}\HSVar{txs}\HSSpecial{)}{}\<[29]%
+\>[29]{}\HSSym{\mathrel{=}}\HSSpecial{(}\HSVar{unspentOutputs}\;\HSVar{txs}\HSSym{\setminus}\HSVar{spentOutputsTx}\;\HSVar{tx}\HSSpecial{)}{}\<[E]%
+\\
+\>[29]{}\HSSym{\mathbin{\cup}}\HSVar{unspentOutputsTx}\;\HSVar{tx}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{spentOutputsTx}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{unspentOutputsTx}\mathbin{:}\HSCon{Tx}\HSSym{\to} \HSCon{Set}\HSSym{\langle\ }\HSCon{TxOutputRef}\HSSym{\ \rangle}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{spentOutputsTx}{}\<[26]%
+\>[26]{}\HSSym{\mathrel{=}}\HSSpecial{(}\HSVar{outputRef}\HSSym{<\!\!\$\!\!>}\HSSym{\!\_}\HSSpecial{)}\HSSym{∘}\HSVar{inputs}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{unspentOutputsTx}\;\HSVar{tx}{}\<[26]%
+\>[26]{}\HSSym{\mathrel{=}}\HSSpecial{(}\HSSpecial{(}\HSVar{tx}\;\HSSym{\mathsmaller{\#}}\HSSpecial{)}\;\HSSym{@}\;\HSSym{\!\_}\HSSpecial{)}\HSSym{<\!\!\$\!\!>}\HSSpecial{(}\HSVar{indices}\;\HSSpecial{(}\HSVar{outputs}\;\HSVar{tx}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\HSVar{runValidation}{}\<[16]%
+\>[16]{}\mathbin{:}{}\<[16E]%
+\>[20]{}\HSSpecial{(}\HSVar{i}\mathbin{:}\HSCon{TxInput}\HSSpecial{)}\HSSym{\to} \HSSpecial{(}\HSVar{o}\mathbin{:}\HSCon{TxOutput}\HSSpecial{)}{}\<[E]%
+\\
+\>[16]{}\HSSym{\to} {}\<[16E]%
+\>[20]{}\HSCon{D}\;\HSVar{i}\HSSym{\mathrel{\equiv}}\HSCon{D}\;\HSVar{o}\HSSym{\to} \HSCon{State}\HSSym{\to} \HSCon{Bool}{}\<[E]%
+\\
+\>[B]{}\HSVar{runValidation}\;\HSVar{i}\;\HSVar{o}\;\HSCon{refl}\;\HSVar{st}\HSSym{\mathrel{=}}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSVar{validator}\;\HSVar{i}\;\HSVar{st}\;\HSSpecial{(}\HSVar{value}\;\HSVar{o}\HSSpecial{)}\;\HSSpecial{(}\HSVar{redeemer}\;\HSVar{i}\;\HSVar{st}\HSSpecial{)}\;\HSSpecial{(}\HSVar{dataScript}\;\HSVar{o}\;\HSVar{st}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOvalidA{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{44}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{record}\;\HSCon{IsValidTx}\;\HSSpecial{(}\HSVar{tx}\mathbin{:}\HSCon{Tx}\HSSpecial{)}\;\HSSpecial{(}\HSVar{l}\mathbin{:}\HSCon{Ledger}\HSSpecial{)}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\HSKeyword{field}\;{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{ validTxRefs }\mathbin{:}\HSSym{\forall}\;\HSVar{i}\HSSym{\to} \HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSym{\to} {}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSCon{Any}\;\HSSpecial{(}\HSVar{λ}\;\HSVar{t}\HSSym{\to} \HSVar{t}\;\HSSym{\mathsmaller{\#}}\HSSym{\mathrel{\equiv}}\HSVar{id}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\HSSpecial{)}\;\HSVar{l}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{ validOutputIndices }\mathbin{:}\HSSym{\forall}\;\HSVar{i}\HSSym{\to} \HSSpecial{(}\HSSym{i\!\in}\mathbin{:}\;\HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}\HSSym{\to} {}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{index}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\HSSym{<}{}\<[E]%
+\\
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\HSVar{length}\;\HSSpecial{(}\HSVar{outputs}\;\HSSpecial{(}\HSVar{lookupTx}\;\HSVar{l}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\;\HSSpecial{(}\HSCon{ validTxRefs }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{ validOutputRefs }\mathbin{:}\HSSym{\forall}\;\HSVar{i}\HSSym{\to} \HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSym{\to} {}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{outputRef}\;\HSVar{i}\HSSym{\mathrel{\in}}\HSVar{unspentOutputs}\;\HSVar{l}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{ validDataScriptTypes }\mathbin{:}\HSSym{\forall}\;\HSVar{i}\HSSym{\to} \HSSpecial{(}\HSSym{i\!\in}\mathbin{:}\;\HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}\HSSym{\to} {}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSCon{D}\;\HSVar{i}\HSSym{\mathrel{\equiv}}\HSCon{D}\;\HSSpecial{(}\HSVar{lookupOutput}\;\HSVar{l}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\;{}\<[44]%
+\>[44]{}\HSSpecial{(}\HSCon{ validTxRefs }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\;{}\<[E]%
+\\
+\>[44]{}\HSSpecial{(}\HSCon{ validOutputIndices }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+\newcommand\UTXOvalidB{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{7E}{@{}l@{}}%
+\column{8}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{8E}{@{}l@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{45}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSCon{ preservesValues }\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{forge}\;\HSVar{tx}\HSSym{+}\HSVar{sum}\;\HSSpecial{(}\HSVar{mapWith}\HSSym{\mathrel{\in}}\HSSpecial{(}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}\;\HSVar{λ}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{i}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSSym{i\!\in}\HSSym{\to} {}\<[E]%
+\\
+\>[5]{}\hsindent{17}{}\<[22]%
+\>[22]{}\HSVar{lookupValue}\;\HSVar{l}\;\HSVar{i}\;\HSSpecial{(}\HSCon{ validTxRefs }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\;\HSSpecial{(}\HSCon{ validOutputIndices }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\HSSym{\mathrel{\equiv}}{}\<[7E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{fee}\;\HSVar{tx}\HSSym{+}\HSVar{sum}\;\HSSpecial{(}\HSVar{value}\HSSym{<\!\!\$\!\!>}\HSVar{outputs}\;\HSVar{tx}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\HSCon{ noDoubleSpending }\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{noDuplicates}\;\HSSpecial{(}\HSVar{outputRef}\HSSym{<\!\!\$\!\!>}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\HSCon{ allInputsValidate }\mathbin{:}\HSSym{\forall}\;\HSVar{i}\HSSym{\to} \HSSpecial{(}\HSSym{i\!\in}\mathbin{:}\;\HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}\HSSym{\to} {}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSKeyword{let}\;{}\<[10]%
+\>[10]{}\HSVar{out}\HSSym{\mathrel{=}}\HSVar{lookupOutput}\;\HSVar{l}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\;\HSSpecial{(}\HSCon{ validTxRefs }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\;{}\<[E]%
+\\
+\>[10]{}\hsindent{35}{}\<[45]%
+\>[45]{}\HSSpecial{(}\HSCon{ validOutputIndices }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSKeyword{in}\;{}\<[11]%
+\>[11]{}\HSSym{\forall}\;\HSSpecial{(}\HSVar{st}\mathbin{:}\HSCon{State}\HSSpecial{)}\HSSym{\to} {}\<[E]%
+\\
+\>[11]{}\hsindent{2}{}\<[13]%
+\>[13]{}\HSCon{T}\;\HSSpecial{(}\HSVar{runValidation}\;\HSVar{i}\;\HSVar{out}\;\HSSpecial{(}\HSCon{ validDataScriptTypes }\;\HSVar{i}\;\HSSym{i\!\in}\HSSpecial{)}\;\HSVar{st}\HSSpecial{)}{}\<[E]%
+\\
+\>[5]{}\hsindent{3}{}\<[8]%
+\>[8]{}\HSSym{\ \mathbin{\times}\ }{}\<[8E]%
+\>[11]{}\HSVar{toℕ}\;\HSSpecial{(}\HSVar{address}\;\HSVar{out}\HSSpecial{)}\HSSym{\mathrel{\equiv}}\HSSpecial{(}\HSVar{validator}\;\HSVar{i}\HSSpecial{)}\;\HSSym{\mathsmaller{\#}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOvalidLedgers{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{24}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{27E}{@{}l@{}}%
+\column{30}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSCon{ValidLedger}\mathbin{:}\HSCon{Ledger}\HSSym{\to} \HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\bullet}\HSSym{\_}\HSSym{\vdash}\HSSym{\_}{}\<[21]%
+\>[21]{}\mathbin{:}{}\<[24]%
+\>[24]{}\HSSpecial{(}\HSVar{t}\mathbin{:}\HSCon{Tx}\HSSpecial{)}{}\<[E]%
+\\
+\>[21]{}\HSSym{\to} {}\<[24]%
+\>[24]{}\HSCon{IsValidTx}\;\HSVar{t}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[21]{}\HSSym{\to} \HSCon{ValidLedger}\;\HSSpecial{[\mskip1.5mu }\HSVar{t}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\HSSym{\mathbin{\oplus}}\HSSym{\_}\HSSym{\vdash}\HSSym{\_}{}\<[27]%
+\>[27]{}\mathbin{:}{}\<[27E]%
+\>[30]{}\HSCon{ValidLedger}\;\HSVar{l}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSSpecial{(}\HSVar{t}\mathbin{:}\HSCon{Tx}\HSSpecial{)}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSCon{IsValidTx}\;\HSVar{t}\;\HSVar{l}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSCon{ValidLedger}\;\HSSpecial{(}\HSVar{t}\HSCon{::}\HSVar{l}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOweakening{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSCon{Ledger}\;\! ^{\prime}\mathbin{:}\HSCon{List}\;\HSCon{Address}\HSSym{\to} \HSCon{Set}{}\<[E]%
+\\
+\>[B]{}\HSCon{Ledger}\;\! ^{\prime}\;\HSVar{as}\HSSym{\mathrel{=}}\HSCon{Ledger}\;\HSKeyword{where}\;\HSKeyword{open}\;\HSKeyword{import}\;\HSCon{UTxO}\;\HSVar{as}{}\<[E]%
+\\
+\>[B]{}\HSSym{\vdots}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSVar{weakenTxOutput}\mathbin{:}\HSCon{Prefix}\;\HSVar{as}\;\HSVar{bs}\HSSym{\to} \HSCon{TxOutput}\;\! ^{\prime}\;\HSVar{as}\HSSym{\to} \HSCon{TxOutput}\;\! ^{\prime}\;\HSVar{bs}{}\<[E]%
+\\
+\>[B]{}\HSVar{weakenTxOutput}\;\HSVar{pr}\;\HSVar{txOut}\HSSym{\mathrel{=}}\HSVar{txOut}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{address}\HSSym{\mathrel{=}}\HSVar{inject}\HSSym{\mathrel{\leq}}\HSSym{\dots}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{where}\;\HSKeyword{open}\;\HSKeyword{import}\;\HSCon{UTxO}\;\HSVar{bs}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSVar{weakening}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{as}\;\HSVar{bs}\mathbin{:}\HSCon{List}\;\HSCon{Address}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{tx}\mathbin{:}\HSCon{Tx}\;\! ^{\prime}\;\HSVar{as}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{l}\mathbin{:}\HSCon{Ledger}\;\! ^{\prime}\;\HSVar{as}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[7]%
+\>[7]{}\HSSpecial{(}\HSVar{pr}\mathbin{:}\HSCon{Prefix}\;\HSVar{as}\;\HSVar{bs}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[7]%
+\>[7]{}\HSCon{IsValidTx}\;\! ^{\prime}\;\HSVar{as}\;\HSVar{tx}\;\HSVar{l}{}\<[E]%
+\\
+\>[7]{}\mbox{\commentbegin  $\inferLarge$  \commentend}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[7]%
+\>[7]{}\HSCon{IsValidTx}\;\! ^{\prime}\;\HSVar{bs}\;\HSSpecial{(}\HSVar{weakenTx}\;\HSVar{pr}\;\HSVar{tx}\HSSpecial{)}\;\HSSpecial{(}\HSVar{weakenLedger}\;\HSVar{pr}\;\HSVar{l}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSVar{weakening}\HSSym{\mathrel{=}}\HSSym{\dots}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOexampleSetup{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{39}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{40}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSVar{addresses}\mathbin{:}\HSCon{List}\;\HSCon{Address}{}\<[E]%
+\\
+\>[B]{}\HSVar{addresses}\HSSym{\mathrel{=}}\HSNumeral{1}\HSSym{::}\HSNumeral{2}\HSSym{::}\HSNumeral{3}\HSSym{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{open}\;\HSKeyword{import}\;\HSCon{UTxO}\;\HSVar{addresses}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSVar{withScripts}\mathbin{:}\HSCon{TxOutputRef}\HSSym{\to} \HSCon{TxInput}{}\<[E]%
+\\
+\>[B]{}\HSVar{withScripts}\;\HSVar{tin}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[27]%
+\>[27]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{outputRef}{}\<[40]%
+\>[40]{}\HSSym{\mathrel{=}}\HSVar{tin}{}\<[E]%
+\\
+\>[27]{}\HSSpecial{;}\HSVar{redeemer}{}\<[40]%
+\>[40]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSSym{\anonymous} \HSSym{\to} \HSNumeral{0}{}\<[E]%
+\\
+\>[27]{}\HSSpecial{;}\HSVar{validator}{}\<[40]%
+\>[40]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSSym{\anonymous} \;\HSSym{\anonymous} \;\HSSym{\anonymous} \;\HSSym{\anonymous} \HSSym{\to} \HSVar{true}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSSym{\bitcoin}\;\HSSym{\_\!}\;\HSSym{@}\;\HSSym{\!\_}\mathbin{:}\HSCon{Value}\HSSym{\to} \HSCon{Index}\;\HSVar{addresses}\HSSym{\to} \HSCon{TxOutput}{}\<[E]%
+\\
+\>[B]{}\HSSym{\bitcoin}\;\HSVar{v}\;\HSSym{@}\;\HSVar{addr}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[25]%
+\>[25]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{value}{}\<[39]%
+\>[39]{}\HSSym{\mathrel{=}}\HSVar{v}{}\<[E]%
+\\
+\>[25]{}\HSSpecial{;}\HSVar{address}{}\<[39]%
+\>[39]{}\HSSym{\mathrel{=}}\HSVar{addr}{}\<[E]%
+\\
+\>[25]{}\HSSpecial{;}\HSVar{dataScript}{}\<[39]%
+\>[39]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSSym{\anonymous} \HSSym{\to} \HSNumeral{0}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOexampleAA{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSSym{t_1}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{t_2}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{t_3}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{t_4}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{t_5}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{t_6}\mathbin{:}\HSCon{Tx}{}\<[E]%
+\\
+\>[B]{}\HSSym{t_1}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[14]%
+\>[14]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{inputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{outputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSym{\bitcoin}\;\HSNumeral{1000}\;\HSSym{@}\;\HSNumeral{0}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{forge}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{1000}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{fee}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{0}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\HSSym{t_2}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[14]%
+\>[14]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{inputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSVar{withScripts}\;\HSSym{t_{10}}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{outputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{800}\;\HSSym{@}\;\HSNumeral{1}\HSSym{::}\HSSym{\bitcoin}\;\HSNumeral{200}\;\HSSym{@}\;\HSNumeral{0}\HSSym{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{forge}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{0}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{fee}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{0}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\HSSym{t_3}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[14]%
+\>[14]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{inputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSVar{withScripts}\;\HSSym{t_{21}}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{outputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSym{\bitcoin}\;\HSNumeral{199}\;\HSSym{@}\;\HSNumeral{2}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{forge}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{0}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{fee}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{1}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+\newcommand\UTXOexampleAB{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSSym{t_4}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[14]%
+\>[14]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{inputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSVar{withScripts}\;\HSSym{t_{30}}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{outputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSym{\bitcoin}\;\HSNumeral{207}\;\HSSym{@}\;\HSNumeral{1}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{forge}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{10}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{fee}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{2}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\HSSym{t_5}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[14]%
+\>[14]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{inputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSVar{withScripts}\;\HSSym{t_{20}}\HSSym{::}\HSVar{withScripts}\;\HSSym{t_{40}}\HSSym{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{outputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{500}\;\HSSym{@}\;\HSNumeral{1}\HSSym{::}\HSSym{\bitcoin}\;\HSNumeral{500}\;\HSSym{@}\;\HSNumeral{2}\HSSym{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{forge}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{0}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{fee}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{7}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\HSSym{t_6}\HSSym{\mathrel{=}}\HSKeyword{record}\;{}\<[14]%
+\>[14]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSVar{inputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSVar{withScripts}\;\HSSym{t_{50}}\HSSym{::}\HSVar{withScripts}\;\HSSym{t_{51}}\HSSym{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{outputs}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSym{\bitcoin}\;\HSNumeral{999}\;\HSSym{@}\;\HSNumeral{2}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{forge}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{0}{}\<[E]%
+\\
+\>[14]{}\HSSpecial{;}\HSVar{fee}{}\<[25]%
+\>[25]{}\HSSym{\mathrel{=}}\HSSym{\bitcoin}\;\HSNumeral{1}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\UTXOexampleB{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{30}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{54}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ledger}\mathbin{:}\HSCon{Ledger}{}\<[E]%
+\\
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ledger}\HSSym{\mathrel{=}}{}\<[14]%
+\>[14]{}\HSSym{\bullet}\HSSym{t_1}\HSSym{\vdash}\HSKeyword{record}\;{}\<[30]%
+\>[30]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{ validTxRefs }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSVar{i}\;\HSSpecial{(}\HSSpecial{)}{}\<[E]%
+\\
+\>[30]{}\HSSpecial{;}\HSCon{ validOutputIndices }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSVar{i}\;\HSSpecial{(}\HSSpecial{)}{}\<[E]%
+\\
+\>[30]{}\HSSpecial{;}\HSCon{ validOutputRefs }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSVar{i}\;\HSSpecial{(}\HSSpecial{)}{}\<[E]%
+\\
+\>[30]{}\HSSpecial{;}\HSCon{ validDataScriptTypes }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSVar{i}\;\HSSpecial{(}\HSSpecial{)}{}\<[E]%
+\\
+\>[30]{}\HSSpecial{;}\HSCon{ preservesValues }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSCon{refl}{}\<[E]%
+\\
+\>[30]{}\HSSpecial{;}\HSCon{ noDoubleSpending }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSCon{tt}{}\<[E]%
+\\
+\>[30]{}\HSSpecial{;}\HSCon{ allInputsValidate }{}\<[54]%
+\>[54]{}\HSSym{\mathrel{=}}\HSVar{λ}\;\HSVar{i}\;\HSSpecial{(}\HSSpecial{)}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[14]{}\HSSym{\mathbin{\oplus}}{}\<[17]%
+\>[17]{}\HSSym{t_2}\HSSym{\vdash}\HSKeyword{record}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\dots}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[17]{}\HSSym{\vdots}{}\<[E]%
+\\
+\>[14]{}\HSSym{\mathbin{\oplus}}{}\<[17]%
+\>[17]{}\HSSym{t_6}\HSSym{\vdash}\HSKeyword{record}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\dots}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\HSVar{utxo}\mathbin{:}\HSVar{list}\;\HSSpecial{(}\HSVar{unspentOutputs}\;\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ledger}\HSSpecial{)}\HSSym{\mathrel{\equiv}}\HSSpecial{[\mskip1.5mu }\HSSym{t_{60}}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\HSVar{utxo}\HSSym{\mathrel{=}}\HSCon{refl}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                 BitML                                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\BITbasicTypes{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{module}\;\HSCon{Types}\;\HSSpecial{(}\HSCon{Participant}\mathbin{:}\HSCon{Set}\HSSpecial{)}\;\HSSpecial{(}\HSCon{Honest}\mathbin{:}\HSCon{List}\;\HSSym{\!\text{\textsuperscript{\tiny +}}}\;\HSCon{Participant}\HSSpecial{)}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\HSCon{Time}{}\<[10]%
+\>[10]{}\HSSym{\mathrel{=}}\HSSym{\mathds{N}}{}\<[E]%
+\\
+\>[B]{}\HSCon{Value}{}\<[10]%
+\>[10]{}\HSSym{\mathrel{=}}\HSSym{\mathds{N}}{}\<[E]%
+\\
+\>[B]{}\HSCon{Secret}{}\<[10]%
+\>[10]{}\HSSym{\mathrel{=}}\HSCon{String}{}\<[E]%
+\\
+\>[B]{}\HSCon{Deposit}{}\<[10]%
+\>[10]{}\HSSym{\mathrel{=}}\HSCon{Participant}\HSSym{\ \mathbin{\times}\ }\HSCon{Value}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{data}\;\HSCon{Arith}\mathbin{:}\HSCon{List}\;\HSCon{Secret}\HSSym{\to} \HSCon{Set}\;\HSKeyword{where}\;\HSSym{\dots}{}\<[E]%
+\\
+\>[B]{}\HSSym{\!\llbracket}\HSSym{\_}\HSSym{\rrbracket}\HSSym{\text{\textsubscript{\tiny n}}}\mathbin{:}\HSCon{Arith}\;\HSVar{s}\HSSym{\to} \HSSym{\mathds{N}}{}\<[E]%
+\\
+\>[B]{}\HSSym{\!\llbracket}\HSSym{\_}\HSSym{\rrbracket}\HSSym{\text{\textsubscript{\tiny n}}}\HSSym{\mathrel{=}}\HSSym{\dots}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{data}\;\HSCon{Predicate}\mathbin{:}\HSCon{List}\;\HSCon{Secret}\HSSym{\to} \HSCon{Set}\;\HSKeyword{where}\;\HSSym{\dots}{}\<[E]%
+\\
+\>[B]{}\HSSym{\!\llbracket}\HSSym{\_}\HSSym{\rrbracket}\HSSym{\text{\textsubscript{\tiny b}}}\mathbin{:}\HSCon{Predicate}\;\HSVar{s}\HSSym{\to} \HSCon{Bool}{}\<[E]%
+\\
+\>[B]{}\HSSym{\!\llbracket}\HSSym{\_}\HSSym{\rrbracket}\HSSym{\text{\textsubscript{\tiny b}}}\HSSym{\mathrel{=}}\HSSym{\dots}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITpreconditions{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{18E}{@{}l@{}}%
+\column{20}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{20E}{@{}l@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSCon{Precondition}{}\<[20]%
+\>[20]{}\mathbin{:}{}\<[20E]%
+\>[23]{}\HSCon{List}\;\HSCon{Value}\HSComment{ -\! - volatile deposits}{}\<[E]%
+\\
+\>[20]{}\HSSym{\to} {}\<[20E]%
+\>[23]{}\HSCon{List}\;\HSCon{Value}\HSComment{ -\! - persistent deposits}{}\<[E]%
+\\
+\>[20]{}\HSSym{\to} {}\<[20E]%
+\>[23]{}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - volatile deposit}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\HSSym{?}\HSSym{\_}\mathbin{:}\HSCon{Participant}\HSSym{\to} \HSSpecial{(}\HSVar{v}\mathbin{:}\HSCon{Value}\HSSpecial{)}\HSSym{\to} \HSCon{Precondition}\;\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - persistent deposit}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\HSSym{\mathbin{!}}\HSSym{\_}\mathbin{:}\HSCon{Participant}\HSSym{\to} \HSSpecial{(}\HSVar{v}\mathbin{:}\HSCon{Value}\HSSpecial{)}\HSSym{\to} \HSCon{Precondition}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - committed secret}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_\!}\;\HSSym{\mathsmaller{\#}}\;\HSSym{\!\_}\mathbin{:}\HSCon{Participant}\HSSym{\to} \HSCon{Secret}\HSSym{\to} \HSCon{Precondition}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - conjunction}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\HSSym{\mathbin{\land}}\HSSym{\_}{}\<[18]%
+\>[18]{}\mathbin{:}{}\<[18E]%
+\>[21]{}\HSCon{Precondition}\;\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny v}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny p}}}\HSSym{\to} \HSCon{Precondition}\;\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny v}}}\;\! ^{\prime}\;\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny p}}}\;\! ^{\prime}{}\<[E]%
+\\
+\>[18]{}\HSSym{\to} {}\<[18E]%
+\>[21]{}\HSCon{Precondition}\;\HSSpecial{(}\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny v}}}\HSSym{\mathbin{\plus}}\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny v}}}\;\! ^{\prime}\HSSpecial{)}\;\HSSpecial{(}\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny p}}}\HSSym{\mathbin{\plus}}\HSVar{vs}\;\HSSym{\!\text{\textsubscript{\tiny p}}}\;\! ^{\prime}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITcontractsA{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{16E}{@{}l@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSCon{Contract}{}\<[16]%
+\>[16]{}\mathbin{:}{}\<[16E]%
+\>[19]{}\HSCon{Value}{}\<[27]%
+\>[27]{}\HSComment{ -\! - the monetary value it carries}{}\<[E]%
+\\
+\>[16]{}\HSSym{\to} {}\<[16E]%
+\>[19]{}\HSCon{Values}{}\<[27]%
+\>[27]{}\HSComment{ -\! - the (volatile) deposits it presumes}{}\<[E]%
+\\
+\>[16]{}\HSSym{\to} {}\<[16E]%
+\>[19]{}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - collect deposits and secrets}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSVar{put}\;\HSSym{\_}\;\HSVar{reveal}\;\HSSym{\_}\;if\;\HSSym{\_}\HSSym{\mathrel{\Rightarrow}}\HSSym{\_}\HSSym{\vdash}\HSSym{\_}\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSpecial{(}\HSVar{vs}\mathbin{:}\HSCon{List}\;\HSCon{Value}\HSSpecial{)}\HSSym{\to} \HSSpecial{(}\HSVar{s}\mathbin{:}\HSCon{Secrets}\HSSpecial{)}\HSSym{\to} \HSCon{Predicate}\;\HSVar{s}\;\! ^{\prime}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} \HSCon{Contract}\;\HSSpecial{(}\HSVar{v}\HSSym{+}\HSVar{sum}\;\HSVar{vs}\HSSpecial{)}\;\HSVar{vs}\;\! ^{\prime}\HSSym{\to} \HSVar{s}\;\! ^{\prime}\HSSym{\mathrel{\subseteq}}\HSVar{s}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} \HSCon{Contract}\;\HSVar{v}\;\HSSpecial{(}\HSCon{Interleave}\;\HSVar{vs}\;\! ^{\prime}\;\HSVar{vs}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - transfer the remaining balance to a participant}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSVar{withdraw}\mathbin{:}\HSCon{Participant}\HSSym{\to} \HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITcontractsB{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{BE}{@{}l@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{9E}{@{}l@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSComment{ -\! - split the balance across different branches}{}\<[E]%
+\\
+\>[3]{}\HSVar{split}\mathbin{:}{}\<[12]%
+\>[12]{}\HSSpecial{(}\HSVar{cs}\mathbin{:}\HSCon{List}\;\HSSpecial{(}\HSSym{\exists [}\;\HSVar{v}\;\HSSym{]}\;\HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\
+\>[3]{}\hsindent{6}{}\<[9]%
+\>[9]{}\HSSym{\to} {}\<[9E]%
+\>[12]{}\HSCon{Contract}\;\HSSpecial{(}\HSVar{sum}\;\HSSpecial{(}\HSSym{proj_1}\HSSym{<\!\!\$\!\!>}\HSVar{cs}\HSSpecial{)}\HSSpecial{)}\;\HSVar{vs}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[BE]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - wait for participant's authorization}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\mathbin{:}\HSSym{\_}\mathbin{:}\HSCon{Participant}\HSSym{\to} \HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\HSSym{\to} \HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[BE]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - wait until some time passes}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSVar{after}\;\HSSym{\_}\mathbin{:}\HSSym{\_}\mathbin{:}\HSCon{Time}\HSSym{\to} \HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\HSSym{\to} \HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITadvertisements{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{17E}{@{}l@{}}%
+\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{22E}{@{}l@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{record}\;\HSCon{Advertisement}\;\HSSpecial{(}\HSVar{v}\mathbin{:}\HSCon{Value}\HSSpecial{)}\;\HSSpecial{(}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\mathbin{:}\HSCon{List}\;\HSCon{Value}\HSSpecial{)}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{constructor}\;\HSSym{\_}\HSSym{\langle\ }\HSSym{\_}\HSSym{\ \rangle\vdash}\HSSym{\_}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSCon{G}{}\<[17]%
+\>[17]{}\mathbin{:}{}\<[17E]%
+\>[20]{}\HSCon{Precondition}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}{}\<[E]%
+\\
+\>[10]{}\HSCon{C}{}\<[17]%
+\>[17]{}\mathbin{:}{}\<[17E]%
+\>[20]{}\HSCon{List}\;\HSSpecial{(}\HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[10]{}\HSVar{valid}{}\<[17]%
+\>[17]{}\mathbin{:}{}\<[17E]%
+\>[20]{}\HSVar{length}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\HSSym{\mathrel{\leq}}\HSVar{length}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}{}\<[E]%
+\\
+\>[17]{}\HSSym{\ \mathbin{\times}\ }{}\<[17E]%
+\>[20]{}\HSVar{participants}\;\HSSym{\!\text{\textsuperscript{\tiny g}}}\;\HSCon{G}\HSSym{\mathbin{\plus}}\HSVar{participants}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\;\HSCon{C}{}\<[E]%
+\\
+\>[20]{}\hsindent{2}{}\<[22]%
+\>[22]{}\HSSym{\mathrel{\subseteq}}{}\<[22E]%
+\\
+\>[20]{}\HSSpecial{(}\HSVar{participant}\HSSym{<\!\!\$\!\!>}\HSVar{persistentDeposits}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\;\HSCon{G}\HSSpecial{)}{}\<[E]%
+\\
+\>[17]{}\HSSym{\ \mathbin{\times}\ }{}\<[17E]%
+\>[20]{}\HSVar{v}\HSSym{\mathrel{\equiv}}\HSVar{sum}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITexampleAdvertisement{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{10E}{@{}l@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{18E}{@{}l@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{open}\;\HSCon{BitML}\;\HSSpecial{(}\HSCon{A}\HSSym{\mid} \HSCon{B}\HSSpecial{)}\;\HSSpecial{[\mskip1.5mu }\HSCon{A}\HSSpecial{\mskip1.5mu]}\;\HSSym{\!\text{\textsuperscript{\tiny +}}}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ad}\mathbin{:}\HSCon{Advertisement}\;\HSNumeral{5}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{200}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{200}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{(}\HSNumeral{3}\HSCon{::}\HSNumeral{2}\HSCon{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ad}\HSSym{\mathrel{=}}{}\<[10]%
+\>[10]{}\HSSym{\langle\ }{}\<[10E]%
+\>[13]{}\HSCon{B}\HSSym{\mathbin{!}}\HSNumeral{3}\HSSym{\mathbin{\land}}\HSCon{A}\HSSym{\mathbin{!}}\HSNumeral{2}\HSSym{\mathbin{\land}}\HSCon{A}\;\HSSym{?}\;\HSNumeral{200}\;\HSSym{\ \rangle}{}\<[E]%
+\\
+\>[10]{}\hsindent{1}{}\<[11]%
+\>[11]{}\HSVar{split}\;{}\<[18]%
+\>[18]{}\HSSpecial{(}{}\<[18E]%
+\>[21]{}\HSNumeral{2}\HSSym{\multimap}\HSVar{withdraw}\;\HSCon{B}{}\<[E]%
+\\
+\>[18]{}\HSSym{\mathbin{\oplus}}{}\<[18E]%
+\>[21]{}\HSNumeral{2}\HSSym{\multimap}\HSVar{after}\;\HSNumeral{42}\;\HSSym{\!\! :\!\!}\;\HSVar{withdraw}\;\HSCon{A}{}\<[E]%
+\\
+\>[18]{}\HSSym{\mathbin{\oplus}}{}\<[18E]%
+\>[21]{}\HSNumeral{1}\HSSym{\multimap}\HSVar{put}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{200}\HSSpecial{\mskip1.5mu]}\HSSym{\mathrel{\Rightarrow}}\HSCon{B}\;\HSSym{\!\! :\!\!}\;\HSVar{withdraw}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSNumeral{201}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSCon{A}{}\<[E]%
+\\
+\>[18]{}\HSSpecial{)}{}\<[18E]%
+\\
+\>[10]{}\hsindent{1}{}\<[11]%
+\>[11]{}\HSSym{\vdash}\HSSym{\dots}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITactionsA{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{3E}{@{}l@{}}%
+\column{6}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{32}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSCon{AdvertisedContracts}\HSSym{\mathrel{=}}\HSCon{List}\;\HSSpecial{(}\HSSym{\exists [}\;\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{\dots}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\;\HSSym{]}\;\HSCon{Advertisement}\;\HSVar{v}\;\HSSym{\dots}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\HSCon{ActiveContracts}\HSSym{\mathrel{=}}\HSCon{List}\;\HSSpecial{(}\HSSym{\exists [}\;\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{]}\;\HSCon{List}\;\HSSpecial{(}\HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\HSKeyword{data}\;\HSCon{Action}\;\HSSpecial{(}\HSVar{p}\mathbin{:}\HSCon{Participant}\HSSpecial{)}{}\<[32]%
+\>[32]{}\HSComment{ -\! - the participant that authorises this action}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbin{:}{}\<[3E]%
+\>[6]{}\HSCon{AdvertisedContracts}{}\<[32]%
+\>[32]{}\HSComment{ -\! - the contract advertisments it requires}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[3E]%
+\>[6]{}\HSCon{ActiveContracts}{}\<[32]%
+\>[32]{}\HSComment{ -\! - the active contracts it requires}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[3E]%
+\>[6]{}\HSCon{Values}{}\<[32]%
+\>[32]{}\HSComment{ -\! - the deposits it requires from this participant}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[3E]%
+\>[6]{}\HSCon{List}\;\HSCon{Deposit}{}\<[32]%
+\>[32]{}\HSComment{ -\! - the deposits it produces}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\to} {}\<[3E]%
+\>[6]{}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+\newcommand\BITactionsB{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{16E}{@{}l@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{22E}{@{}l@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSComment{ -\! - commit secrets to stipulate an advertisement}{}\<[E]%
+\\
+\>[3]{}\HSSym{\mathsmaller{\#}\trir}\;\HSSym{\!\_}{}\<[16]%
+\>[16]{}\mathbin{:}{}\<[16E]%
+\>[19]{}\HSSpecial{(}\HSVar{ad}\mathbin{:}\HSCon{Advertisement}\;\HSVar{v}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[16]{}\HSSym{\to} {}\<[16E]%
+\>[19]{}\HSCon{Action}\;\HSVar{p}\;\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{ad}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\HSComment{ -\! - spend x to stipulate an advertisement}{}\<[E]%
+\\
+\>[3]{}\HSSym{\_}\;\HSSym{{\trir}^s}\;\HSSym{\!\_}{}\<[22]%
+\>[22]{}\mathbin{:}{}\<[22E]%
+\>[25]{}\HSSpecial{(}\HSVar{ad}\mathbin{:}\HSCon{Advertisement}\;\HSVar{v}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[22]{}\HSSym{\to} {}\<[22E]%
+\>[25]{}\HSSpecial{(}\HSVar{i}\mathbin{:}\HSCon{Index}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[22]{}\HSSym{\to} {}\<[22E]%
+\>[25]{}\HSCon{Action}\;\HSVar{p}\;\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{ad}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSym{\mathbin{!!}}\HSVar{i}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\HSComment{ -\! - pick a branch}{}\<[E]%
+\\
+\>[3]{}\HSSym{\_}\;\HSSym{{\trir}^b}\;\HSSym{\!\_}{}\<[22]%
+\>[22]{}\mathbin{:}{}\<[22E]%
+\>[25]{}\HSSpecial{(}\HSVar{c}\mathbin{:}\HSCon{List}\;\HSSpecial{(}\HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\
+\>[22]{}\HSSym{\to} {}\<[22E]%
+\>[25]{}\HSSpecial{(}\HSVar{i}\mathbin{:}\HSCon{Index}\;\HSVar{c}\HSSpecial{)}{}\<[E]%
+\\
+\>[22]{}\HSSym{\to} {}\<[22E]%
+\>[25]{}\HSCon{Action}\;\HSVar{p}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{c}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[3]{}\HSSym{\vdots}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITactionExample{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{spend}\mathbin{:}\HSCon{Action}\;\HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{5}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSNumeral{200}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSNumeral{200}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{3}\HSCon{::}\HSNumeral{2}\HSCon{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ad}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{2}\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{spend}\HSSym{\mathrel{=}}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ad}\;\HSSym{{\trir}^s}\;\HSNumeral{1}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITconfigurationsA{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{12E}{@{}l@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{27E}{@{}l@{}}%
+\column{28}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{28E}{@{}l@{}}%
+\column{30}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{31}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{51}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSCon{Configuration}\;\! ^{\prime}{}\<[27]%
+\>[27]{}\mathbin{:}{}\<[27E]%
+\>[30]{}\HSComment{ -\! - $\hspace{22pt}$ current $\hspace{23pt}$ $\times$ $\hspace{15pt}$ required}{}\<[E]%
+\\
+\>[30]{}\HSCon{AdvertisedContracts}{}\<[51]%
+\>[51]{}\HSSym{\ \mathbin{\times}\ }\HSCon{AdvertisedContracts}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSCon{ActiveContracts}{}\<[51]%
+\>[51]{}\HSSym{\ \mathbin{\times}\ }\HSCon{ActiveContracts}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSCon{List}\;\HSCon{Deposit}{}\<[51]%
+\>[51]{}\HSSym{\ \mathbin{\times}\ }\HSCon{List}\;\HSCon{Deposit}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - empty}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\varnothing}\mathbin{:}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - contract advertisement}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSpecial{`}\HSSym{\_}{}\<[12]%
+\>[12]{}\mathbin{:}{}\<[12E]%
+\>[15]{}\HSSpecial{(}\HSVar{ad}\mathbin{:}\HSCon{Advertisement}\;\HSVar{v}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\;\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[12]{}\HSSym{\to} {}\<[12E]%
+\>[15]{}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny c}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny v}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\;\HSSym{\!\text{\textsuperscript{\tiny p}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{ad}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSComment{ -\! - active contract}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\langle\ }\HSSym{\_}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{\_}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}{}\<[28]%
+\>[28]{}\mathbin{:}{}\<[28E]%
+\>[31]{}\HSSpecial{(}\HSVar{c}\mathbin{:}\HSCon{List}\;\HSSpecial{(}\HSCon{Contract}\;\HSVar{v}\;\HSVar{vs}\HSSpecial{)}\HSSpecial{)}\HSSym{\to} \HSCon{Value}{}\<[E]%
+\\
+\>[28]{}\HSSym{\to} {}\<[28E]%
+\>[31]{}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSVar{v}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{vs}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{c}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITconfigurationsB{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{21E}{@{}l@{}}%
+\column{24}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{28E}{@{}l@{}}%
+\column{31}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{33}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{33E}{@{}l@{}}%
+\column{36}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{37}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{37E}{@{}l@{}}%
+\column{40}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{64}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSComment{ -\! - deposit redeemable by a participant}{}\<[E]%
+\\
+\>[3]{}\HSSym{\langle\ }\HSSym{\!\_}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{\_}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}{}\<[28]%
+\>[28]{}\mathbin{:}{}\<[28E]%
+\>[31]{}\HSSpecial{(}\HSVar{p}\mathbin{:}\HSCon{Participant}\HSSpecial{)}\HSSym{\to} \HSSpecial{(}\HSVar{v}\mathbin{:}\HSCon{Value}\HSSpecial{)}{}\<[E]%
+\\
+\>[28]{}\HSSym{\to} {}\<[28E]%
+\>[31]{}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSVar{p}\;\HSVar{has}\;\HSVar{v}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\HSComment{ -\! - authorization to perform an action}{}\<[E]%
+\\
+\>[3]{}\HSSym{\_\!}\;\HSSpecial{[\mskip1.5mu }\HSSym{\_}\HSSpecial{\mskip1.5mu]}{}\<[21]%
+\>[21]{}\mathbin{:}{}\<[21E]%
+\>[24]{}\HSSpecial{(}\HSVar{p}\mathbin{:}\HSCon{Participant}\HSSpecial{)}\HSSym{\to} \HSCon{Action}\;\HSVar{p}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{vs}\;\HSVar{ds}{}\<[E]%
+\\
+\>[21]{}\HSSym{\to} {}\<[21E]%
+\>[24]{}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{ads}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{cs}\HSSpecial{)}\;\HSSpecial{(}\HSVar{ds}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{(}\HSSpecial{(}\HSVar{p}\;\HSVar{has}\;\HSSym{\_}\HSSpecial{)}\HSSym{<\!\!\$\!\!>}\HSVar{vs}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\HSComment{ -\! - committed secret}{}\<[E]%
+\\
+\>[3]{}\HSSym{\langle\ }\HSSym{\_}\;\HSSym{\!\! :\!\!}\;\HSSym{\_\!}\;\HSSym{\mathsmaller{\#}}\;\HSSym{\!\_}\HSSym{\ \rangle}{}\<[37]%
+\>[37]{}\mathbin{:}{}\<[37E]%
+\>[40]{}\HSCon{Participant}\HSSym{\to} \HSCon{Secret}\HSSym{\to} {}\<[64]%
+\>[64]{}\HSSym{\mathds{N}}\HSSym{\mathbin{\uplus}}\HSSym{\bot}{}\<[E]%
+\\
+\>[37]{}\HSSym{\to} {}\<[37E]%
+\>[40]{}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\\
+\>[3]{}\HSComment{ -\! - revealed secret}{}\<[E]%
+\\
+\>[3]{}\HSSym{\_}\;\HSSym{\!\! :\!\!}\;\HSSym{\_\!}\;\HSSym{\mathsmaller{\#}}\;\HSSym{\!\_}{}\<[33]%
+\>[33]{}\mathbin{:}{}\<[33E]%
+\>[36]{}\HSCon{Participant}\HSSym{\to} \HSCon{Secret}\HSSym{\to} \HSSym{\mathds{N}}{}\<[E]%
+\\
+\>[33]{}\HSSym{\to} {}\<[33E]%
+\>[36]{}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITconfigurationsC{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{18E}{@{}l@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{42}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{76}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSComment{ -\! - parallel composition}{}\<[E]%
+\\
+\>[3]{}\HSSym{\_}\HSSym{\mid} \HSSym{\_}{}\<[18]%
+\>[18]{}\mathbin{:}{}\<[18E]%
+\>[21]{}\HSCon{Configuration}\;\! ^{\prime}\;{}\<[42]%
+\>[42]{}\HSSpecial{(}\HSVar{ads}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rads}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{)}\;\HSSpecial{(}\HSVar{cs}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rcs}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{)}\;\HSSpecial{(}\HSVar{ds}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rds}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[18]{}\HSSym{\to} {}\<[18E]%
+\>[21]{}\HSCon{Configuration}\;\! ^{\prime}\;{}\<[42]%
+\>[42]{}\HSSpecial{(}\HSVar{ads}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rads}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{)}\;\HSSpecial{(}\HSVar{cs}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rcs}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{)}\;\HSSpecial{(}\HSVar{ds}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rds}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{)}{}\<[E]%
+\\
+\>[18]{}\HSSym{\to} {}\<[18E]%
+\>[21]{}\HSCon{Configuration}\;\! ^{\prime}\;{}\<[42]%
+\>[42]{}\HSSpecial{(}\HSVar{ads}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSym{\mathbin{\plus}}\HSVar{ads}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}{}\<[76]%
+\>[76]{}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rads}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSym{\mathbin{\plus}}\HSSpecial{(}\HSVar{rads}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSym{\setminus}\HSVar{ads}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{)}\HSSpecial{)}\;{}\<[E]%
+\\
+\>[42]{}\HSSpecial{(}\HSVar{cs}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSym{\mathbin{\plus}}\HSVar{cs}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}{}\<[76]%
+\>[76]{}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rcs}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSym{\mathbin{\plus}}\HSSpecial{(}\HSVar{rcs}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSym{\setminus}\HSVar{cs}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{)}\HSSpecial{)}\;{}\<[E]%
+\\
+\>[42]{}\HSSpecial{(}\HSSpecial{(}\HSVar{ds}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSym{\setminus}\HSVar{rds}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSpecial{)}\HSSym{\mathbin{\plus}}\HSVar{ds}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}{}\<[76]%
+\>[76]{}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{rds}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSym{\mathbin{\plus}}\HSSpecial{(}\HSVar{rds}\;\HSSym{\!\text{\textsuperscript{\tiny r}}}\HSSym{\setminus}\HSVar{ds}\;\HSSym{\!\text{\textsuperscript{\tiny l}}}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITclosedConfigurations{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\mathrel{=}}\HSCon{Configuration}\;\! ^{\prime}\;\HSSpecial{(}\HSVar{ads}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSVar{cs}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}\;\HSSpecial{(}\HSVar{ds}\HSSpecial{\HSSym{\mathbin{,}}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITrulesA{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{22E}{@{}l@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSSym{\_}\HSSym{\mathrel{\longrightarrow}}\HSSym{\_}{}\<[22]%
+\>[22]{}\mathbin{:}{}\<[22E]%
+\>[25]{}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\to} \HSCon{Configuration}\;\HSVar{ads}\;\! ^{\prime}\;\HSVar{cs}\;\! ^{\prime}\;\HSVar{ds}\;\! ^{\prime}{}\<[E]%
+\\
+\>[22]{}\HSSym{\to} {}\<[22E]%
+\>[25]{}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{DEP}\HSSym{\text{\textit{-}}}\HSCon{AuthJoin}\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\;\! ^{\prime}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\;\! ^{\prime}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{0}\HSSym{\mathrel{\leftrightarrow}}\HSNumeral{1}\HSSpecial{\mskip1.5mu]}\HSSym{\mid} \HSSym{\Gamma}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{DEP}\HSSym{\text{\textit{-}}}\HSCon{Join}\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\;\! ^{\prime}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{0}\HSSym{\mathrel{\leftrightarrow}}\HSNumeral{1}\HSSpecial{\mskip1.5mu]}\HSSym{\mid} \HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{+}\HSVar{v}\;\! ^{\prime}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\Gamma}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Advertise}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\Gamma}\;\HSVar{ad}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[8]%
+\>[8]{}\HSSym{\exists [}\;\HSVar{p}\HSSym{\mathrel{\in}}\HSVar{participants}\;\HSSym{\!\text{\textsuperscript{\tiny g}}}\;\HSSpecial{(}\HSCon{G}\;\HSVar{ad}\HSSpecial{)}\;\HSSym{]}\;\HSVar{p}\HSSym{\mathrel{\in}}\HSCon{Hon}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferLarge$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[8]%
+\>[8]{}\HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSpecial{`}\HSVar{ad}\HSSym{\mid} \HSSym{\Gamma}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITrulesB{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{BE}{@{}l@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{5E}{@{}l@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{AuthCommit}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{A}\;\HSVar{ad}\;\HSSym{\Gamma}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSVar{secrets}\;\HSSpecial{(}\HSCon{G}\;\HSVar{ad}\HSSpecial{)}\HSSym{\mathrel{\equiv}}\HSSym{a_1}\;\HSSym{\dots}\;\HSSym{a_n}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSpecial{(}\HSCon{A}\HSSym{\mathrel{\in}}\HSCon{Hon}\HSSym{\to} \HSSym{\forall}\;\HSSpecial{[\mskip1.5mu }\HSVar{i}\HSSym{\mathrel{\in}}\HSNumeral{1}\;\HSSym{\dots}\;\HSVar{n}\HSSpecial{\mskip1.5mu]}\;\HSVar{a}\;\HSSym{\!\text{\textsubscript{\tiny i}}}\HSSym{\mathrel{\not\equiv}}\HSSym{\bot}\HSSpecial{)}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferLarge$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSpecial{`}\HSVar{ad}\HSSym{\mid} \HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSpecial{`}\HSVar{ad}\HSSym{\mid} \HSSym{\Gamma}\HSSym{\mid} \HSSym{\dots}\HSSym{\langle\ }\HSCon{A}\mathbin{:}\HSVar{a}\;\HSSym{\!\text{\textsubscript{\tiny i}}}\;\HSSym{\mathsmaller{\#}}\;\HSCon{N}\;\HSSym{\!\text{\textsubscript{\tiny i}}}\HSSym{\ \rangle}\HSSym{\dots}\;\HSSym{\! | \!}\;\HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSSym{\mathsmaller{\#}}\HSSym{▷}\;\HSVar{ad}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[BE]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Control}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\Gamma}\;\HSCon{C}\;\HSVar{i}\;\HSCon{D}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSCon{C}\HSSym{\mathbin{!!}}\HSVar{i}\HSSym{\mathrel{\equiv}}\HSSym{A_1}\mathbin{:}\HSSym{\dots}\mathbin{:}\HSSym{A_n}\mathbin{:}\HSCon{D}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferLarge$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSym{\langle\ }\HSCon{C}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSSym{\dots}\;\HSCon{A}\;\HSSym{\!\text{\textsubscript{\tiny i}}}\;\HSSpecial{[\mskip1.5mu }\HSCon{C}\;\HSSym{{\trir}^b}\;\HSVar{i}\HSSpecial{\mskip1.5mu]}\;\HSSym{\dots}\HSSym{\mid} \HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSym{\langle\ }\HSCon{D}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSSym{\Gamma}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\vdots}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITtimedRulesA{
+\savecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{5E}{@{}l@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{27E}{@{}l@{}}%
+\column{30}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{record}\;\HSCon{Configuration}\;\HSSym{\!\text{\textsuperscript{\tiny t}}}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{constructor}\;\HSSym{\_}\;\HSSym{@}\;\HSSym{\_}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{field}\;{}\<[10]%
+\>[10]{}\HSVar{cfg}{}\<[16]%
+\>[16]{}\mathbin{:}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}{}\<[E]%
+\\
+\>[10]{}\HSVar{time}{}\<[16]%
+\>[16]{}\mathbin{:}\HSCon{Time}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSKeyword{data}\;\HSSym{\_}\HSSym{\mathrel{\longrightarrow}}\HSSym{\!\text{\textsubscript{\tiny t}}}\;\HSSym{\_}{}\<[27]%
+\>[27]{}\mathbin{:}{}\<[27E]%
+\>[30]{}\HSCon{Configuration}\;\HSSym{\!\text{\textsuperscript{\tiny t}}}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\to} \HSCon{Configuration}\;\HSSym{\!\text{\textsuperscript{\tiny t}}}\;\HSVar{ads}\;\! ^{\prime}\;\HSVar{cs}\;\! ^{\prime}\;\HSVar{ds}\;\! ^{\prime}{}\<[E]%
+\\
+\>[27]{}\HSSym{\to} {}\<[27E]%
+\>[30]{}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{Action}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\Gamma}\;\HSSym{\Gamma}\;\! ^{\prime}\;\HSVar{t}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSym{\Gamma}\;\! ^{\prime}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferSmall$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSym{\Gamma}\;\HSSym{@}\;\HSVar{t}\HSSym{\mathrel{\longrightarrow}}\HSSym{\!\text{\textsubscript{\tiny t}}}\;\HSSym{\Gamma}\;\! ^{\prime}\;\HSSym{@}\;\HSVar{t}{}\<[E]%
+\\
+\>[B]{}\vspace{10pt}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{Delay}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\Gamma}\;\HSVar{t}\;\HSVar{δ}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{5}{}\<[8]%
+\>[8]{}\mbox{\commentbegin  $\inferMedium$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSym{\Gamma}\;\HSSym{@}\;\HSVar{t}\HSSym{\mathrel{\longrightarrow}}\HSSym{\!\text{\textsubscript{\tiny t}}}\;\HSSym{\Gamma}\;\HSSym{@}\;\HSSpecial{(}\HSVar{t}\HSSym{+}\HSVar{δ}\HSSpecial{)}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITtimedRulesB{
+\restorecolumns
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{5E}{@{}l@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSCon{Timeout}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{\Gamma}\;\HSSym{\Gamma}\;\! ^{\prime}\;\HSVar{t}\;\HSVar{i}\;\HSVar{contract}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{5}{}\<[8]%
+\>[8]{}\HSComment{ -\! - all time constraints are satisfied}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSCon{All}\;\HSSpecial{(}\HSSym{\_}\HSSym{\mathrel{\leq}}\HSVar{t}\HSSpecial{)}\;\HSSpecial{(}\HSVar{timeDecorations}\;\HSSpecial{(}\HSVar{contract}\HSSym{\mathbin{!!}}\HSVar{i}\HSSpecial{)}\HSSpecial{)}{}\<[E]%
+\\
+\>[8]{}\HSComment{ -\! - resulting state if we pick this branch}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSym{\langle\ }\HSSpecial{[\mskip1.5mu }\HSVar{contract}\HSSym{\mathbin{!!}}\HSVar{i}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSym{\Gamma}\;\! ^{\prime}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferMedium$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSpecial{(}\HSSym{\langle\ }\HSVar{contract}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSSym{\Gamma}\HSSpecial{)}\;\HSSym{@}\;\HSVar{t}\HSSym{\mathrel{\longrightarrow}}\HSSym{\!\text{\textsubscript{\tiny t}}}\;\HSSym{\Gamma}\;\! ^{\prime}\;\HSSym{@}\;\HSVar{t}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITeqReasoning{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{5E}{@{}l@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSSym{\_}\HSSym{\mathrel{\twoheadrightarrow}}\HSSym{\_}\mathbin{:}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\to} \HSCon{Configuration}\;\HSVar{ads}\;\! ^{\prime}\;\HSVar{cs}\;\! ^{\prime}\;\HSVar{ds}\;\! ^{\prime}\HSSym{\to} \HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\HSSym{\text{\mbox{\tiny$\square$}}}\mathbin{:}\HSSpecial{(}\HSCon{M}\mathbin{:}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSpecial{)}\HSSym{\to} \HSCon{M}\HSSym{\mathrel{\twoheadrightarrow}}\HSCon{M}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSSym{\_}\HSSym{\rightarrow\!\!\langle\ }\HSSym{\_}\HSSym{\ \rangle}\HSSym{\_}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{L}\;\! ^{\prime}\;\HSCon{M}\;\HSCon{M}\;\! ^{\prime}\;\HSCon{N}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSSpecial{(}\HSCon{L}\mathbin{:}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSpecial{)}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{L}\HSSym{\mathrel{\approx}}\HSCon{L}\;\! ^{\prime}\HSSym{\ \mathbin{\times}\ }\HSCon{M}\HSSym{\mathrel{\approx}}\HSCon{M}\;\! ^{\prime}\HSSpecial{\HSSym{\mskip1.5mu\}}}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSCon{L}\;\! ^{\prime}\HSSym{\mathrel{\longrightarrow}}\HSCon{M}\;\! ^{\prime}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSCon{M}\HSSym{\mathrel{\twoheadrightarrow}}\HSCon{N}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferMedium$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSCon{L}\HSSym{\mathrel{\twoheadrightarrow}}\HSCon{N}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\HSVar{begin}\;\HSSym{\_}\mathbin{:}\HSSym{\forall}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSCon{M}\;\HSCon{N}\HSSpecial{\HSSym{\mskip1.5mu\}}}\HSSym{\to} \HSCon{M}\HSSym{\mathrel{\twoheadrightarrow}}\HSCon{N}\HSSym{\to} \HSCon{M}\HSSym{\mathrel{\twoheadrightarrow}}\HSCon{N}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITexampleA{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSVar{tc}\mathbin{:}\HSCon{Advertisement}\;\HSNumeral{1}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\;\HSSpecial{(}\HSNumeral{1}\HSCon{::}\HSNumeral{0}\HSCon{::}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}\HSSpecial{)}{}\<[E]%
+\\
+\>[B]{}\HSVar{tc}\HSSym{\mathrel{=}}{}\<[7]%
+\>[7]{}\HSSym{\langle\ }\HSCon{A}\HSSym{\mathbin{!}}\HSNumeral{1}\HSSym{\mathbin{\land}}\HSCon{A}\;\HSSym{\mathsmaller{\#}}\;\HSVar{a}\HSSym{\mathbin{\land}}\HSCon{B}\HSSym{\mathbin{!}}\HSNumeral{0}\HSSym{\ \rangle}{}\<[E]%
+\\
+\>[7]{}\hsindent{3}{}\<[10]%
+\>[10]{}\HSVar{reveal}\;\HSSpecial{[\mskip1.5mu }\HSVar{a}\HSSpecial{\mskip1.5mu]}\HSSym{\mathrel{\Rightarrow}}\HSVar{withdraw}\;\HSCon{A}\HSSym{\vdash}\HSSym{\dots}{}\<[E]%
+\\
+\>[7]{}\HSSym{\mathbin{\oplus}}{}\<[10]%
+\>[10]{}\HSVar{after}\;\HSVar{t}\;\HSSym{\!\! :\!\!}\;\HSVar{withdraw}\;\HSCon{B}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITexampleB{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSVar{tc}\HSSym{\text{\textit{-}}}\HSVar{semantics}\mathbin{:}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mathrel{\twoheadrightarrow}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}{}\<[E]%
+\\
+\>[B]{}\HSVar{tc}\HSSym{\text{\textit{-}}}\HSVar{semantics}\HSSym{\mathrel{=}}{}\<[21]%
+\>[21]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Advertise}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSpecial{`}\HSVar{tc}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{AuthCommit}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSpecial{`}\HSVar{tc}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}\HSSym{\ \rangle}\HSSym{\mid} \HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSSym{\mathsmaller{\#}\trir}\;\HSVar{tc}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{AuthInit}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSpecial{`}\HSVar{tc}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}\HSSym{\ \rangle}\HSSym{\mid} \HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSSym{\mathsmaller{\#}\trir}\;\HSVar{tc}\HSSpecial{\mskip1.5mu]}\HSSym{\mid} \HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSVar{tc}\;\HSSym{{\trir}^s}\;\HSNumeral{0}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Init}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSym{\langle\ }\HSVar{tc}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSSym{inj_1}\;\HSNumeral{6}\HSSym{\ \rangle}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{AuthRev}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSym{\langle\ }\HSVar{tc}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Control}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSym{\langle\ }\HSSpecial{[\mskip1.5mu }\HSVar{reveal}\;\HSSym{\dots}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{PutRev}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSym{\langle\ }\HSSpecial{[\mskip1.5mu }\HSVar{withdraw}\;\HSCon{A}\HSSpecial{\mskip1.5mu]}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny c}}}\HSSym{\mid} \HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}{}\<[E]%
+\\
+\>[B]{}\HSSym{\rightarrow\!\!\langle\ }\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Withdraw}\HSSym{\ \rangle}{}\<[21]%
+\>[21]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSNumeral{1}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSCon{A}\;\HSSym{\!\! :\!\!}\;\HSVar{a}\;\HSSym{\mathsmaller{\#}}\;\HSNumeral{6}{}\<[E]%
+\\
+\>[B]{}\HSSym{\text{\mbox{\tiny$\square$}}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITreordering{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{34}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSSym{\_}\HSSym{\mathrel{\approx}}\HSSym{\_}\mathbin{:}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\to} \HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\to} \HSCon{Set}{}\<[E]%
+\\
+\>[B]{}\HSVar{c}\HSSym{\mathrel{\approx}}\HSVar{c}\;\! ^{\prime}\HSSym{\mathrel{=}}\HSVar{cfgToList}\;\HSVar{c}\HSSym{\mathrel{\leftrightsquigarrow}}\HSVar{cfgToList}\;\HSVar{c}\;\! ^{\prime}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSKeyword{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSKeyword{open}\;\HSKeyword{import}\;\HSCon{\HSCon{Data}.\HSCon{List}.Permutation}\;\HSKeyword{using}\;\HSSpecial{(}\HSSym{\_}\HSSym{\mathrel{\leftrightsquigarrow}}\HSSym{\_}\HSSpecial{)}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{cfgToList}{}\<[16]%
+\>[16]{}\HSSym{\varnothing}{}\<[34]%
+\>[34]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{cfgToList}\;{}\<[16]%
+\>[16]{}\HSSpecial{(}\HSVar{l}\HSSym{\mid} \HSVar{r}\HSSpecial{)}{}\<[34]%
+\>[34]{}\HSSym{\mathrel{=}}\HSVar{cfgToList}\;\HSVar{l}\HSSym{\mathbin{\plus}}\HSVar{cfgToList}\;\HSVar{r}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSVar{cfgToList}\;{}\<[16]%
+\>[16]{}\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{p_1}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{p_2}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSSpecial{\HSSym{\{\mskip1.5mu} }\HSSym{p_3}\HSSpecial{\HSSym{\mskip1.5mu\}}}\;\HSVar{c}{}\<[34]%
+\>[34]{}\HSSym{\mathrel{=}}\HSSpecial{[\mskip1.5mu }\HSSym{p_1}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{p_2}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{p_3}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{c}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
+
+\newcommand\BITgeneralRule{
+\begin{myagda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{5E}{@{}l@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{10}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\HSCon{DEP}\HSSym{\text{\textit{-}}}\HSCon{AuthJoin}\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{5}{}\<[8]%
+\>[8]{}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSSpecial{(}\HSCon{A}\;\HSVar{has}\;\HSVar{v}\HSCon{::}\HSCon{A}\;\HSVar{has}\;\HSVar{v}\;\! ^{\prime}\HSCon{::}\HSVar{ds}\HSSpecial{)}\HSSym{\mathrel{\ni}}{}\<[E]%
+\\
+\>[8]{}\hsindent{2}{}\<[10]%
+\>[10]{}\HSSym{\Gamma}\;\! ^{\prime}\HSSym{\mathrel{\approx}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\;\! ^{\prime}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\Gamma}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSSpecial{(}\HSCon{A}\;\HSVar{has}\;\HSSpecial{(}\HSVar{v}\HSSym{+}\HSVar{v}\;\! ^{\prime}\HSSpecial{)}\HSCon{::}\HSVar{ds}\HSSpecial{)}\HSSym{\mathrel{\ni}}{}\<[E]%
+\\
+\>[8]{}\hsindent{2}{}\<[10]%
+\>[10]{}\HSSym{\Gamma}\;\! ^{\prime\prime}\HSSym{\mathrel{\approx}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\;\! ^{\prime}\HSSym{\ \rangle}\HSSym{\text{\textsuperscript{\tiny d}}}\HSSym{\mid} \HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{0}\HSSym{\mathrel{\leftrightarrow}}\HSNumeral{1}\HSSpecial{\mskip1.5mu]}\HSSym{\mid} \HSSym{\Gamma}{}\<[E]%
+\\
+\>[8]{}\mbox{\commentbegin  $\inferLarge$  \commentend}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\to} {}\<[5E]%
+\>[8]{}\HSSym{\Gamma}\;\! ^{\prime}\HSSym{\mathrel{\longrightarrow}}\HSSym{\Gamma}\;\! ^{\prime\prime}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{myagda}
+}
