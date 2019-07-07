@@ -1,0 +1,104 @@
+\documentclass[aspectratio=43]{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+\setbeamersize{text margin left=.5cm,text margin right=.5cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{chains,arrows,automata,fit,positioning,calc}
+
+% Colors
+\usepackage{xcolor,color,colortbl}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+
+% Math symbols
+\usepackage{amsmath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Agda imports
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%include polycode.fmt
+%include stylish.fmt
+\def\commentbegin{}
+\def\commentend{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage{dsfont}
+% \usepackage{relsize}
+%% \usepackage{fontspec}
+% \usepackage[utf8]{inputenc}
+% \setmainfont{LinLibertine}[
+%   Extension = .otf,
+%   Path = ./fonts/,
+%   UprightFont = *_R,
+%   BoldFont = *_RB,
+%   ItalicFont = *_RI
+% ]
+% \setsansfont{LinBiolinum}[
+%   Extension = .otf,
+%   Path = ./fonts/,
+%   UprightFont = *_R,
+%   BoldFont = *_RB,
+%   ItalicFont = *_RI
+% ]
+
+\usepackage{fontspec}
+\usepackage[tt=false]{libertine}
+\usepackage[varqu]{zi4}
+\usepackage[libertine]{newtxmath}
+
+%% \usepackage{fontenc}
+%% \usepackage{mathpazo,euler}
+%% \usepackage[scaled=0.9]{DejaVuSansMono}
+%% \usepackage[utf8]{inputenc}
+
+%----------------------------------------------------------------------------
+
+% Beamer
+\title{Formalizing Extended UTxO and BitML Calculus
+      \\ \hspace{4cm} in Agda}
+\subtitle{\hspace{1cm} Towards formal verification for smart contracts}
+\author{Orestis Melkonian}
+\date{July 8, 2019}
+\institute{Utrecht University, The Netherlands}
+\titlegraphic{\vspace{5cm}\flushright\includegraphics[scale=0.3]{logo}}
+
+\begin{document}
+\begin{center}
+\maketitle
+\end{center}
+
+\begin{frame}{Overview}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents
+\end{frame}
+
+%include 1-intro.lagda
+%include 2-utxo.lagda
+%include 3-bitml.lagda
+%include 4-future.lagda
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\end{document}
