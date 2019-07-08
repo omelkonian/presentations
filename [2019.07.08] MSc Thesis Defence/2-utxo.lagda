@@ -1,8 +1,8 @@
-\section{UTxO}
+\section{Extended UTxO}
 \subsection{Transactions/Ledgers}
 \begin{frame}{Basic Types}
 \begin{agda}\begin{code}
-module UTxO.Types (Value : Set) (Hash : Set) where DOTS
+module UTxO.Types (Value : Set) (Hash : Set) where
 
 record State : Set where
   field  height : ℕ
@@ -40,7 +40,7 @@ record TxInput : Set where
 
 \begin{frame}{Transactions}
 \begin{agda}\begin{code}
-module UTxO  (Address : Set) (_ ♯ ^^ SUBA : Hash Address)
+module UTxO  (Address : Set) (_ ♯ ^^ SUBA : HashFunction Address)
              (_ ≟ SUBA _ : Decidable {A = Address} _ ≡ _) where
 
 record TxOutput : Set where
@@ -51,7 +51,7 @@ record TxOutput : Set where
          dataScript  : State → el Data
 
 record Tx : Set where
-  field  inputs   : Set⟨ TxInput ⟩
+  field  inputs   : List TxInput
          outputs  : List TxOutput
          forge    : Value
          fee      : Value
@@ -175,14 +175,14 @@ c + SC c′ = toList (foldl go (fromList c) c′)
     go : Tree Hash ℕ → (Hash × ℕ) → Tree Hash ℕ
     go m (k , v) = insertWith k ((UL + v) ∘ fromMaybe 0) m
 
-sum SC : List Value → Value
+sum SC : Values → Value
 sum SC = foldl UL + SC UR []
 \end{code}\end{agda}
 \end{enumerate}
 \end{frame}
 
 \begin{frame}{Multi-currency: Forging condition}
-We now need to enforce monoetary policies on forging transactions:
+We now need to enforce monetary policies on forging transactions:
 \begin{agda}\begin{code}
 record IsValidTx (tx : Tx) (l : Ledger) : Set where
   VDOTS

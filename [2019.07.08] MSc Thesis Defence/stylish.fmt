@@ -229,7 +229,7 @@
 
 %format BAR      = "\HSSym{\! | \!}"
 %format TRI      = "\HSSym{\vartriangleright}"
-%format HTRI     = "\HSSym{\#\!\vartriangleright}"
+%format HTRI     = "\HSSym{\#\!\vartriangleright\!\!}"
 %format ATRI     = "\HSSym{{\vartriangleright}^a}"
 %format DTRI     = "\HSSym{{\vartriangleright}^d}"
 %format STRI     = "\HSSym{{\vartriangleright}^s}"

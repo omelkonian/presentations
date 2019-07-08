@@ -16,8 +16,8 @@ Deposit  = Participant × Value
 
 \begin{frame}{Contract Preconditions}
 \begin{agda}\begin{code}
-data Precondition  :  List Value -- volatile deposits
-                   →  List Value -- persistent deposits
+data Precondition  :  Values -- volatile deposits
+                   →  Values -- persistent deposits
                    →  Set where
   -- volatile deposit
   _ ? _ : Participant → (v : Value) → Precondition [ v ] []
@@ -40,7 +40,7 @@ data Contract  :  Value   -- the monetary value it carries
 
   -- collect deposits and secrets
   put _ reveal _ if _ ⇒ _ ∶- _ :
-       (vs : List Value) → (s : Secrets) → Predicate s PRIME
+       (vs : Values) → (s : Secrets) → Predicate s PRIME
     →  Contract (v + sum vs) vs PRIME → s PRIME ⊆ s
     →  Contract v (vs PRIME ++ vs)
 
@@ -66,7 +66,7 @@ data Contract  :  Value   -- the monetary value it carries
 
 \begin{frame}{Advertisements}
 \begin{agda}\begin{code}
-record Advertisement (v : Value) (vs SC vs SV vs SP : List Value) : Set where
+record Advertisement (v : Value) (vs SC vs SV vs SP : Values) : Set where
   constructor _ ⟨ _ ⟩∶- _
   field  G      :  Precondition vs SV vs SP
          C      :  Contracts v vs SC
@@ -109,7 +109,7 @@ data Action (p : Participant)  -- the participant that authorizes this action
 
 \begin{frame}{Small-step Semantics: Actions II}
 \begin{agda}\begin{code}
-  -- join two deposits deposits
+  -- join two deposits
   _ ↔ _  : ∀ {vs} →  (i : Index vs) →  (j : Index vs)
          → Action p [] [] vs (p has UR ^^ ⟨$⟩ merge i j vs)
   -- commit secrets to stipulate an advertisement

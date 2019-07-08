@@ -62,8 +62,15 @@
 }
 \author{Orestis Melkonian}
 \date{July 8, 2019}
-\institute{Utrecht University, The Netherlands}
-\titlegraphic{\vspace{5cm}\flushright\includegraphics[scale=0.3]{logo}}
+\institute{
+Utrecht University, The Netherlands \\[.5cm]
+Supervised by: \textit{Wouter Swierstra} (UU), \textit{Manuel M.T. Chakravarty} (IOHK) \\
+2$^{nd}$ examiner: \textit{Gabriele Keller} (UU)
+}
+\titlegraphic{
+\vspace{3.8cm}\flushright\includegraphics[scale=.25]{uu}
+\vspace{.3cm}\flushright\includegraphics[scale=.375]{iohk}\hspace{.1cm}
+}
 
 \begin{document}
 \begin{center}
