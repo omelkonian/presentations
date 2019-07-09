@@ -1,0 +1,272 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Agda Styling
+
+\newenvironment{agda}
+{}
+{}
+
+% Bitcoin symbol
+\def\bitcoin{%
+  \leavevmode
+  \vtop{\offinterlineskip %\bfseries
+    \setbox0=\hbox{B}%
+    \setbox2=\hbox to\wd0{\hfil\hskip-.03em
+    \vrule height .6ex width .15ex\hskip .08em
+    \vrule height .6ex width .15ex\hfil}
+    \vbox{\copy2\box0}\box2}}
+
+% Text superscript
+\newcommand\textsup[1]{\!\text{\textsuperscript{#1}}}
+\newcommand\textsub[1]{\!\text{\textsubscript{#1}}}
+
+% Horizontal lines for inference rules
+\newcommand\inferLine[1]{\rule[3pt]{#1}{.6pt}}
+\newcommand\inferSmall{\inferLine{2cm}}
+\newcommand\inferMedium{\inferLine{5cm}}
+\newcommand\inferLarge{\inferLine{8cm}}
+\newcommand\inferVeryLarge{\inferLine{11cm}}
+
+%% Colors (from duo-tone light syntax)
+\definecolor{hsblack}{RGB}{45,32,3}
+\definecolor{hsgold1}{RGB}{179,169,149}
+\definecolor{hsgold2}{RGB}{177,149,90}
+\definecolor{hsgold3}{RGB}{190,106,13}%{192,96,4}%{132,97,19}
+\definecolor{hsblue1}{RGB}{173,176,182}
+\definecolor{hsblue2}{RGB}{113,142,205}
+\definecolor{hsblue3}{RGB}{0,33,132}
+\definecolor{hsblue4}{RGB}{97,108,132}
+\definecolor{hsblue5}{RGB}{34,50,68}
+\definecolor{hsred2}{RGB}{191,121,103}
+\definecolor{hsred3}{RGB}{171,72,46}
+
+%% LaTeX Kerning nastiness. By using curly braces to delimit color group,
+%% it breaks spacing. The following seems to work:
+%%
+%% https://tex.stackexchange.com/questions/85033/colored-symbols/85035#85035
+%%
+\newcommand*{\mathcolor}{}
+\def\mathcolor#1#{\mathcoloraux{#1}}
+\newcommand*{\mathcoloraux}[3]{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+
+\newcommand{\HSKeyword}[1]{\mathcolor{hsgold3}{\textbf{#1}}}
+\newcommand{\HSNumeral}[1]{\mathcolor{hsred3}{#1}}
+\newcommand{\HSChar}[1]{\mathcolor{hsred2}{#1}}
+\newcommand{\HSString}[1]{\mathcolor{hsred2}{#1}}
+\newcommand{\HSSpecial}[1]{\mathcolor{hsblue4}{\ensuremath{#1}}}
+\newcommand{\HSSym}[1]{\mathcolor{hsblue4}{\ensuremath{#1}}}
+\newcommand{\HSCon}[1]{\mathcolor{hsblue3}{#1}}
+\newcommand{\HSVar}[1]{\mathcolor{hsblue5}{\mathit{\ensuremath{#1}}}}
+\newcommand{\HSComment}[1]{\mathcolor{hsgold2}{\textit{#1}}}
+
+%subst keyword a = "\HSKeyword{" a "}"
+%subst conid a   = "\HSCon{" a "}"
+%subst varid a   = "\HSVar{" a "}"
+%subst varsym a  = "\HSSym{" a "}"
+%subst consym a  = "\HSSym{" a "}"
+%subst numeral a = "\HSNumeral{" a "}"
+%subst char a    = "\HSChar{''" a "''}"
+%subst string a  = "\HSString{``" a "\char34 }"
+%subst special a = "\HSSpecial{" a "}"
+%subst comment a = "\HSComment{ -\! -" a "}"
+
+%% Keywords
+%format record      = "\HSKeyword{record}"
+%format data        = "\HSKeyword{data}"
+%format postulate   = "\HSKeyword{postulate}"
+%format field       = "\HSKeyword{field}"
+%format constructor = "\HSKeyword{constructor}"
+%format open        = "\HSKeyword{open}"
+%format import      = "\HSKeyword{import}"
+%format using       = "\HSKeyword{using}"
+%format pattern     = "\HSKeyword{pattern}"
+%format variable    = "\HSKeyword{variable}"
+%format macro       = "\HSKeyword{macro}"
+%format tactic      = "\HSKeyword{tactic}"
+%format BUILTIN     = "\HSKeyword{BUILTIN}"
+%format REWRITE     = "\HSKeyword{REWRITE}"
+%format OPTIONS     = "\HSKeyword{OPTIONS}"
+%format as          = "\HSKeyword{as}"
+
+%format PRAGMAL  = "\HSSym{\lbrace-\#\ }"
+%format PRAGMAR  = "\HSSym{\ \#-\rbrace}"
+
+%% Constructors
+%format refl       = "\HSCon{refl}"
+%format nil        = "\HSCon{[]}"
+%format ∷          = "\HSCon{::}"
+%format tt         = "\HSCon{tt}"
+%format yes        = "\HSCon{yes}"
+%format no         = "\HSCon{no}"
+%format at         = "\HSCon{@}"
+%format validTxRefs = "\HSCon{validTxRefs}"
+%format validOutputIndices = "\HSCon{validOutputIndices}"
+%format validOutputRefs = "\HSCon{validOutputRefs}"
+%format validDataScriptTypes = "\HSCon{validDataScriptTypes}"
+%format preservesValues = "\HSCon{preservesValues}"
+%format noDoubleSpending = "\HSCon{noDoubleSpending}"
+%format allInputsValidate = "\HSCon{allInputsValidate}"
+%format validateValidHashes = "\HSCon{validateValidHashes}"
+%format forging = "\HSCon{forging}"
+
+%format _          = "\HSSym{\anonymous}"
+%format →          = "\HSSym{\mathbin{\to}}"
+%format <-         = "\HSSym{\leftarrow}"
+%format =>         = "\HSSym{\Rightarrow} "
+%format |          = "\HSSym{\mathbin{\mid}}"
+%format =          = "\HSSym{\mathbin{=}}"
+%format ++         = "\HSSym{\mathbin{\plus}}"
+
+%%% Formatting
+%format DOTS     = "\HSSym{\dots}"
+%format VDOTS    = "\HSSym{\vdots}"
+%format ^^       = "\;"
+%format ##       = "\vspace{1pt}"
+%format U        = "\HSSym{\_}"
+%format UL       = "\HSSym{\_\!}"
+%format ULL      = "\HSSym{\_\!\!}"
+%format UR       = "\HSSym{\!\_}"
+%format URR      = "\HSSym{\!\!\_}"
+%format PRIME    = "\! ^{\prime}"
+%format DPRIME   = "\! ^{\prime\prime}"
+
+
+%format Λ        = "\HSSym{\Lambda}"
+%format ∀        = "\HSSym{\forall\ }"
+%format ∀?       = "\HSSym{\forall ?\ }"
+%format ∃        = "\HSSym{\exists}"
+%format ∃?       = "\HSSym{\exists ?\ }"
+%format ,        = "\HSSym{\mathbin{,}}"
+%format ∨        = "\HSSym{\mathbin{\lor}}"
+%format ∧        = "\HSSym{\mathbin{\land}}"
+%format ~~       = "\HSSym{\approx}"
+%format <>       = "\HSSym{\diamond}"
+%format ─        = "\HSSym{\mathbin{\setminus}}"
+%format ⟨$⟩       = "\HSSym{\mathrel{\langle\$\rangle}}"
+%format <*>      = "\HSSym{\langle*\rangle}"
+%format <->      = "\HSSym{\mathrel{\leftrightarrow}}"
+%format <=>      = "\HSSym{\mathrel{\iff}}"
+%format if       = "if"
+%format ℕ        = "\HSSym{\mathbb{N}}"
+%format NN       = "\HSSym{\mathbb{N}\llbracket\ }"
+%format 𝔹        = "\HSSym{\mathbb{B}}"
+%format BB       = "\HSSym{\mathbb{B}\llbracket\ }"
+%format 𝔸        = "\HSSym{\mathbb{A}}"
+%format 𝕌        = "\HSSym{\mathbb{U}}"
+%format ∅        = "\HSSym{\varnothing}"
+%format ∪        = "\HSSym{\mathbin{\cup}}"
+%format ⊎        = "\HSSym{\mathrel{\uplus}}"
+%format ⟨        = "\HSSym{\langle\ }"
+%format ⟩        = "\HSSym{\ \rangle}"
+%format ∈        = "\HSSym{\mathrel{\in}}"
+%format ∈?       = "\HSSym{\mathrel{\in ?}}"
+%format ∈-       = "\HSSym{\in\!-}"
+%format ∉        = "\HSSym{\mathrel{\notin}}"
+%format ∋        = "\HSSym{\mathrel{\ni}}"
+%format iin      = "\HSVar{i\!\in}"
+%format mapWithE = "\HSVar{mapWith\!\in}"
+%format xin      = "\HSVar{x\!\in}"
+%format ⊆        = "\HSSym{\mathrel{\subseteq}}"
+%format ≡        = "\HSSym{\mathrel{\equiv}}"
+%format ≢        = "\HSSym{\mathrel{\not\equiv}}"
+%%format λ       = "\HSSym{\lambda\ }"
+%format BIT      = "\HSSym{\bitcoin}"
+%format ‼        = "\HSSym{\mathbin{!!}}"
+%format ♯        = "\HSSym{\hspace{1pt}\#}"
+%format ♯♯       = "\HSSym{\ \#\ }"
+%format ∶-       = "\HSSym{\dashv}"
+%format ⟩∶-      = "\HSSym{\ \rangle\dashv}"
+%format ⊕        = "\HSSym{\mathbin{\oplus}}"
+%format ∘        = "\HSSym{\mathrel{∘}}"
+%format -        = "\HSSym{\text{\textit{-}}}"
+%format ♯-       = "\HSSym{\#\text{\textit{-}}}"
+%format ∖        = "\HSSym{\setminus}"
+%format ′        = "\HSSym{′\ }"
+%format Γ        = "\HSSym{\Gamma}"
+%format ⊎        = "\HSSym{\mathrel{\uplus}}"
+%format ⊥        = "\HSSym{\bot}"
+%format ×       = "\HSSym{\mathrel{\times}}"
+%format ≤        = "\HSSym{\mathrel{\leq}}"
+%format ⊆        = "\HSSym{\mathrel{\subseteq}}"
+%format ⊸        = "\HSSym{\multimap}"
+%format ∧        = "\HSSym{\mathbin{\land}}"
+%format ∎        = "\HSSym{\ \text{\mbox{\tiny$\square$}}}"
+%format ARR      = "\HSSym{\mathrel{\overset{\alpha}{\longrightarrow}}}"
+%format —→       = "\HSSym{\mathrel{\longrightarrow}}"
+%format —→⟨      = "\HSSym{\mathrel{\longrightarrow\!\langle}}"
+%format —→⟦      = "\HSSym{\mathrel{\longrightarrow\!\!\llbracket}}"
+%format —↠      = "\HSSym{\mathrel{\longrightarrow^*}}"
+%format —↠⟦     = "\HSSym{\mathrel{\longrightarrow^*\!\!\llbracket}}"
+%format ——→⟦     = "\HSSym{\mathrel{\rightarrowtail\!\!\llbracket}}"
+%format ∷⟦       = "\HSSym{\mathrel{::\!\llbracket}}"
+%format ⟧        = "\HSSym{\mathrel{\rrbracket}}"
+%format ↔       = "\HSSym{\mathrel{\leftrightarrow}}"
+%format LR      = "\HSSym{\mathrel{\leftrightarrow}}"
+%format ↭       = "\HSSym{\mathrel{\leftrightsquigarrow}}"
+%format LSR     = "\HSSym{\mathrel{\leftrightsquigarrow}}"
+%format ↪       = "\HSSym{\mathrel{\hookrightarrow}}"
+%format ≈       = "\HSSym{\mathrel{\approx}}"
+%format ⇒       = "\HSSym{\mathrel{\Rightarrow}}"
+%format ∗       = "\HSSym{\ast}"
+%%format →       = "\HSSym{\mathrel{\rightarrow}}"
+%format ≟       = "\HSSym{\mathbin{\overset{\text{\tiny ?}}{=}}}"
+%format ∃≟      = "\HSSym{\mathbin{\exists\overset{\text{\tiny ?}}{=}}}"
+%format .≟      = "\HSSym{.\!\overset{\text{\tiny ?}}{=}\ }"
+%format Σ       = "\HSSym{\Sigma\!}"
+%format Δ       = "\HSSym{\Delta}"
+%format :!      = "\HSSym{\mathbin{!}}"
+%format :?      = "\HSSym{\mathbin{?}}"
+%format ∶        = "\HSSym{\mathbin{:}}"
+%format †       = "\HSSym{\dag}"
+
+%format ONEB     = "\HSSym{\mathbb{A}}"
+%format TWOB     = "\HSSym{\mathbb{B}}"
+%format THREEB   = "\HSSym{\mathbb{C}}"
+
+%format BAR      = "\HSSym{\! | \!}"
+%format TRI      = "\HSSym{\vartriangleright}"
+%format HTRI     = "\HSSym{\#\!\vartriangleright\!\!}"
+%format ATRI     = "\HSSym{{\vartriangleright}^a}"
+%format DTRI     = "\HSSym{{\vartriangleright}^d}"
+%format STRI     = "\HSSym{{\vartriangleright}^s}"
+%format BTRI     = "\HSSym{{\vartriangleright}^b}"
+
+%format SUBA     = "\HSSym{\textsub{a}}"
+%format SUBL     = "\HSSym{\textsub{l}}"
+%format SUBR     = "\HSSym{\textsub{r}}"
+%format SUBT     = "\HSSym{\textsub{t}}"
+%format SUBI     = "\HSSym{\textsub{i}}"
+%format SUBP     = "\HSSym{\textsub{p}}"
+%format SUBV     = "\HSSym{\textsub{v}}"
+%format SUBN     = "\HSSym{\textsub{n}}"
+%format SG       = "\HSSym{\textsup{g}}"
+%format SA       = "\HSSym{\textsup{a}}"
+%format SB       = "\HSSym{\textsup{b}}"
+%format SC       = "\HSSym{\textsup{c}}"
+%format SCC      = "\HSSym{\ \textsup{c}}"
+%format SD       = "\HSSym{\textsup{d}}"
+%format SDD      = "\HSSym{\ \textsup{d}}"
+%format SL       = "\HSSym{\textsup{l}}"
+%format SR       = "\HSSym{\textsup{r}}"
+%format SV       = "\HSSym{\textsup{v}}"
+%format SP       = "\HSSym{\textsup{p}}"
+%format SG       = "\HSSym{\textsup{g}}"
+%format SPLUS    = "\HSSym{\textsup{+}}"
+%format ST       = "\HSSym{\textsup{t}}"
+
+%format ′ = "\hspace{2pt}^{\mathsmaller{\prime}}"
+%format ″ = "\hspace{2pt}^{\mathsmaller{\prime\prime}}"
+%format SUBZERO = "\textsub{0}"
+%format SUBONE = "\textsub{1}"
+%format SUBTWO = "\textsub{2}"
+%format SUBTHREE = "\textsub{3}"
+%format SUBFOUR = "\textsub{4}"
+%format SUBFIVE = "\textsub{5}"
+%format SUBSIX = "\textsub{6}"
+
+%format ∙ = "\HSSym{\mathlarger{\mathlarger{\mathlarger{\cdot}}}}"
+%format ∘ = "\HSSym{\mathbin{\circ}}"

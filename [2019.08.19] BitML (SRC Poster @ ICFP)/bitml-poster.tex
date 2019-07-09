@@ -1,0 +1,528 @@
+\documentclass[final,hyperref={pdfpagelabels=false}]{beamer}
+\usepackage[orientation=portrait,size=a0,scale=1.7]{beamerposter}
+\usetheme{I6pd2} % Use the I6pd2 theme supplied with this template
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{chains,arrows,automata,fit,positioning,calc}
+
+% Colors
+\usepackage{xcolor}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+
+% Math Symbols
+\usepackage{amsmath,amsthm,amssymb,latexsym,stmaryrd}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Agda imports
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ODER: format ==         = "\mathrel{==}"
+%% ODER: format /=         = "\neq "
+%
+%
+\makeatletter
+\@ifundefined{lhs2tex.lhs2tex.sty.read}%
+  {\@namedef{lhs2tex.lhs2tex.sty.read}{}%
+   \newcommand\SkipToFmtEnd{}%
+   \newcommand\EndFmtInput{}%
+   \long\def\SkipToFmtEnd#1\EndFmtInput{}%
+  }\SkipToFmtEnd
+
+\newcommand\ReadOnlyOnce[1]{\@ifundefined{#1}{\@namedef{#1}{}}\SkipToFmtEnd}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\DeclareFontFamily{OT1}{cmtex}{}
+\DeclareFontShape{OT1}{cmtex}{m}{n}
+  {<5><6><7><8>cmtex8
+   <9>cmtex9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmtex10}{}
+\DeclareFontShape{OT1}{cmtex}{m}{it}
+  {<-> ssub * cmtt/m/it}{}
+\newcommand{\texfamily}{\fontfamily{cmtex}\selectfont}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+  {<5><6><7><8>cmtt8
+   <9>cmbtt9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmbtt10}{}
+\DeclareFontShape{OT1}{cmtex}{bx}{n}
+  {<-> ssub * cmtt/bx/n}{}
+\newcommand{\tex}[1]{\text{\texfamily#1}}	% NEU
+
+\newcommand{\Sp}{\hskip.33334em\relax}
+
+
+\newcommand{\Conid}[1]{\mathit{#1}}
+\newcommand{\Varid}[1]{\mathit{#1}}
+\newcommand{\anonymous}{\kern0.06em \vbox{\hrule\@width.5em}}
+\newcommand{\plus}{\mathbin{+\!\!\!+}}
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}% suggested by Neil Mitchell
+\newcommand{\sequ}{\mathbin{>\!\!\!>}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\usepackage{polytable}
+
+%mathindent has to be defined
+\@ifundefined{mathindent}%
+  {\newdimen\mathindent\mathindent\leftmargini}%
+  {}%
+
+\def\resethooks{%
+  \global\let\SaveRestoreHook\empty
+  \global\let\ColumnHook\empty}
+\newcommand*{\savecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\savecolumns[#1]}}
+\newcommand*{\restorecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\restorecolumns[#1]}}
+\newcommand*{\aligncolumn}[2]%
+  {\g@addto@macro\ColumnHook{\column{#1}{#2}}}
+
+\resethooks
+
+\newcommand{\onelinecommentchars}{\quad-{}- }
+\newcommand{\commentbeginchars}{\enskip\{-}
+\newcommand{\commentendchars}{-\}\enskip}
+
+\newcommand{\visiblecomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \let\commentbegin=\commentbeginchars
+  \let\commentend=\commentendchars}
+
+\newcommand{\invisiblecomments}{%
+  \let\onelinecomment=\empty
+  \let\commentbegin=\empty
+  \let\commentend=\empty}
+
+\visiblecomments
+
+\newlength{\blanklineskip}
+\setlength{\blanklineskip}{0.66084ex}
+
+\newcommand{\hsindent}[1]{\quad}% default is fixed indentation
+\let\hspre\empty
+\let\hspost\empty
+\newcommand{\NB}{\textbf{NB}}
+\newcommand{\Todo}[1]{$\langle$\textbf{To do:}~#1$\rangle$}
+
+\EndFmtInput
+\makeatother
+%
+%
+%
+%
+%
+%
+% This package provides two environments suitable to take the place
+% of hscode, called "plainhscode" and "arrayhscode". 
+%
+% The plain environment surrounds each code block by vertical space,
+% and it uses \abovedisplayskip and \belowdisplayskip to get spacing
+% similar to formulas. Note that if these dimensions are changed,
+% the spacing around displayed math formulas changes as well.
+% All code is indented using \leftskip.
+%
+% Changed 19.08.2004 to reflect changes in colorcode. Should work with
+% CodeGroup.sty.
+%
+\ReadOnlyOnce{polycode.fmt}%
+\makeatletter
+
+\newcommand{\hsnewpar}[1]%
+  {{\parskip=0pt\parindent=0pt\par\vskip #1\noindent}}
+
+% can be used, for instance, to redefine the code size, by setting the
+% command to \small or something alike
+\newcommand{\hscodestyle}{}
+
+% The command \sethscode can be used to switch the code formatting
+% behaviour by mapping the hscode environment in the subst directive
+% to a new LaTeX environment.
+
+\newcommand{\sethscode}[1]%
+  {\expandafter\let\expandafter\hscode\csname #1\endcsname
+   \expandafter\let\expandafter\endhscode\csname end#1\endcsname}
+
+% "compatibility" mode restores the non-polycode.fmt layout.
+
+\newenvironment{compathscode}%
+  {\par\noindent
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed\)%
+   \par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\compaths}{\sethscode{compathscode}}
+
+% "plain" mode is the proposed default.
+% It should now work with \centering.
+% This required some changes. The old version
+% is still available for reference as oldplainhscode.
+
+\newenvironment{plainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newenvironment{oldplainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+% Here, we make plainhscode the default environment.
+
+\newcommand{\plainhs}{\sethscode{plainhscode}}
+\newcommand{\oldplainhs}{\sethscode{oldplainhscode}}
+\plainhs
+
+% The arrayhscode is like plain, but makes use of polytable's
+% parray environment which disallows page breaks in code blocks.
+
+\newenvironment{arrayhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\parray}%
+  {\endparray\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newcommand{\arrayhs}{\sethscode{arrayhscode}}
+
+% The mathhscode environment also makes use of polytable's parray 
+% environment. It is supposed to be used only inside math mode 
+% (I used it to typeset the type rules in my thesis).
+
+\newenvironment{mathhscode}%
+  {\parray}{\endparray}
+
+\newcommand{\mathhs}{\sethscode{mathhscode}}
+
+% texths is similar to mathhs, but works in text mode.
+
+\newenvironment{texthscode}%
+  {\(\parray}{\endparray\)}
+
+\newcommand{\texths}{\sethscode{texthscode}}
+
+% The framed environment places code in a framed box.
+
+\def\codeframewidth{\arrayrulewidth}
+\RequirePackage{calc}
+
+\newenvironment{framedhscode}%
+  {\parskip=\abovedisplayskip\par\noindent
+   \hscodestyle
+   \arrayrulewidth=\codeframewidth
+   \tabular{@{}|p{\linewidth-2\arraycolsep-2\arrayrulewidth-2pt}|@{}}%
+   \hline\framedhslinecorrect\\{-1.5ex}%
+   \let\endoflinesave=\\
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \framedhslinecorrect\endoflinesave{.5ex}\hline
+   \endtabular
+   \parskip=\belowdisplayskip\par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\framedhslinecorrect}[2]%
+  {#1[#2]}
+
+\newcommand{\framedhs}{\sethscode{framedhscode}}
+
+% The inlinehscode environment is an experimental environment
+% that can be used to typeset displayed code inline.
+
+\newenvironment{inlinehscode}%
+  {\(\def\column##1##2{}%
+   \let\>\undefined\let\<\undefined\let\\\undefined
+   \newcommand\>[1][]{}\newcommand\<[1][]{}\newcommand\\[1][]{}%
+   \def\fromto##1##2##3{##3}%
+   \def\nextline{}}{\) }%
+
+\newcommand{\inlinehs}{\sethscode{inlinehscode}}
+
+% The joincode environment is a separate environment that
+% can be used to surround and thereby connect multiple code
+% blocks.
+
+\newenvironment{joincode}%
+  {\let\orighscode=\hscode
+   \let\origendhscode=\endhscode
+   \def\endhscode{\def\hscode{\endgroup\def\@currenvir{hscode}\\}\begingroup}
+   %\let\SaveRestoreHook=\empty
+   %\let\ColumnHook=\empty
+   %\let\resethooks=\empty
+   \orighscode\def\hscode{\endgroup\def\@currenvir{hscode}}}%
+  {\origendhscode
+   \global\let\hscode=\orighscode
+   \global\let\endhscode=\origendhscode}%
+
+\makeatother
+\EndFmtInput
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Agda Styling
+
+\newenvironment{agda}
+{}
+{}
+
+% Bitcoin symbol
+\def\bitcoin{%
+  \leavevmode
+  \vtop{\offinterlineskip %\bfseries
+    \setbox0=\hbox{B}%
+    \setbox2=\hbox to\wd0{\hfil\hskip-.03em
+    \vrule height .6ex width .15ex\hskip .08em
+    \vrule height .6ex width .15ex\hfil}
+    \vbox{\copy2\box0}\box2}}
+
+% Text superscript
+\newcommand\textsup[1]{\!\text{\textsuperscript{#1}}}
+\newcommand\textsub[1]{\!\text{\textsubscript{#1}}}
+
+% Horizontal lines for inference rules
+\newcommand\inferLine[1]{\rule[3pt]{#1}{.6pt}}
+\newcommand\inferSmall{\inferLine{2cm}}
+\newcommand\inferMedium{\inferLine{5cm}}
+\newcommand\inferLarge{\inferLine{8cm}}
+\newcommand\inferVeryLarge{\inferLine{11cm}}
+
+%% Colors (from duo-tone light syntax)
+\definecolor{hsblack}{RGB}{45,32,3}
+\definecolor{hsgold1}{RGB}{179,169,149}
+\definecolor{hsgold2}{RGB}{177,149,90}
+\definecolor{hsgold3}{RGB}{190,106,13}%{192,96,4}%{132,97,19}
+\definecolor{hsblue1}{RGB}{173,176,182}
+\definecolor{hsblue2}{RGB}{113,142,205}
+\definecolor{hsblue3}{RGB}{0,33,132}
+\definecolor{hsblue4}{RGB}{97,108,132}
+\definecolor{hsblue5}{RGB}{34,50,68}
+\definecolor{hsred2}{RGB}{191,121,103}
+\definecolor{hsred3}{RGB}{171,72,46}
+
+%% LaTeX Kerning nastiness. By using curly braces to delimit color group,
+%% it breaks spacing. The following seems to work:
+%%
+%% https://tex.stackexchange.com/questions/85033/colored-symbols/85035#85035
+%%
+\newcommand*{\mathcolor}{}
+\def\mathcolor#1#{\mathcoloraux{#1}}
+\newcommand*{\mathcoloraux}[3]{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+
+\newcommand{\HSKeyword}[1]{\mathcolor{hsgold3}{\textbf{#1}}}
+\newcommand{\HSNumeral}[1]{\mathcolor{hsred3}{#1}}
+\newcommand{\HSChar}[1]{\mathcolor{hsred2}{#1}}
+\newcommand{\HSString}[1]{\mathcolor{hsred2}{#1}}
+\newcommand{\HSSpecial}[1]{\mathcolor{hsblue4}{\ensuremath{#1}}}
+\newcommand{\HSSym}[1]{\mathcolor{hsblue4}{\ensuremath{#1}}}
+\newcommand{\HSCon}[1]{\mathcolor{hsblue3}{#1}}
+\newcommand{\HSVar}[1]{\mathcolor{hsblue5}{\mathit{\ensuremath{#1}}}}
+\newcommand{\HSComment}[1]{\mathcolor{hsgold2}{\textit{#1}}}
+
+
+%% Keywords
+
+
+%% Constructors
+
+
+%%% Formatting
+
+
+%%format λ       = "\HSSym{\lambda\ }"
+%%format →       = "\HSSym{\mathrel{\rightarrow}}"
+
+
+
+
+
+\def\commentbegin{}
+\def\commentend{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}
+\usepackage[tt=false]{libertine}
+\usepackage[libertine]{newtxmath}
+
+%----------------------------------------------------------------------------------------
+% TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{\LARGE \textsc{Formalizing BitML Calculus in Agda}}
+\author{Orestis Melkonian}
+\date{July 8, 2019}
+\institute{Utrecht University, The Netherlands}
+
+\titlegraphic{
+\vspace{3.8cm}\flushright\includegraphics[scale=.25]{uu}
+\vspace{.3cm}\flushright\includegraphics[scale=.375]{iohk}\hspace{.1cm}
+}
+
+%----------------------------------------------------------------------------------------
+% FOOTER TEXT
+%----------------------------------------------------------------------------------------
+
+\newcommand\footsize{15ex}
+\newcommand\leftfoot{
+  \begin{minipage}{.45\textwidth}
+  \topskip0pt
+  \vspace{\fill}
+  \includegraphics[scale=1]{uu}
+  \vspace{\fill}
+  \end{minipage}
+} % Left footer text
+\newcommand\rightfoot{
+  \begin{minipage}{.55\textwidth}
+  \topskip0pt
+  \vspace{\fill}
+  \large \textbf{https://github.com/omelkonian/formal-bitml}
+  \vspace{\fill}
+  \end{minipage}
+} % Right footer text
+
+%----------------------------------------------------------------------------------------
+% SIZES ( 3*sepsize + 2*colsize == 1 )
+%----------------------------------------------------------------------------------------
+\newcommand\sepsize{.05\textwidth}
+\newcommand\colsize{.425\textwidth}
+
+\begin{document}
+
+\addtobeamertemplate{block end}{}{\vspace*{4ex}} % White space under blocks
+
+\begin{frame}[t] % The whole poster is enclosed in one beamer frame
+
+\begin{columns}[t] % The whole poster consists of two major columns, each of which can be subdivided further with another \begin{columns} block - the [t] argument aligns each column's content to the top
+
+\begin{column}{\sepsize}\end{column} % Empty spacer column
+
+\begin{column}{\colsize} % The first column
+
+%----------------------------------------------------------------------------------------
+% CONTENT
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Introduction}
+  \begin{itemize}
+    \item \textbf{Janus} is an imperative reversible programming language, meaning that every computation and function can be reversed.
+    \vspace{1cm}
+    \item \textbf{Hanus} is an extended implementation of Janus that can be compiled straight to Haskell. Because of this, Hanus contains many awesome Haskell features that are unthinkable in regular Janus!
+  \end{itemize}
+\end{block}
+
+\begin{block}{Reverse your program}
+\begin{agda}\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{5E}{@{}l@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{17E}{@{}l@{}}%
+\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{66}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{70}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{70E}{@{}l@{}}%
+\column{74}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\HSKeyword{data}\;\HSSym{\anonymous}\HSSym{\mathrel{\longrightarrow}}\HSSym{\anonymous}\mathbin{:}\HSCon{Configuration}\;\HSVar{ads}\;\HSVar{cs}\;\HSVar{ds}\HSSym{\mathbin{\to}}\HSCon{Configuration}\;\HSVar{ads}\hspace{2pt}^{\mathsmaller{\prime}}\HSVar{cs}\hspace{2pt}^{\mathsmaller{\prime}}\HSVar{ds}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\mathbin{\to}}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{D}\HSSym{\text{\textit{-}}}\HSCon{AuthJoin}\mathbin{:}{}\<[66]%
+\>[66]{}\HSCon{D}\HSSym{\text{\textit{-}}}\HSCon{Join}\mathbin{:}{}\<[E]%
+\\
+\>[3]{}\hsindent{6}{}\<[9]%
+\>[9]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}{}\<[74]%
+\>[74]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{0}\HSSym{\mathrel{\leftrightarrow}}\HSNumeral{1}\HSSpecial{\mskip1.5mu]}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\HSSym{\mathrel{\longrightarrow}}{}\<[5E]%
+\>[9]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSNumeral{0}\HSSym{\mathrel{\leftrightarrow}}\HSNumeral{1}\HSSpecial{\mskip1.5mu]}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}\;\HSSym{\textsup{p}}\;\HSSym{\textsup{p}}\;\HSSym{\textsup{p}}\;{}\<[66]%
+\>[66]{}\HSSym{\textsup{p}}{}\<[70]%
+\>[70]{}\HSSym{\mathrel{\longrightarrow}}{}\<[70E]%
+\>[74]{}\HSSym{\langle\ }\HSCon{A}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSym{+}\HSVar{v}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\ \rangle}\HSSym{\textsup{d}}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{Advertise}{}\<[17]%
+\>[17]{}\mathbin{:}{}\<[17E]%
+\>[20]{}\HSCon{Any}\;\HSSpecial{(}\HSSym{\_\!}\HSSym{\mathrel{\in}}\HSCon{Hon}\HSSpecial{)}\;\HSSpecial{(}\HSVar{participants}\;\HSSpecial{(}\HSCon{G}\;\HSVar{ad}\HSSpecial{)}\HSSpecial{)}\HSSym{\mathbin{\to}}\HSSpecial{(}\HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSVar{ad}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}\HSSpecial{)}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\HSCon{C}\HSSym{\text{\textit{-}}}\HSCon{AuthCommit}{}\<[17]%
+\>[17]{}\mathbin{:}{}\<[17E]%
+\>[20]{}\HSSpecial{(}\HSVar{secrets}\;\HSCon{A}\;\HSSpecial{(}\HSCon{G}\;\HSVar{ad}\HSSpecial{)}\HSSym{\mathrel{\equiv}}\HSVar{a₀}\;\HSSym{\dots}\;\HSVar{aₙ}\HSSpecial{)}\HSSym{\mathrel{\times}}\HSSpecial{(}\HSCon{A}\HSSym{\mathrel{\in}}\HSCon{Hon}\HSSym{\mathbin{\to}}\HSCon{All}\;\HSSpecial{(}\HSSym{\_}\HSSym{\mathrel{\not\equiv}}\;\HSVar{nothing}\HSSpecial{)}\;\HSVar{a}\;\HSSym{\textsub{i}}\HSSpecial{)}{}\<[E]%
+\\
+\>[17]{}\HSSym{\mathbin{\to}}{}\<[17E]%
+\>[20]{}\HSSpecial{`}\HSVar{ad}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}\HSSym{\mathrel{\longrightarrow}}\HSSpecial{`}\HSVar{ad}\HSSym{\mathbin{\mid}}\HSSym{\Gamma}\HSSym{\mathbin{\mid}}\HSSym{\dots}\HSSym{\langle\ }\HSCon{A}\mathbin{:}\HSVar{a}\;\HSSym{\textsub{i}}\HSSym{\hspace{1pt}\#}\HSCon{N}\;\HSSym{\textsub{i}}\HSSym{\ \rangle}\HSSym{\dots}\;\HSSym{\! | \!}\;\HSCon{A}\;\HSSpecial{[\mskip1.5mu }\HSSym{♯▷}\;\HSVar{ad}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{agda}
+\end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of the first column
+
+\begin{column}{\sepsize}\end{column} % Empty spacer column
+
+\begin{column}{\colsize} % The second column
+\addtobeamertemplate{block end}{}{\vspace*{-2.4ex}} % White space under blocks
+
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Semantic Checking (Janus side)}
+\end{block}
+
+\begin{block}{Semantic Checking (Haskell side)}
+\end{block}
+
+\begin{block}{Haskell Power}
+\end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of the second column
+
+\begin{column}{\sepsize}\end{column} % Empty spacer column
+
+\end{columns} % End of all the columns in the poster
+
+\end{frame} % End of the enclosing frame
+
+\end{document}
