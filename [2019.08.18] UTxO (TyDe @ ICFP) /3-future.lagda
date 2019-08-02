@@ -33,9 +33,17 @@
 \end{frame}
 
 \begin{frame}{Next Steps: Certified Compilation}
-\begin{enumerate}
-\item ... BitML ...
-\end{enumerate}
+\begin{itemize}
+\item \textbf{BitML}: Idealistic process calculus for Bitcoin smart contracts
+\item We already have instrinsically-typed BitML contracts in Agda,
+as well as its small-step semantics and corresponding meta-theory
+\item \textbf{Plan}: Certified compilation from BitML to (extended) UTxO
+  \begin{itemize}
+  \item Any attack possible at the transaction level,
+     will also manifest itself in the higher-level BitML semantics
+  \end{itemize}
+\item Come check my poster for more details on formalizing BitML!
+\end{itemize}
 \end{frame}
 
 \section{Conclusion}

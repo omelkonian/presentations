@@ -1,4 +1,5 @@
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=43]{beamer}
+%% \documentclass[aspectratio=169]{beamer}
 \usetheme[
   block=fill,
   background=light,
@@ -51,17 +52,23 @@
 %----------------------------------------------------------------------------
 
 \title{Formal Investigation of the Extended UTxO Model}
+\subtitle{Laying the foundations for the formal verification of smart contracts}
 \author{\textbf{Orestis Melkonian}, Wouter Swierstra, Manuel M.T. Chakravarty}
-\date{July 8, 2019}
-\institute{Utrecht University, The Netherlands}
+\date{August 18, 2019}
 \titlegraphic{
-\vspace{3.8cm}\flushright\includegraphics[scale=.25]{uu}
-\vspace{.3cm}\flushright\includegraphics[scale=.375]{iohk}\hspace{.1cm}
+\vspace*{7cm}
+\includegraphics[keepaspectratio=true,height=1.4cm]{uu}
+\hspace{1cm}
+\includegraphics[keepaspectratio=true,height=1.4cm]{iohk}
 }
 
 \begin{document}
 \begin{center}
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{subtitle}{size=\small}
 \maketitle
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{subtitle}{size=\large}
 \end{center}
 
 %include 1-intro.lagda

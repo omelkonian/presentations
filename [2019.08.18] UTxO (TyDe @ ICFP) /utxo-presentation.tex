@@ -1,4 +1,5 @@
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=43]{beamer}
+%% \documentclass[aspectratio=169]{beamer}
 \usetheme[
   block=fill,
   background=light,
@@ -390,17 +391,24 @@
 %----------------------------------------------------------------------------
 
 \title{Formal Investigation of the Extended UTxO Model}
+\subtitle{Laying the foundations for the formal verification of smart contracts}
 \author{\textbf{Orestis Melkonian}, Wouter Swierstra, Manuel M.T. Chakravarty}
+%% \date{}
 \date{July 8, 2019}
-\institute{Utrecht University, The Netherlands}
 \titlegraphic{
-\vspace{3.8cm}\flushright\includegraphics[scale=.25]{uu}
-\vspace{.3cm}\flushright\includegraphics[scale=.375]{iohk}\hspace{.1cm}
+\vspace*{7cm}
+\includegraphics[keepaspectratio=true,height=1.4cm]{uu}
+\hspace{1cm}
+\includegraphics[keepaspectratio=true,height=1.4cm]{iohk}
 }
 
 \begin{document}
 \begin{center}
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{subtitle}{size=\small}
 \maketitle
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{subtitle}{size=\large}
 \end{center}
 
 \section{Introduction}
@@ -1346,7 +1354,7 @@ Our hash function is a postulate, so our decision procedures will get stuck...
 \end{frame}
 
 
-\section{UTxO: Meta-theory}
+\section{Meta-theory}
 
 \subsection{Weakening Lemma}
 \begin{frame}{Weakening via Injections}
@@ -1534,9 +1542,17 @@ Two ledgers \ensuremath{\HSVar{l}} and \ensuremath{\HSVar{l}\hspace{2pt}^{\maths
 \end{frame}
 
 \begin{frame}{Next Steps: Certified Compilation}
-\begin{enumerate}
-\item ... BitML ...
-\end{enumerate}
+\begin{itemize}
+\item \textbf{BitML}: Idealistic process calculus for Bitcoin smart contracts
+\item We already have instrinsically-typed BitML contracts in Agda,
+as well as its small-step semantics and corresponding meta-theory
+\item \textbf{Plan}: Certified compilation from BitML to (extended) UTxO
+  \begin{itemize}
+  \item Any attack possible at the transaction level,
+     will also manifest itself in the higher-level BitML semantics
+  \end{itemize}
+\item Come check my poster for more details on formalizing BitML!
+\end{itemize}
 \end{frame}
 
 \section{Conclusion}

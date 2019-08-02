@@ -461,7 +461,7 @@ utxo = refl
 \end{frame}
 
 
-\section{UTxO: Meta-theory}
+\section{Meta-theory}
 
 \subsection{Weakening Lemma}
 \begin{frame}{Weakening via Injections}
