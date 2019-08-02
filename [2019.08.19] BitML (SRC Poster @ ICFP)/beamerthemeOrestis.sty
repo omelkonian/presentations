@@ -1,4 +1,4 @@
-\ProvidesPackage{beamerthemeI6pd2}  % this style was created by Thomas Deselaers an Philippe Dreuw
+\ProvidesPackage{beamerthemeOrestis}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{tangocolors}
@@ -8,14 +8,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{xcolor}
 \usepackage{color, colortbl}
-\colorlet{CodeBg}{gray!90}
-\definecolor{Gray}{rgb}{0.9,0.9,0.9}
-\definecolor{bblue}{HTML}{1D577A}
-\definecolor{rred}{HTML}{C03425}
-\definecolor{ggreen}{HTML}{8BB523}
-\definecolor{ppurple}{HTML}{6B1B7F}
-\definecolor{pblack}{HTML}{000000}
-\definecolor{pyellow}{HTML}{C0B225}
+
+% \colorlet{CodeBg}{gray!90}
+% \definecolor{Gray}{rgb}{0.9,0.9,0.9}
+% \definecolor{bblue}{HTML}{1D577A}
+% \definecolor{rred}{HTML}{C03425}
+% \definecolor{ggreen}{HTML}{8BB523}
+% \definecolor{ppurple}{HTML}{6B1B7F}
+% \definecolor{pblack}{HTML}{000000}
+% \definecolor{pyellow}{HTML}{C0B225}
 
 \definecolor{darkblue}{HTML}{293745}
 \definecolor{lightblue}{HTML}{4e6272}
@@ -53,10 +54,11 @@
 \setbeamertemplate{itemize items}[triangle]
 \setbeamertemplate{navigation symbols}{}  % no navigation on a poster
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setbeamertemplate{block begin}{
   \vskip.75ex
-  \begin{beamercolorbox}[ht=3.5ex,dp=0.5ex,center,leftskip=-1em,colsep*=.75ex]{block title}%
+  \begin{beamercolorbox}[ht=18ex,dp=0.5ex,center,leftskip=-1em,colsep*=.75ex]{block title}%
     \usebeamerfont*{block title}%
     {\phantom{Gg}\textsc{\insertblocktitle}}% phantom because of baseline problem
   \end{beamercolorbox}%
@@ -119,12 +121,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Display a grid to help align images ... and it looks nice with this color scheme
-%\beamertemplategridbackground[1cm]
+\beamertemplategridbackground[1cm]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \mode<all>
 
-% adapt height of imtemize rectangles
+% adapt height of itemize rectangles
 \setbeamertemplate{itemize items}[triangle]
 \setbeamertemplate{itemize item}{\raisebox{0.12ex}{$\blacktriangleright$}\hskip0.1em}
 \setbeamertemplate{itemize subitem}{\raisebox{0.12ex}{$\triangleright$}\hskip0.1em}
@@ -134,13 +136,6 @@
 \setbeamerfont{itemize/enumerate body}{size=\footnotesize}
 \setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
 \setbeamerfont{itemize/enumerate subsubbody}{size=\footnotesize}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-PDF-mode: t
-%%% TeX-master: "poster-surf"
-%%% End:
 
 % set bibliography style
 \setbeamertemplate{bibliography item}[text]

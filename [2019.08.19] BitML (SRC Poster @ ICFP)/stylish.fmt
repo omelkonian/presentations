@@ -2,8 +2,8 @@
 %% Agda Styling
 
 \newenvironment{agda}
-{}
-{}
+{\begingroup}
+{\endgroup}
 
 % Bitcoin symbol
 \def\bitcoin{%

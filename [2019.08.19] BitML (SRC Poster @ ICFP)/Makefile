@@ -10,7 +10,7 @@ redo:
 $(MAIN).pdf: $(MAIN).tex
 	xelatex $(MAIN).tex
 
-%.tex : %.lagda $(STYLE) beamerthemeI6pd2.sty
+%.tex : %.lagda $(STYLE) beamerthemeOrestis.sty
 	lhs2TeX --poly -o $@ $<
 
 clean:
