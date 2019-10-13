@@ -14,23 +14,23 @@
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Next Steps: Others}
-\begin{enumerate}
-\item Proof automation via domain-specific tactics
-   \begin{itemize}
-   \item Accommodate future formalization efforts
-   \end{itemize}
-\item Featherweight Solidity
-  \begin{itemize}
-  \item Provide proof-of-concept model in Agda
-  \item Perform some initial comparison with UTxO
-  \end{itemize}
-\item Investigate Chad Nester's work on \alert{monoidal ledgers}
-  \begin{itemize}
-  \item This leads to another reasoning device: \alert{string diagrams}
-  \end{itemize}
-\end{enumerate}
-\end{frame}
+%% \begin{frame}{Next Steps: Others}
+%% \begin{enumerate}
+%% \item Proof automation via domain-specific tactics
+%%    \begin{itemize}
+%%    \item Accommodate future formalization efforts
+%%    \end{itemize}
+%% \item Featherweight Solidity
+%%   \begin{itemize}
+%%   \item Provide proof-of-concept model in Agda
+%%   \item Perform some initial comparison with UTxO
+%%   \end{itemize}
+%% \item Investigate Chad Nester's work on \alert{monoidal ledgers}
+%%   \begin{itemize}
+%%   \item This leads to another reasoning device: \alert{string diagrams}
+%%   \end{itemize}
+%% \end{enumerate}
+%% \end{frame}
 
 \begin{frame}{Next Steps: Certified Compilation}
 \begin{itemize}

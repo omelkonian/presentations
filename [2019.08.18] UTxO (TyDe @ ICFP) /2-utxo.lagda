@@ -103,7 +103,7 @@ field
     outputRef i ∈ unspentOutputs l
 
   validDataScriptTypes : ∀ i → (iin : i ∈ inputs tx) ->
-    D i ≡ D (lookupOutput l (outputRef i) DOTS)
+    D i ≡ Data (lookupOutput l (outputRef i) DOTS)
 \end{code}\end{agda}
 \end{frame}
 
@@ -160,39 +160,39 @@ validOutputRefs? tx l =
 \end{frame}
 
 
-\subsection{Extensions}
+%% \subsection{Extensions}
 
-\begin{frame}{Extension: Multi-currency}
-\begin{enumerate}
-\item Generalize values from integers to maps: |Value = List (Hash × ℕ)|
-\item Implement additive group operators (on top of AVL trees):
-\begin{agda}\begin{code}
-open import Data.AVL ℕ-strictTotalOrder
+%% \begin{frame}{Extension: Multi-currency}
+%% \begin{enumerate}
+%% \item Generalize values from integers to maps: |Value = List (Hash × ℕ)|
+%% \item Implement additive group operators (on top of AVL trees):
+%% \begin{agda}\begin{code}
+%% open import Data.AVL ℕ-strictTotalOrder
 
-_ + SC _ : Value → Value → Value
-c + SC c′ = toList (foldl go (fromList c) c′)
-  where
-    go : Tree Hash ℕ → (Hash × ℕ) → Tree Hash ℕ
-    go m (k , v) = insertWith k ((UL + v) ∘ fromMaybe 0) m
+%% _ + SC _ : Value → Value → Value
+%% c + SC c′ = toList (foldl go (fromList c) c′)
+%%   where
+%%     go : Tree Hash ℕ → (Hash × ℕ) → Tree Hash ℕ
+%%     go m (k , v) = insertWith k ((UL + v) ∘ fromMaybe 0) m
 
-sum SC : Values → Value
-sum SC = foldl UL + SC UR []
-\end{code}\end{agda}
-\end{enumerate}
-\end{frame}
+%% sum SC : Values → Value
+%% sum SC = foldl UL + SC UR []
+%% \end{code}\end{agda}
+%% \end{enumerate}
+%% \end{frame}
 
-\begin{frame}{Multi-currency: Forging condition}
-We now need to enforce monetary policies on forging transactions:
-\begin{agda}\begin{code}
-record IsValidTx (tx : Tx) (l : Ledger) : Set where
-  VDOTS
-  forging :
-    ∀ c → c ∈ keys (forge tx) →
-      ∃[ i ] ^^ ∃ λ (iin : i ∈ inputs tx) →
-        let out = lookupOutput l (outputRef i) DOTS
-        in (address out) ♯ ≡ c
-\end{code}\end{agda}
-\end{frame}
+%% \begin{frame}{Multi-currency: Forging condition}
+%% We now need to enforce monetary policies on forging transactions:
+%% \begin{agda}\begin{code}
+%% record IsValidTx (tx : Tx) (l : Ledger) : Set where
+%%   VDOTS
+%%   forging :
+%%     ∀ c → c ∈ keys (forge tx) →
+%%       ∃[ i ] ^^ ∃ λ (iin : i ∈ inputs tx) →
+%%         let out = lookupOutput l (outputRef i) DOTS
+%%         in (address out) ♯ ≡ c
+%% \end{code}\end{agda}
+%% \end{frame}
 
 \subsection{Example}
 \newcommand\forge[1]{forge: \bitcoin ~#1}
@@ -280,144 +280,140 @@ record IsValidTx (tx : Tx) (l : Ledger) : Set where
 \end{tikzpicture}\end{figure}
 \end{frame}
 
-\begin{frame}{Example: Transaction Graph \alert{+ monetary policy}}
-\begin{figure}\begin{tikzpicture}
-  [transform canvas={scale=0.8},
-   basic box/.style = {
-     draw,
-     shape = rectangle,
-     align = left,
-     minimum width=2cm,
-     minimum height=1.2cm,
-     rounded corners},
-   upedge/.style = {
-     },
-   downedge/.style = {
-     },
-   to/.style = {
-     ->,
-     >=stealth',
-     semithick
-  },
-  every matrix/.style={column sep=1.3cm, row sep=1cm, ampersand replacement=\&},
-  font=\footnotesize
-  ]
-  \matrix{
-    \node[basic box, label = |t SUBONE|] (t)
-      {\forge{1000}\\ \fee{0}};
-    \& \node[basic box, label = |t SUBTWO|] (tt)
-      {\forge{0}\\ \fee{0}};
-    \& \node[basic box, label = |t SUBFIVE|] (tfive)
-      {\forge{0}\\ \fee{7}};
-    \& \node[basic box, label = |t SUBSIX|] (tsix)
-      {\forge{0}\\ \fee{1}};
-    \& \node (end) {}; \\
+%% \begin{frame}{Example: Transaction Graph \alert{+ monetary policy}}
+%% \begin{figure}\begin{tikzpicture}
+%%   [transform canvas={scale=0.8},
+%%    basic box/.style = {
+%%      draw,
+%%      shape = rectangle,
+%%      align = left,
+%%      minimum width=2cm,
+%%      minimum height=1.2cm,
+%%      rounded corners},
+%%    upedge/.style = {
+%%      },
+%%    downedge/.style = {
+%%      },
+%%    to/.style = {
+%%      ->,
+%%      >=stealth',
+%%      semithick
+%%   },
+%%   every matrix/.style={column sep=1.3cm, row sep=1cm, ampersand replacement=\&},
+%%   font=\footnotesize
+%%   ]
+%%   \matrix{
+%%     \node[basic box, label = |t SUBONE|] (t)
+%%       {\forge{1000}\\ \fee{0}};
+%%     \& \node[basic box, label = |t SUBTWO|] (tt)
+%%       {\forge{0}\\ \fee{0}};
+%%     \& \node[basic box, label = |t SUBFIVE|] (tfive)
+%%       {\forge{0}\\ \fee{7}};
+%%     \& \node[basic box, label = |t SUBSIX|] (tsix)
+%%       {\forge{0}\\ \fee{1}};
+%%     \& \node (end) {}; \\
 
-    \node[basic box, label = |c SUBZERO|] (c)
-      {\forge{0}\\ \fee{0}};
-    \& \node[basic box, label = |t SUBTHREE|] (ttt)
-      {\forge{0}\\ \fee{1}};
-    \& \node {};
-    \& \node {}; \\
+%%     \node[basic box, label = |c SUBZERO|] (c)
+%%       {\forge{0}\\ \fee{0}};
+%%     \& \node[basic box, label = |t SUBTHREE|] (ttt)
+%%       {\forge{0}\\ \fee{1}};
+%%     \& \node {};
+%%     \& \node {}; \\
 
-    \node {};
-    \& \node[basic box, label = |t SUBFOUR|] (tfour)
-      {\forge{10}\\ \fee{2}};
-    \& \node {};
-    \& \node {}; \\
-  };
+%%     \node {};
+%%     \& \node[basic box, label = |t SUBFOUR|] (tfour)
+%%       {\forge{10}\\ \fee{2}};
+%%     \& \node {};
+%%     \& \node {}; \\
+%%   };
 
-  \path
-  (t) edge[to]
-    node[above]{\bitcoin ~1000}
-    node[below]{@@|ONEB|}
-  (tt)
-  (tt) edge[to, bend right = 30]
-    node[left]{\bitcoin ~200}
-    node[right]{@@|ONEB|}
-  (ttt)
-  (tt) edge[to]
-    node[above]{\bitcoin ~800}
-    node[below]{@@|TWOB|}
-  (tfive)
-  (ttt) edge[to, bend right = 30]
-    node[left]{\bitcoin ~199}
-    node[right]{@@|THREEB|}
-  (tfour)
-  (tfour) edge[to, bend right = 45]
-    node[left]{\bitcoin ~207}
-    node[right]{@@|TWOB|}
-  (tfive)
-  (tfive) edge[to, transform canvas={yshift=13pt}]
-    node[above]{\bitcoin ~500}
-    node[below]{@@|TWOB|}
-  (tsix)
-  (tfive) edge[to, transform canvas={yshift=-13pt}]
-    node[above]{\bitcoin ~500}
-    node[below]{@@|THREEB|}
-  (tsix)
-  (tsix) edge[to, red]
-    node[above,black]{\bitcoin ~999}
-    node[below,black]{@@|THREEB|}
-  (end)
-  (c) edge[to, bend left = 30, green]
-    node[left,black]{\bitcoin-policy}
-    node[right,black]{@@|BIT|}
-  (t)
-  (c) edge[to, bend right = 40, green]
-    node[left,black]{\bitcoin-policy}
-    node[right,black]{@@|BIT|}
-  (tfour)
-  ;
-\end{tikzpicture}\end{figure}
-\end{frame}
+%%   \path
+%%   (t) edge[to]
+%%     node[above]{\bitcoin ~1000}
+%%     node[below]{@@|ONEB|}
+%%   (tt)
+%%   (tt) edge[to, bend right = 30]
+%%     node[left]{\bitcoin ~200}
+%%     node[right]{@@|ONEB|}
+%%   (ttt)
+%%   (tt) edge[to]
+%%     node[above]{\bitcoin ~800}
+%%     node[below]{@@|TWOB|}
+%%   (tfive)
+%%   (ttt) edge[to, bend right = 30]
+%%     node[left]{\bitcoin ~199}
+%%     node[right]{@@|THREEB|}
+%%   (tfour)
+%%   (tfour) edge[to, bend right = 45]
+%%     node[left]{\bitcoin ~207}
+%%     node[right]{@@|TWOB|}
+%%   (tfive)
+%%   (tfive) edge[to, transform canvas={yshift=13pt}]
+%%     node[above]{\bitcoin ~500}
+%%     node[below]{@@|TWOB|}
+%%   (tsix)
+%%   (tfive) edge[to, transform canvas={yshift=-13pt}]
+%%     node[above]{\bitcoin ~500}
+%%     node[below]{@@|THREEB|}
+%%   (tsix)
+%%   (tsix) edge[to, red]
+%%     node[above,black]{\bitcoin ~999}
+%%     node[below,black]{@@|THREEB|}
+%%   (end)
+%%   (c) edge[to, bend left = 30, green]
+%%     node[left,black]{\bitcoin-policy}
+%%     node[right,black]{@@|BIT|}
+%%   (t)
+%%   (c) edge[to, bend right = 40, green]
+%%     node[left,black]{\bitcoin-policy}
+%%     node[right,black]{@@|BIT|}
+%%   (tfour)
+%%   ;
+%% \end{tikzpicture}\end{figure}
+%% \end{frame}
 
-\begin{frame}{Example: Setting Up}
-\begin{agda}\begin{code}
-Address = ℕ
+%% \begin{frame}{Example: Setting Up}
+%% \begin{agda}\begin{code}
+%% Address = ℕ
 
-ONEB , TWOB , THREEB : Address
-ONEB    = 1 -- first address
-TWOB    = 2 -- second address
-THREEB  = 3 -- third address
+%% ONEB , TWOB , THREEB : Address
+%% ONEB    = 1 -- first address
+%% TWOB    = 2 -- second address
+%% THREEB  = 3 -- third address
 
-open import UTxO Address (λ x → x) UL ≟ UR
+%% open import UTxO Address (λ x → x) UL ≟ UR
 
-BIT -validator : State → DOTS → Bool
-BIT -validator (record {height = h}) DOTS = (h ≡ SB 1) ∨ (h ≡ SB 4)
-\end{code}\end{agda}
-\end{frame}
+%% BIT -validator : State → DOTS → Bool
+%% BIT -validator (record {height = h}) DOTS = (h ≡ SB 1) ∨ (h ≡ SB 4)
+%% \end{code}\end{agda}
+%% \end{frame}
 
-\begin{frame}{Example: Smart Constructors}
-\begin{agda}\begin{code}
-mkValidator : TxOutputRef → (DOTS → TxOutputRef → DOTS → Bool)
-mkValidator o DOTS o′ DOTS = o ≡ SB o′
+%% \begin{frame}{Example: Smart Constructors}
+%% \begin{agda}\begin{code}
+%% mkValidator : TxOutputRef → (DOTS → TxOutputRef → DOTS → Bool)
+%% mkValidator o DOTS o′ DOTS = o ≡ SB o′
 
-BIT _ : ℕ → Value
-BIT v = [ (BIT -validator ♯ , v) ]
+%% BIT _ : ℕ → Value
+%% BIT v = [ (BIT -validator ♯ , v) ]
 
-withScripts : TxOutputRef → TxInput
-withScripts o = record  { outputRef  = o
-                        ; redeemer   = λ _ → o
-                        ; validator  = mkValidator tin }
+%% withScripts : TxOutputRef → TxInput
+%% withScripts o = record  { outputRef  = o
+%%                         ; redeemer   = λ _ → o
+%%                         ; validator  = mkValidator tin }
 
-withPolicy : TxOutputRef → TxInput
-withPolicy tin = record  { outputRef = tin
-                         ; redeemer  = λ _ → tt
-                         ; validator = BIT -validator }
+%% withPolicy : TxOutputRef → TxInput
+%% withPolicy tin = record  { outputRef = tin
+%%                          ; redeemer  = λ _ → tt
+%%                          ; validator = BIT -validator }
 
-_ at _ : Value → Index addresses → TxOutput
-v at addr = record { value = v ; address = addr ; dataScript  = λ _ → tt }
-\end{code}\end{agda}
-\end{frame}
+%% _ at _ : Value → Index addresses → TxOutput
+%% v at addr = record { value = v ; address = addr ; dataScript  = λ _ → tt }
+%% \end{code}\end{agda}
+%% \end{frame}
 
 \begin{frame}{Example: Definitions of Transactions}
 \begin{agda}\begin{code}
-c SUBZERO , t SUBONE , t SUBTWO , t SUBTHREE , t SUBFOUR , t SUBFIVE , t SUBSIX : Tx
-c SUBZERO = record  { inputs   = []
-                    ; outputs  = [ BIT 0 at (BIT -validator ♯) , BIT 0 at (BIT -validator ♯) ]
-                    ; forge    = BIT 0
-                    ; fee      = BIT 0 }
+t SUBONE , t SUBTWO , t SUBTHREE , t SUBFOUR , t SUBFIVE , t SUBSIX : Tx
 t SUBONE = record  { inputs   = [ withPolicy c SUBZERO SUBZERO ]
                    ; outputs  = [ BIT 1000 at ONEB ]
                    ; forge    = BIT 1000
@@ -446,14 +442,12 @@ PRAGMAL REWRITE eq SUBZERO , eq SUBONE SUBZERO , DOTS , eq SUBSIX SUBZERO PRAGMA
 
 \begin{frame}{Example: Correct-by-construction Ledger}
 \begin{agda}\begin{code}
-ex-ledger : ValidLedger [ t SUBSIX , t SUBFIVE , t SUBFOUR , t SUBTHREE , t SUBTWO , t SUBONE , c SUBZERO ]
+ex-ledger : ValidLedger [ t SUBSIX , t SUBFIVE , t SUBFOUR , t SUBTHREE , t SUBTWO , t SUBONE ]
 ex-ledger =
-  ∙  c SUBZERO  ∶- record  { DOTS }
-  ⊕  t SUBONE   ∶- record  {  validTxRefs  = toWitness {Q = validTxRefs? t SUBONE l SUBZERO} tt
-                              VDOTS
-                           ;  forging      = toWitness {Q = forging? DOTS} tt }
+  ∙ t SUBONE   ∶- record  {  validTxRefs  = toWitness {Q = validTxRefs? t SUBONE l SUBZERO} tt
+                             DOTS  }
   VDOTS
-  ⊕  t SUBSIX   ∶- record { DOTS }
+  ⊕  t SUBSIX  ∶- record  {  DOTS  }
 ##
 utxo : list (unspentOutputs ex-ledger) ≡ [ t SUBSIX SUBZERO ]
 utxo = refl

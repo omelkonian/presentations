@@ -393,8 +393,7 @@
 \title{Formal Investigation of the Extended UTxO Model}
 \subtitle{Laying the foundations for the formal verification of smart contracts}
 \author{\textbf{Orestis Melkonian}, Wouter Swierstra, Manuel M.T. Chakravarty}
-%% \date{}
-\date{July 8, 2019}
+\date{August 18, 2019}
 \titlegraphic{
 \vspace*{7cm}
 \includegraphics[keepaspectratio=true,height=1.4cm]{uu}
@@ -743,7 +742,7 @@
 \>[3]{}\HSCon{validDataScriptTypes}\mathbin{:}\HSSym{\forall\ }\HSVar{i}\HSSym{\mathbin{\to}}\HSSpecial{(}\HSVar{i\!\in}\mathbin{:}\HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}\to {}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\HSCon{D}\;\HSVar{i}\HSSym{\mathrel{\equiv}}\HSCon{D}\;\HSSpecial{(}\HSVar{lookupOutput}\;\HSVar{l}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\;\HSSym{\dots}\HSSpecial{)}{}\<[E]%
+\>[5]{}\HSCon{D}\;\HSVar{i}\HSSym{\mathrel{\equiv}}\HSCon{Data}\;\HSSpecial{(}\HSVar{lookupOutput}\;\HSVar{l}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\;\HSSym{\dots}\HSSpecial{)}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \end{agda}
@@ -881,73 +880,39 @@ but a ``snoc''-list that carries proofs of validity:
 \end{frame}
 
 
-\subsection{Extensions}
+%% \subsection{Extensions}
 
-\begin{frame}{Extension: Multi-currency}
-\begin{enumerate}
-\item Generalize values from integers to maps: \ensuremath{\HSCon{Value}\HSSym{\mathbin{=}}\HSCon{List}\;\HSSpecial{(}\HSCon{Hash}\HSSym{\mathrel{\times}}\HSSym{\mathbb{N}}\HSSpecial{)}}
-\item Implement additive group operators (on top of AVL trees):
-\begin{agda}\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\HSKeyword{open}\;\HSKeyword{import}\;\HSCon{\HSCon{Data}.AVL}\;\HSSym{\mathbb{N}}\HSSym{\text{\textit{-}}}\HSVar{strictTotalOrder}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSSym{\anonymous}\HSSym{+}\HSSym{\textsup{c}}\;\HSSym{\anonymous}\mathbin{:}\HSCon{Value}\HSSym{\mathbin{\to}}\HSCon{Value}\HSSym{\mathbin{\to}}\HSCon{Value}{}\<[E]%
-\\
-\>[B]{}\HSVar{c}\HSSym{+}\HSSym{\textsup{c}}\;\HSVar{c}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\mathbin{=}}\HSVar{toList}\;\HSSpecial{(}\HSVar{foldl}\;\HSVar{go}\;\HSSpecial{(}\HSVar{fromList}\;\HSVar{c}\HSSpecial{)}\;\HSVar{c}\hspace{2pt}^{\mathsmaller{\prime}}\HSSpecial{)}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSKeyword{where}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\HSVar{go}\mathbin{:}\HSCon{Tree}\;\HSCon{Hash}\;\HSSym{\mathbb{N}}\HSSym{\mathbin{\to}}\HSSpecial{(}\HSCon{Hash}\HSSym{\mathrel{\times}}\HSSym{\mathbb{N}}\HSSpecial{)}\HSSym{\mathbin{\to}}\HSCon{Tree}\;\HSCon{Hash}\;\HSSym{\mathbb{N}}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\HSVar{go}\;\HSVar{m}\;\HSSpecial{(}\HSVar{k}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSpecial{)}\HSSym{\mathbin{=}}\HSVar{insertWith}\;\HSVar{k}\;\HSSpecial{(}\HSSpecial{(}\HSSym{\_\!}\HSSym{+}\HSVar{v}\HSSpecial{)}\HSSym{\mathbin{\circ}}\HSVar{fromMaybe}\;\HSNumeral{0}\HSSpecial{)}\;\HSVar{m}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSVar{sum}\;\HSSym{\textsup{c}}\mathbin{:}\HSCon{Values}\HSSym{\mathbin{\to}}\HSCon{Value}{}\<[E]%
-\\
-\>[B]{}\HSVar{sum}\;\HSSym{\textsup{c}}\HSSym{\mathbin{=}}\HSVar{foldl}\;\HSSym{\_\!}\HSSym{+}\HSSym{\textsup{c}}\;\HSSym{\!\_}\;\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\end{agda}
-\end{enumerate}
-\end{frame}
+%% \begin{frame}{Extension: Multi-currency}
+%% \begin{enumerate}
+%% \item Generalize values from integers to maps: |Value = List (Hash × ℕ)|
+%% \item Implement additive group operators (on top of AVL trees):
+%% \begin{agda}\begin{code}
+%% open import Data.AVL ℕ-strictTotalOrder
 
-\begin{frame}{Multi-currency: Forging condition}
-We now need to enforce monetary policies on forging transactions:
-\begin{agda}\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\HSKeyword{record}\;\HSCon{IsValidTx}\;\HSSpecial{(}\HSVar{tx}\mathbin{:}\HSCon{Tx}\HSSpecial{)}\;\HSSpecial{(}\HSVar{l}\mathbin{:}\HSCon{Ledger}\HSSpecial{)}\mathbin{:}\HSCon{Set}\;\HSKeyword{where}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSSym{\vdots}{}\<[E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSCon{forging}\mathbin{:}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\HSSym{\forall\ }\HSVar{c}\HSSym{\mathbin{\to}}\HSVar{c}\HSSym{\mathrel{\in}}\HSVar{keys}\;\HSSpecial{(}\HSVar{forge}\;\HSVar{tx}\HSSpecial{)}\HSSym{\mathbin{\to}}{}\<[E]%
-\\
-\>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\HSSym{\exists}\HSSpecial{[\mskip1.5mu }\HSVar{i}\HSSpecial{\mskip1.5mu]}\;\HSSym{\exists}\HSVar{λ}\;\HSSpecial{(}\HSVar{i\!\in}\mathbin{:}\HSVar{i}\HSSym{\mathrel{\in}}\HSVar{inputs}\;\HSVar{tx}\HSSpecial{)}\HSSym{\mathbin{\to}}{}\<[E]%
-\\
-\>[7]{}\hsindent{2}{}\<[9]%
-\>[9]{}\HSKeyword{let}\;\HSVar{out}\HSSym{\mathbin{=}}\HSVar{lookupOutput}\;\HSVar{l}\;\HSSpecial{(}\HSVar{outputRef}\;\HSVar{i}\HSSpecial{)}\;\HSSym{\dots}{}\<[E]%
-\\
-\>[7]{}\hsindent{2}{}\<[9]%
-\>[9]{}\HSKeyword{in}\;\HSSpecial{(}\HSVar{address}\;\HSVar{out}\HSSpecial{)}\HSSym{\hspace{1pt}\#}\HSSym{\mathrel{\equiv}}\HSVar{c}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\end{agda}
-\end{frame}
+%% _ + SC _ : Value → Value → Value
+%% c + SC c′ = toList (foldl go (fromList c) c′)
+%%   where
+%%     go : Tree Hash ℕ → (Hash × ℕ) → Tree Hash ℕ
+%%     go m (k , v) = insertWith k ((UL + v) ∘ fromMaybe 0) m
+
+%% sum SC : Values → Value
+%% sum SC = foldl UL + SC UR []
+%% \end{code}\end{agda}
+%% \end{enumerate}
+%% \end{frame}
+
+%% \begin{frame}{Multi-currency: Forging condition}
+%% We now need to enforce monetary policies on forging transactions:
+%% \begin{agda}\begin{code}
+%% record IsValidTx (tx : Tx) (l : Ledger) : Set where
+%%   VDOTS
+%%   forging :
+%%     ∀ c → c ∈ keys (forge tx) →
+%%       ∃[ i ] ^^ ∃ λ (iin : i ∈ inputs tx) →
+%%         let out = lookupOutput l (outputRef i) DOTS
+%%         in (address out) ♯ ≡ c
+%% \end{code}\end{agda}
+%% \end{frame}
 
 \subsection{Example}
 \newcommand\forge[1]{forge: \bitcoin ~#1}
@@ -1035,195 +1000,144 @@ We now need to enforce monetary policies on forging transactions:
 \end{tikzpicture}\end{figure}
 \end{frame}
 
-\begin{frame}{Example: Transaction Graph \alert{+ monetary policy}}
-\begin{figure}\begin{tikzpicture}
-  [transform canvas={scale=0.8},
-   basic box/.style = {
-     draw,
-     shape = rectangle,
-     align = left,
-     minimum width=2cm,
-     minimum height=1.2cm,
-     rounded corners},
-   upedge/.style = {
-     },
-   downedge/.style = {
-     },
-   to/.style = {
-     ->,
-     >=stealth',
-     semithick
-  },
-  every matrix/.style={column sep=1.3cm, row sep=1cm, ampersand replacement=\&},
-  font=\footnotesize
-  ]
-  \matrix{
-    \node[basic box, label = \ensuremath{\HSVar{t}\;\textsub{1}}] (t)
-      {\forge{1000}\\ \fee{0}};
-    \& \node[basic box, label = \ensuremath{\HSVar{t}\;\textsub{2}}] (tt)
-      {\forge{0}\\ \fee{0}};
-    \& \node[basic box, label = \ensuremath{\HSVar{t}\;\textsub{5}}] (tfive)
-      {\forge{0}\\ \fee{7}};
-    \& \node[basic box, label = \ensuremath{\HSVar{t}\;\textsub{6}}] (tsix)
-      {\forge{0}\\ \fee{1}};
-    \& \node (end) {}; \\
+%% \begin{frame}{Example: Transaction Graph \alert{+ monetary policy}}
+%% \begin{figure}\begin{tikzpicture}
+%%   [transform canvas={scale=0.8},
+%%    basic box/.style = {
+%%      draw,
+%%      shape = rectangle,
+%%      align = left,
+%%      minimum width=2cm,
+%%      minimum height=1.2cm,
+%%      rounded corners},
+%%    upedge/.style = {
+%%      },
+%%    downedge/.style = {
+%%      },
+%%    to/.style = {
+%%      ->,
+%%      >=stealth',
+%%      semithick
+%%   },
+%%   every matrix/.style={column sep=1.3cm, row sep=1cm, ampersand replacement=\&},
+%%   font=\footnotesize
+%%   ]
+%%   \matrix{
+%%     \node[basic box, label = |t SUBONE|] (t)
+%%       {\forge{1000}\\ \fee{0}};
+%%     \& \node[basic box, label = |t SUBTWO|] (tt)
+%%       {\forge{0}\\ \fee{0}};
+%%     \& \node[basic box, label = |t SUBFIVE|] (tfive)
+%%       {\forge{0}\\ \fee{7}};
+%%     \& \node[basic box, label = |t SUBSIX|] (tsix)
+%%       {\forge{0}\\ \fee{1}};
+%%     \& \node (end) {}; \\
 
-    \node[basic box, label = \ensuremath{\HSVar{c}\;\textsub{0}}] (c)
-      {\forge{0}\\ \fee{0}};
-    \& \node[basic box, label = \ensuremath{\HSVar{t}\;\textsub{3}}] (ttt)
-      {\forge{0}\\ \fee{1}};
-    \& \node {};
-    \& \node {}; \\
+%%     \node[basic box, label = |c SUBZERO|] (c)
+%%       {\forge{0}\\ \fee{0}};
+%%     \& \node[basic box, label = |t SUBTHREE|] (ttt)
+%%       {\forge{0}\\ \fee{1}};
+%%     \& \node {};
+%%     \& \node {}; \\
 
-    \node {};
-    \& \node[basic box, label = \ensuremath{\HSVar{t}\;\textsub{4}}] (tfour)
-      {\forge{10}\\ \fee{2}};
-    \& \node {};
-    \& \node {}; \\
-  };
+%%     \node {};
+%%     \& \node[basic box, label = |t SUBFOUR|] (tfour)
+%%       {\forge{10}\\ \fee{2}};
+%%     \& \node {};
+%%     \& \node {}; \\
+%%   };
 
-  \path
-  (t) edge[to]
-    node[above]{\bitcoin ~1000}
-    node[below]{@\ensuremath{\HSSym{\mathbb{A}}}}
-  (tt)
-  (tt) edge[to, bend right = 30]
-    node[left]{\bitcoin ~200}
-    node[right]{@\ensuremath{\HSSym{\mathbb{A}}}}
-  (ttt)
-  (tt) edge[to]
-    node[above]{\bitcoin ~800}
-    node[below]{@\ensuremath{\HSSym{\mathbb{B}}}}
-  (tfive)
-  (ttt) edge[to, bend right = 30]
-    node[left]{\bitcoin ~199}
-    node[right]{@\ensuremath{\HSSym{\mathbb{C}}}}
-  (tfour)
-  (tfour) edge[to, bend right = 45]
-    node[left]{\bitcoin ~207}
-    node[right]{@\ensuremath{\HSSym{\mathbb{B}}}}
-  (tfive)
-  (tfive) edge[to, transform canvas={yshift=13pt}]
-    node[above]{\bitcoin ~500}
-    node[below]{@\ensuremath{\HSSym{\mathbb{B}}}}
-  (tsix)
-  (tfive) edge[to, transform canvas={yshift=-13pt}]
-    node[above]{\bitcoin ~500}
-    node[below]{@\ensuremath{\HSSym{\mathbb{C}}}}
-  (tsix)
-  (tsix) edge[to, red]
-    node[above,black]{\bitcoin ~999}
-    node[below,black]{@\ensuremath{\HSSym{\mathbb{C}}}}
-  (end)
-  (c) edge[to, bend left = 30, green]
-    node[left,black]{\bitcoin-policy}
-    node[right,black]{@\ensuremath{\HSSym{\bitcoin}}}
-  (t)
-  (c) edge[to, bend right = 40, green]
-    node[left,black]{\bitcoin-policy}
-    node[right,black]{@\ensuremath{\HSSym{\bitcoin}}}
-  (tfour)
-  ;
-\end{tikzpicture}\end{figure}
-\end{frame}
+%%   \path
+%%   (t) edge[to]
+%%     node[above]{\bitcoin ~1000}
+%%     node[below]{@@|ONEB|}
+%%   (tt)
+%%   (tt) edge[to, bend right = 30]
+%%     node[left]{\bitcoin ~200}
+%%     node[right]{@@|ONEB|}
+%%   (ttt)
+%%   (tt) edge[to]
+%%     node[above]{\bitcoin ~800}
+%%     node[below]{@@|TWOB|}
+%%   (tfive)
+%%   (ttt) edge[to, bend right = 30]
+%%     node[left]{\bitcoin ~199}
+%%     node[right]{@@|THREEB|}
+%%   (tfour)
+%%   (tfour) edge[to, bend right = 45]
+%%     node[left]{\bitcoin ~207}
+%%     node[right]{@@|TWOB|}
+%%   (tfive)
+%%   (tfive) edge[to, transform canvas={yshift=13pt}]
+%%     node[above]{\bitcoin ~500}
+%%     node[below]{@@|TWOB|}
+%%   (tsix)
+%%   (tfive) edge[to, transform canvas={yshift=-13pt}]
+%%     node[above]{\bitcoin ~500}
+%%     node[below]{@@|THREEB|}
+%%   (tsix)
+%%   (tsix) edge[to, red]
+%%     node[above,black]{\bitcoin ~999}
+%%     node[below,black]{@@|THREEB|}
+%%   (end)
+%%   (c) edge[to, bend left = 30, green]
+%%     node[left,black]{\bitcoin-policy}
+%%     node[right,black]{@@|BIT|}
+%%   (t)
+%%   (c) edge[to, bend right = 40, green]
+%%     node[left,black]{\bitcoin-policy}
+%%     node[right,black]{@@|BIT|}
+%%   (tfour)
+%%   ;
+%% \end{tikzpicture}\end{figure}
+%% \end{frame}
 
-\begin{frame}{Example: Setting Up}
-\begin{agda}\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\HSCon{Address}\HSSym{\mathbin{=}}\HSSym{\mathbb{N}}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSSym{\mathbb{A}}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{\mathbb{B}}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{\mathbb{C}}\mathbin{:}\HSCon{Address}{}\<[E]%
-\\
-\>[B]{}\HSSym{\mathbb{A}}{}\<[9]%
-\>[9]{}\HSSym{\mathbin{=}}\HSNumeral{1}\HSComment{ -\! - first address}{}\<[E]%
-\\
-\>[B]{}\HSSym{\mathbb{B}}{}\<[9]%
-\>[9]{}\HSSym{\mathbin{=}}\HSNumeral{2}\HSComment{ -\! - second address}{}\<[E]%
-\\
-\>[B]{}\HSSym{\mathbb{C}}{}\<[9]%
-\>[9]{}\HSSym{\mathbin{=}}\HSNumeral{3}\HSComment{ -\! - third address}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSKeyword{open}\;\HSKeyword{import}\;\HSCon{UTxO}\;\HSCon{Address}\;\HSSpecial{(}\HSVar{λ}\;\HSVar{x}\HSSym{\mathbin{\to}}\HSVar{x}\HSSpecial{)}\;\HSSym{\_\!}\HSSym{\mathbin{\overset{\text{\tiny ?}}{=}}}\HSSym{\!\_}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSSym{\bitcoin}\HSSym{\text{\textit{-}}}\HSVar{validator}\mathbin{:}\HSCon{State}\HSSym{\mathbin{\to}}\HSSym{\dots}\HSSym{\mathbin{\to}}\HSCon{Bool}{}\<[E]%
-\\
-\>[B]{}\HSSym{\bitcoin}\HSSym{\text{\textit{-}}}\HSVar{validator}\;\HSSpecial{(}\HSKeyword{record}\;\HSSpecial{\{\mskip1.5mu }\HSVar{height}\HSSym{\mathbin{=}}\HSVar{h}\HSSpecial{\mskip1.5mu\}}\HSSpecial{)}\;\HSSym{\dots}\HSSym{\mathbin{=}}\HSSpecial{(}\HSVar{h}\HSSym{\mathrel{\equiv}}\HSSym{\textsup{b}}\;\HSNumeral{1}\HSSpecial{)}\HSSym{\mathbin{\lor}}\HSSpecial{(}\HSVar{h}\HSSym{\mathrel{\equiv}}\HSSym{\textsup{b}}\;\HSNumeral{4}\HSSpecial{)}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\end{agda}
-\end{frame}
+%% \begin{frame}{Example: Setting Up}
+%% \begin{agda}\begin{code}
+%% Address = ℕ
 
-\begin{frame}{Example: Smart Constructors}
-\begin{agda}\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{26}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{38}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{63}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\HSVar{mkValidator}\mathbin{:}\HSCon{TxOutputRef}\HSSym{\mathbin{\to}}\HSSpecial{(}\HSSym{\dots}\HSSym{\mathbin{\to}}\HSCon{TxOutputRef}\HSSym{\mathbin{\to}}\HSSym{\dots}\HSSym{\mathbin{\to}}\HSCon{Bool}\HSSpecial{)}{}\<[E]%
-\\
-\>[B]{}\HSVar{mkValidator}\;\HSVar{o}\;\HSSym{\dots}\;\HSVar{o}\hspace{2pt}^{\mathsmaller{\prime}}\HSSym{\dots}\HSSym{\mathbin{=}}\HSVar{o}\HSSym{\mathrel{\equiv}}\HSSym{\textsup{b}}\;\HSVar{o}\hspace{2pt}^{\mathsmaller{\prime}}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSSym{\bitcoin}\;\HSSym{\anonymous}\mathbin{:}\HSSym{\mathbb{N}}\HSSym{\mathbin{\to}}\HSCon{Value}{}\<[E]%
-\\
-\>[B]{}\HSSym{\bitcoin}\;\HSVar{v}\HSSym{\mathbin{=}}\HSSpecial{[\mskip1.5mu }\HSSpecial{(}\HSSym{\bitcoin}\HSSym{\text{\textit{-}}}\HSVar{validator}\HSSym{\hspace{1pt}\#}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{v}\HSSpecial{)}\HSSpecial{\mskip1.5mu]}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSVar{withScripts}\mathbin{:}\HSCon{TxOutputRef}\HSSym{\mathbin{\to}}\HSCon{TxInput}{}\<[E]%
-\\
-\>[B]{}\HSVar{withScripts}\;\HSVar{o}\HSSym{\mathbin{=}}\HSKeyword{record}\;{}\<[25]%
-\>[25]{}\HSSpecial{\{\mskip1.5mu }\HSVar{outputRef}{}\<[38]%
-\>[38]{}\HSSym{\mathbin{=}}\HSVar{o}{}\<[E]%
-\\
-\>[25]{}\HSSpecial{;}\HSVar{redeemer}{}\<[38]%
-\>[38]{}\HSSym{\mathbin{=}}\HSVar{λ}\;\HSSym{\anonymous}\HSSym{\mathbin{\to}}\HSVar{o}{}\<[E]%
-\\
-\>[25]{}\HSSpecial{;}\HSVar{validator}{}\<[38]%
-\>[38]{}\HSSym{\mathbin{=}}\HSVar{mkValidator}\;\HSVar{tin}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSVar{withPolicy}\mathbin{:}\HSCon{TxOutputRef}\HSSym{\mathbin{\to}}\HSCon{TxInput}{}\<[E]%
-\\
-\>[B]{}\HSVar{withPolicy}\;\HSVar{tin}\HSSym{\mathbin{=}}\HSKeyword{record}\;{}\<[26]%
-\>[26]{}\HSSpecial{\{\mskip1.5mu }\HSVar{outputRef}\HSSym{\mathbin{=}}\HSVar{tin}{}\<[E]%
-\\
-\>[26]{}\HSSpecial{;}\HSVar{redeemer}{}\<[38]%
-\>[38]{}\HSSym{\mathbin{=}}\HSVar{λ}\;\HSSym{\anonymous}\HSSym{\mathbin{\to}}\HSCon{tt}{}\<[E]%
-\\
-\>[26]{}\HSSpecial{;}\HSVar{validator}\HSSym{\mathbin{=}}\HSSym{\bitcoin}\HSSym{\text{\textit{-}}}\HSVar{validator}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\HSSym{\anonymous}\;\HSCon{@}\;\HSSym{\anonymous}\mathbin{:}\HSCon{Value}\HSSym{\mathbin{\to}}\HSCon{Index}\;\HSVar{addresses}\HSSym{\mathbin{\to}}\HSCon{TxOutput}{}\<[E]%
-\\
-\>[B]{}\HSVar{v}\;\HSCon{@}\;\HSVar{addr}\HSSym{\mathbin{=}}\HSKeyword{record}\;\HSSpecial{\{\mskip1.5mu }\HSVar{value}\HSSym{\mathbin{=}}\HSVar{v}\HSSpecial{;}\HSVar{address}\HSSym{\mathbin{=}}\HSVar{addr}\HSSpecial{;}\HSVar{dataScript}{}\<[63]%
-\>[63]{}\HSSym{\mathbin{=}}\HSVar{λ}\;\HSSym{\anonymous}\HSSym{\mathbin{\to}}\HSCon{tt}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\end{agda}
-\end{frame}
+%% ONEB , TWOB , THREEB : Address
+%% ONEB    = 1 -- first address
+%% TWOB    = 2 -- second address
+%% THREEB  = 3 -- third address
+
+%% open import UTxO Address (λ x → x) UL ≟ UR
+
+%% BIT -validator : State → DOTS → Bool
+%% BIT -validator (record {height = h}) DOTS = (h ≡ SB 1) ∨ (h ≡ SB 4)
+%% \end{code}\end{agda}
+%% \end{frame}
+
+%% \begin{frame}{Example: Smart Constructors}
+%% \begin{agda}\begin{code}
+%% mkValidator : TxOutputRef → (DOTS → TxOutputRef → DOTS → Bool)
+%% mkValidator o DOTS o′ DOTS = o ≡ SB o′
+
+%% BIT _ : ℕ → Value
+%% BIT v = [ (BIT -validator ♯ , v) ]
+
+%% withScripts : TxOutputRef → TxInput
+%% withScripts o = record  { outputRef  = o
+%%                         ; redeemer   = λ _ → o
+%%                         ; validator  = mkValidator tin }
+
+%% withPolicy : TxOutputRef → TxInput
+%% withPolicy tin = record  { outputRef = tin
+%%                          ; redeemer  = λ _ → tt
+%%                          ; validator = BIT -validator }
+
+%% _ at _ : Value → Index addresses → TxOutput
+%% v at addr = record { value = v ; address = addr ; dataScript  = λ _ → tt }
+%% \end{code}\end{agda}
+%% \end{frame}
 
 \begin{frame}{Example: Definitions of Transactions}
 \begin{agda}\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{20}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{31}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{32}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\HSVar{c}\;\textsub{0}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{1}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{2}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{3}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{4}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{5}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{6}\mathbin{:}\HSCon{Tx}{}\<[E]%
-\\
-\>[B]{}\HSVar{c}\;\textsub{0}\HSSym{\mathbin{=}}\HSKeyword{record}\;{}\<[21]%
-\>[21]{}\HSSpecial{\{\mskip1.5mu }\HSVar{inputs}{}\<[32]%
-\>[32]{}\HSSym{\mathbin{=}}\HSSpecial{[\mskip1.5mu }\HSSpecial{\mskip1.5mu]}{}\<[E]%
-\\
-\>[21]{}\HSSpecial{;}\HSVar{outputs}{}\<[32]%
-\>[32]{}\HSSym{\mathbin{=}}\HSSpecial{[\mskip1.5mu }\HSSym{\bitcoin}\;\HSNumeral{0}\;\HSCon{@}\;\HSSpecial{(}\HSSym{\bitcoin}\HSSym{\text{\textit{-}}}\HSVar{validator}\HSSym{\hspace{1pt}\#}\HSSpecial{)}\HSSpecial{\HSSym{\mathbin{,}}}\HSSym{\bitcoin}\;\HSNumeral{0}\;\HSCon{@}\;\HSSpecial{(}\HSSym{\bitcoin}\HSSym{\text{\textit{-}}}\HSVar{validator}\HSSym{\hspace{1pt}\#}\HSSpecial{)}\HSSpecial{\mskip1.5mu]}{}\<[E]%
-\\
-\>[21]{}\HSSpecial{;}\HSVar{forge}{}\<[32]%
-\>[32]{}\HSSym{\mathbin{=}}\HSSym{\bitcoin}\;\HSNumeral{0}{}\<[E]%
-\\
-\>[21]{}\HSSpecial{;}\HSVar{fee}{}\<[32]%
-\>[32]{}\HSSym{\mathbin{=}}\HSSym{\bitcoin}\;\HSNumeral{0}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
+\>[B]{}\HSVar{t}\;\textsub{1}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{2}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{3}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{4}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{5}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{6}\mathbin{:}\HSCon{Tx}{}\<[E]%
 \\
 \>[B]{}\HSVar{t}\;\textsub{1}\HSSym{\mathbin{=}}\HSKeyword{record}\;{}\<[20]%
 \>[20]{}\HSSpecial{\{\mskip1.5mu }\HSVar{inputs}{}\<[31]%
@@ -1303,45 +1217,40 @@ Our hash function is a postulate, so our decision procedures will get stuck...
 \begin{frame}{Example: Correct-by-construction Ledger}
 \begin{agda}\begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}c<{\hspost}@{}}%
-\column{3E}{@{}l@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{6}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{31}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{44}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{27E}{@{}l@{}}%
+\column{30}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{36}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{36E}{@{}l@{}}%
+\column{43}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ledger}\mathbin{:}\HSCon{ValidLedger}\;\HSSpecial{[\mskip1.5mu }\HSVar{t}\;\textsub{6}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{5}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{4}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{3}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{2}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{1}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{c}\;\textsub{0}\HSSpecial{\mskip1.5mu]}{}\<[E]%
+\>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ledger}\mathbin{:}\HSCon{ValidLedger}\;\HSSpecial{[\mskip1.5mu }\HSVar{t}\;\textsub{6}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{5}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{4}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{3}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{2}\HSSpecial{\HSSym{\mathbin{,}}}\HSVar{t}\;\textsub{1}\HSSpecial{\mskip1.5mu]}{}\<[E]%
 \\
 \>[B]{}\HSVar{ex}\HSSym{\text{\textit{-}}}\HSVar{ledger}\HSSym{\mathbin{=}}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSSym{\mathlarger{\mathlarger{\mathlarger{\cdot}}}}{}\<[3E]%
-\>[6]{}\HSVar{c}\;\textsub{0}{}\<[17]%
-\>[17]{}\HSSym{\dashv}\HSKeyword{record}\;{}\<[28]%
-\>[28]{}\HSSpecial{\{\mskip1.5mu }\HSSym{\dots}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
+\>[3]{}\HSSym{\mathlarger{\mathlarger{\mathlarger{\cdot}}}}\HSVar{t}\;\textsub{1}{}\<[16]%
+\>[16]{}\HSSym{\dashv}\HSKeyword{record}\;{}\<[27]%
+\>[27]{}\HSSpecial{\{\mskip1.5mu }{}\<[27E]%
+\>[30]{}\HSCon{validTxRefs}{}\<[43]%
+\>[43]{}\HSSym{\mathbin{=}}\HSVar{toWitness}\;\HSSpecial{\{\mskip1.5mu }\HSCon{Q}\HSSym{\mathbin{=}}\HSCon{validTxRefs}\HSSym{?}\HSVar{t}\;\textsub{1}\;\HSVar{l}\;\textsub{0}\HSSpecial{\mskip1.5mu\}}\;\HSCon{tt}{}\<[E]%
+\\
+\>[30]{}\HSSym{\dots}{}\<[36]%
+\>[36]{}\HSSpecial{\mskip1.5mu\}}{}\<[36E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSSym{\mathbin{\oplus}}{}\<[3E]%
-\>[6]{}\HSVar{t}\;\textsub{1}{}\<[17]%
-\>[17]{}\HSSym{\dashv}\HSKeyword{record}\;{}\<[28]%
-\>[28]{}\HSSpecial{\{\mskip1.5mu }{}\<[31]%
-\>[31]{}\HSCon{validTxRefs}{}\<[44]%
-\>[44]{}\HSSym{\mathbin{=}}\HSVar{toWitness}\;\HSSpecial{\{\mskip1.5mu }\HSCon{Q}\HSSym{\mathbin{=}}\HSCon{validTxRefs}\HSSym{?}\HSVar{t}\;\textsub{1}\;\HSVar{l}\;\textsub{0}\HSSpecial{\mskip1.5mu\}}\;\HSCon{tt}{}\<[E]%
-\\
-\>[31]{}\HSSym{\vdots}{}\<[E]%
-\\
-\>[28]{}\HSSpecial{;}{}\<[31]%
-\>[31]{}\HSCon{forging}{}\<[44]%
-\>[44]{}\HSSym{\mathbin{=}}\HSVar{toWitness}\;\HSSpecial{\{\mskip1.5mu }\HSCon{Q}\HSSym{\mathbin{=}}\HSCon{forging}\HSSym{?}\HSSym{\dots}\HSSpecial{\mskip1.5mu\}}\;\HSCon{tt}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
+\>[3]{}\HSSym{\vdots}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSSym{\vdots}{}\<[3E]%
-\\
-\>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}\HSSym{\mathbin{\oplus}}{}\<[3E]%
-\>[6]{}\HSVar{t}\;\textsub{6}{}\<[17]%
-\>[17]{}\HSSym{\dashv}\HSKeyword{record}\;\HSSpecial{\{\mskip1.5mu }\HSSym{\dots}\HSSpecial{\mskip1.5mu\}}{}\<[E]%
+\>[3]{}\HSSym{\mathbin{\oplus}}{}\<[6]%
+\>[6]{}\HSVar{t}\;\textsub{6}{}\<[16]%
+\>[16]{}\HSSym{\dashv}\HSKeyword{record}\;{}\<[27]%
+\>[27]{}\HSSpecial{\{\mskip1.5mu }{}\<[27E]%
+\>[30]{}\HSSym{\dots}{}\<[36]%
+\>[36]{}\HSSpecial{\mskip1.5mu\}}{}\<[36E]%
 \\
 \>[B]{}\vspace{1pt}{}\<[E]%
 \\
@@ -1511,10 +1420,10 @@ Two ledgers \ensuremath{\HSVar{l}} and \ensuremath{\HSVar{l}\hspace{2pt}^{\maths
 
 \begin{frame}{Next Steps: UTxO}
 \begin{enumerate}
-\item Multi-currency: \alert{non-fungible tokens}
-  \begin{itemize}
-  \item 2-level maps that introduce intermediate layer with tokens
-  \end{itemize}
+%% \item Multi-currency: \alert{non-fungible tokens}
+%%   \begin{itemize}
+%%   \item 2-level maps that introduce intermediate layer with tokens
+%%   \end{itemize}
 \item Integrate James Chapman's work on \alert{plutus-metatheory}
   \begin{itemize}
   \item Plutus terms instead of their denotations (i.e. Agda functions)
@@ -1523,23 +1432,23 @@ Two ledgers \ensuremath{\HSVar{l}} and \ensuremath{\HSVar{l}\hspace{2pt}^{\maths
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Next Steps: Others}
-\begin{enumerate}
-\item Proof automation via domain-specific tactics
-   \begin{itemize}
-   \item Accommodate future formalization efforts
-   \end{itemize}
-\item Featherweight Solidity
-  \begin{itemize}
-  \item Provide proof-of-concept model in Agda
-  \item Perform some initial comparison with UTxO
-  \end{itemize}
-\item Investigate Chad Nester's work on \alert{monoidal ledgers}
-  \begin{itemize}
-  \item This leads to another reasoning device: \alert{string diagrams}
-  \end{itemize}
-\end{enumerate}
-\end{frame}
+%% \begin{frame}{Next Steps: Others}
+%% \begin{enumerate}
+%% \item Proof automation via domain-specific tactics
+%%    \begin{itemize}
+%%    \item Accommodate future formalization efforts
+%%    \end{itemize}
+%% \item Featherweight Solidity
+%%   \begin{itemize}
+%%   \item Provide proof-of-concept model in Agda
+%%   \item Perform some initial comparison with UTxO
+%%   \end{itemize}
+%% \item Investigate Chad Nester's work on \alert{monoidal ledgers}
+%%   \begin{itemize}
+%%   \item This leads to another reasoning device: \alert{string diagrams}
+%%   \end{itemize}
+%% \end{enumerate}
+%% \end{frame}
 
 \begin{frame}{Next Steps: Certified Compilation}
 \begin{itemize}
