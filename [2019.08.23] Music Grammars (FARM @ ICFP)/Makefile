@@ -1,4 +1,4 @@
-MAIN=msc-defence
+MAIN=music-grammars-presentation
 STYLE=stylish.fmt
 
 default: all
@@ -10,7 +10,7 @@ redo:
 $(MAIN).pdf: $(MAIN).tex
 	xelatex $(MAIN).tex
 
-%.tex : %.lagda $(STYLE) 1-intro.lagda 2-utxo.lagda 3-bitml.lagda 4-future.lagda
+%.tex : %.lhs $(STYLE) 1-intro.lhs 2-ptgg.lhs 3-harmony.lhs 4-melody.lhs 5-rhythm.lhs 6-songs.lhs 7-conclusion.lhs
 	lhs2TeX --poly -o $@ $<
 
 clean:
