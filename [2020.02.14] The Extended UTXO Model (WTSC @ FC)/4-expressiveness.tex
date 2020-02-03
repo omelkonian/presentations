@@ -1,0 +1,86 @@
+\section{Expressiveness of EUTXO}
+
+\begin{frame}{Constraint Emitting Machines (CEM)}
+
+To formally reason about the expressiveness of EUTXO, we introduce a specific form of state machines:
+\begin{itemize}
+\item Type of states \s{S}, type of inputs \s{I}
+\item $\s{final} : \s{S} \rightarrow \s{Bool}$
+\item $\s{step} : \s{S} \rightarrow \s{I} \rightarrow \s{Maybe}\ (\s{S} \times \s{TxConstraints})$
+\end{itemize}
+
+These are similar to Mealy machines, but differ in some aspects:
+\begin{enumerate}
+\item No notion of initial states
+\item \textbf{Strictly} final states
+\item Blockchain-specific output values (\s{TxConstraints})
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Behavioural Equivalence: Notation}
+
+\begin{itemize}
+\item A ledger $l$ corresponds to a \CEM{} state $s$:
+\[
+\Sim{l}{s}
+\]
+\item New (valid) transaction submitted to ledger $l$:
+\[
+\LStep{l}{tx}
+\]
+\item Valid \CEM{} transition from source state $s$ to target state $s'$:
+\[
+\CStep{s}{i}{\txeq}
+\]
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Transitions-as-transactions}
+
+Given a smart contract, expressed as a \CEM{} $\mathcal{C}$,
+we can derive the validator script that disallows any invalid transitions:
+\[
+\mkValidator{\mathcal{C}}(s, i, \mi{txInfo}) = \left\{
+  \begin{array}{lll}
+  \true  & \mi{if} \ \CStep{s}{i}{\txeq} \\
+         & \mi{and} \ \satisfies(\mi{txInfo}, \txeq) \\
+         & \mi{and} \ \checkOutputs(s', \mi{txInfo}) \\
+  \false & \mi{otherwise}
+  \end{array}
+\right.
+\]
+
+\end{frame}
+
+\begin{frame}{Behavioural Equivalence: Weak Bisimulation}
+
+\begin{alertblock}{Proposition 1 (Soundness)}
+Given a valid \CEM{} transition, we can construct a new valid transaction,
+such that the resulting ledger corresponds to the target \CEM{} state:
+\[
+\infer[\textsc{sound}]
+  {\exists tx\ l'\ .\ \LStep{l}{tx}\ \wedge \Sim{l'}{s'}}
+  {%
+    \CStep{s}{i}{\txeq}
+  & \Sim{l}{s}
+  }
+\]
+\end{alertblock}
+
+\vfill
+
+\begin{alertblock}{Proposition 2 (Completeness)}
+Given a new valid transaction on the ledger, it is either irrelevant to the state machine
+or corresponds to a valid \CEM{} transition:
+\[
+\infer[\textsc{complete}]
+  { \Sim{l'}{s}\ \vee\ \exists i\ s'\ \txeq\ .\ \CStep{s}{i}{\txeq} }
+  { \LStep{l}{tx}
+  & \Sim{l}{s}
+  }
+\]
+\end{alertblock}
+
+\end{frame}

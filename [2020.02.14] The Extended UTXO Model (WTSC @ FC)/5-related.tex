@@ -1,0 +1,28 @@
+\begin{frame}{Related Work}
+
+\begin{itemize}
+\item \alert{Bitcoin Covenants}
+  \begin{itemize}
+  \item Allows restricting how output values will be used in the future
+  \item Major inspiration for our introduction of \textit{data values}
+  \end{itemize}
+\item \alert{Bitcoin Modelling Language (BitML)}
+  \begin{itemize}
+  \item A process-calculus for Bitcoin smart contracts, whose operational semantics comprise a state machine
+  \item Compiles down to Bitcoin transactions, without any extensions
+  \item Quite complicated translation and requires off-chain communication
+  \end{itemize}
+\item \alert{Scilla}
+  \begin{itemize}
+  \item For Ethereum contracts, using message-passing state machines dubbed \textit{Communicating State Transition Systems}
+  \item Embedded in Coq, hence amendable to formal verification
+  \item Allows proving temporal (hyper-)properties
+  \end{itemize}
+\item \alert{Bitcoin Contracts as Timed Automata}
+  \begin{itemize}
+  \item Pragmatic model checking using \textsc{UPPAAL}
+  \item Does not come with formal guarantees though
+  \end{itemize}
+\end{itemize}
+
+\end{frame}

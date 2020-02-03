@@ -1,0 +1,143 @@
+\section{EUTXO, Formally...}
+
+\begin{frame}{Enhanced Scripting}
+
+\begin{enumerate}
+\item \textit{Data values} additionally carried by outputs
+  \begin{itemize}
+  \item passed as extra argument of type \s{Data} during validation
+  \item allows a contract to carry data without changing its code
+  \end{itemize}
+\item More information about the transaction available to the validator
+  \begin{itemize}
+  \item passed as extra argument of type \s{TxInfo} during validation
+  \item allows inspection of the transaction's outputs, thus supporting\\ \alert{contract continuity}
+  \end{itemize}
+\item Transactions have (restricted) access to time
+  \begin{itemize}
+  \item addition transaction field: \textit{validity interval}
+  \item specifies a time interval, in which the transaction must be processed
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\newcommand\bs[1]{\mbox{\textbf{\s{#1}}}}
+\begin{frame}{Ledger Primitives}
+
+\begin{displaymath}
+\begin{array}{rll}
+  \bs{Quantity} && \mbox{an amount of currency}\\
+  \bs{Tick}  && \mbox{a tick}\\
+  \bs{Address} && \mbox{an ``address'' in the blockchain}\\
+  \bs{Data}  && \mbox{a type of structured data}\\
+  \bs{DataHash} && \mbox{the hash of a value of type \Data{}}\\
+  \bs{TxId} && \mbox{the identifier of a transaction}\\
+  \bs{txId} : \s{Tx} \rightarrow \s{TxId} && \mbox{get a transaction's identifier}\\
+  \bs{Script} && \mbox{the (opaque) type of scripts}\\
+  \bs{scriptAddr} : \s{Script} \rightarrow \s{Address} && \mbox{the address of a script}\\
+  \bs{dataHash} : \s{Data} \rightarrow \s{DataHash} && \mbox{the hash of a data value}\\
+  \mathbf{\llbracket \_ \rrbracket} : \script \rightarrow \s{Args} \rightarrow \mathbb{B} && \mbox{applying a script to its arguments}\\
+\end{array}
+\end{displaymath}
+
+\end{frame}
+
+\begin{frame}{Defined Types}
+
+\begin{displaymath}
+\begin{array}{rll}
+  \bs{Output }    &=&(\val: \qty, \addr: \Address, \dataHsh: \DataHash)\\[8pt]
+
+  \bs{OutputRef } &=&(\txrefid: \TxId, \idx: \N)\\[8pt]
+
+  \bs{Input }     &=&(\outputref: \s{OutputRef}, \validator: \script,\\
+                  & &\ \dataVal: \Data, \redeemerVal: \Data)\\[8pt]
+
+  \bs{Tx }        &=&(\inputs: \Set{\s{Input}}, \outputs: \List{\s{Output}},\\
+                  & &\ \validityInterval: \Interval{\tick})\\[8pt]
+
+  \bs{Ledger }    &=&\!\List{\eutxotx}\\
+\end{array}
+\end{displaymath}
+
+\end{frame}
+
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\begin{frame}{Validity of EUTXO Transactions (I)}
+
+\begin{enumerate}
+\item
+  \label{rule:tick-in-range}
+  \textbf{The current tick is within the validity interval}
+  \begin{displaymath}
+    \currentTick \in t.\validityInterval
+  \end{displaymath}
+
+\item
+  \label{rule:all-outputs-are-non-negative}
+  \textbf{All outputs have non-negative values}
+  \begin{displaymath}
+    \forall o \in t.\outputs,\ o.\val \geq 0
+  \end{displaymath}
+
+\item
+  \label{rule:all-inputs-refer-to-unspent-outputs}
+  \textbf{All inputs refer to unspent outputs}
+  \begin{displaymath}
+    t.\inputs \subseteq \unspent(l)
+  \end{displaymath}
+
+\item
+  \label{rule:value-is-preserved}
+  \textbf{Value is preserved}
+  \begin{displaymath}
+    \sum_{i \in t.\inputs} \getSpent(i, l).\val = \sum_{o \in t.\outputs} o.\val
+  \end{displaymath}
+
+\item
+  \label{rule:no-double-spending}
+  \textbf{No output is double spent}
+  \begin{displaymath}
+    \textrm{If } i_1, i_2 \in t.\inputs \textrm{ and }  i_1.\outputref = i_2.\outputref
+    \textrm{ then } i_1 = i_2
+  \end{displaymath}
+
+\seti
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Validity of EUTXO Transactions (II)}
+
+\begin{enumerate}
+\conti
+
+\item
+  \label{rule:all-inputs-validate}
+  \textbf{All inputs validate}
+  \begin{displaymath}
+    \forall i \in t.\inputs,\ \llbracket
+    i.\validator\rrbracket (i.\dataVal,\, i.\redeemerVal,\, \toPtx(t,i)) = \true
+  \end{displaymath}
+
+\item
+  \label{rule:validator-scripts-hash}
+  \textbf{Validator scripts match output addresses}
+  \begin{displaymath}
+    \forall i \in t.\inputs,\ \scriptAddr(i.\validator) = \getSpent(i, l).\addr
+  \end{displaymath}
+
+\item
+  \label{rule:data-values-hash}
+  \textbf{Data values match output hashes}
+  \begin{displaymath}
+    \forall i \in t.\inputs,\ \hashData(i.\dataVal) = \getSpent(i, l).\dataHsh
+  \end{displaymath}
+\end{enumerate}
+
+\end{frame}
