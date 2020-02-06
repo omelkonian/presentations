@@ -12,8 +12,11 @@ To formally reason about the expressiveness of EUTXO, we introduce a specific fo
 These are similar to Mealy machines, but differ in some aspects:
 \begin{enumerate}
 \item No notion of initial states
-\item \textbf{Strictly} final states
+\item Cannot transition out of a final state
 \item Blockchain-specific output values (\s{TxConstraints})
+  \begin{itemize}
+  \item these typically are first-order equality constraints on the fields of \s{Tx}
+  \end{itemize}
 \end{enumerate}
 
 \end{frame}
@@ -29,7 +32,8 @@ These are similar to Mealy machines, but differ in some aspects:
 \[
 \LStep{l}{tx}
 \]
-\item Valid \CEM{} transition from source state $s$ to target state $s'$:
+\item Valid \CEM{} transition from source state $s$ to target state $s'$,\\
+using input symbol $i$ and emitting constraints $\txeq$:
 \[
 \CStep{s}{i}{\txeq}
 \]

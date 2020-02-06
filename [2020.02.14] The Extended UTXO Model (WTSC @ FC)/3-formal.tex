@@ -1,26 +1,45 @@
 \section{EUTXO, Formally...}
 
-\begin{frame}{Enhanced Scripting}
+\begin{frame}{Enhanced Scripting: Data Values \& Contract Continuity}
 
 \begin{enumerate}
-\item \textit{Data values} additionally carried by outputs
+\item \alert{Data values} additionally carried by outputs
   \begin{itemize}
   \item passed as extra argument of type \s{Data} during validation
   \item allows a contract to carry data without changing its code
+  \item otherwise we would not be able to identity a contract by its code's hash
   \end{itemize}
 \item More information about the transaction available to the validator
   \begin{itemize}
   \item passed as extra argument of type \s{TxInfo} during validation
-  \item allows inspection of the transaction's outputs, thus supporting\\ \alert{contract continuity}
+  \item allows inspection of the transaction's outputs, thus supporting\\
+\alert{contract continuity} (i.e. outputs target the expected validator)
   \end{itemize}
+\seti
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Enhanced Scripting: Validity Intervals \& Determinism}
+
+\begin{enumerate}
+\conti
 \item Transactions have (restricted) access to time
   \begin{itemize}
-  \item addition transaction field: \textit{validity interval}
+  \item addition transaction field: \alert{validity interval}
   \item specifies a time interval, in which the transaction must be processed
+  \item in contrast to allowing access to the current time
+    \begin{itemize}
+    \item allows for \alert{deterministic} script execution
+    \item we can pre-calculate consumed resources/time
+    \item a user can simulate execution locally
+    \end{itemize}
   \end{itemize}
 \end{enumerate}
 
 \end{frame}
+
+
 
 \newcommand\bs[1]{\mbox{\textbf{\s{#1}}}}
 \begin{frame}{Ledger Primitives}
@@ -35,9 +54,9 @@
   \bs{TxId} && \mbox{the identifier of a transaction}\\
   \bs{txId} : \s{Tx} \rightarrow \s{TxId} && \mbox{get a transaction's identifier}\\
   \bs{Script} && \mbox{the (opaque) type of scripts}\\
-  \bs{scriptAddr} : \s{Script} \rightarrow \s{Address} && \mbox{the address of a script}\\
+  \bs{scriptAddr} : \s{Script} \rightarrow \s{Address} && \mbox{the address of a script (i.e. its hash)}\\
   \bs{dataHash} : \s{Data} \rightarrow \s{DataHash} && \mbox{the hash of a data value}\\
-  \mathbf{\llbracket \_ \rrbracket} : \script \rightarrow \s{Args} \rightarrow \mathbb{B} && \mbox{applying a script to its arguments}\\
+  \mathbf{\llbracket \_ \rrbracket} : \script \rightarrow \s{Args} \rightarrow \s{Bool} && \mbox{applying a script to its arguments}\\
 \end{array}
 \end{displaymath}
 
@@ -62,10 +81,6 @@
 \end{displaymath}
 
 \end{frame}
-
-\newcounter{saveenumi}
-\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
-\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
 
 \begin{frame}{Validity of EUTXO Transactions (I)}
 
@@ -93,7 +108,7 @@
 
 \item
   \label{rule:value-is-preserved}
-  \textbf{Value is preserved}
+  \textbf{Value is preserved (ignoring fees)}
   \begin{displaymath}
     \sum_{i \in t.\inputs} \getSpent(i, l).\val = \sum_{o \in t.\outputs} o.\val
   \end{displaymath}
@@ -107,7 +122,6 @@
   \end{displaymath}
 
 \seti
-
 \end{enumerate}
 
 \end{frame}

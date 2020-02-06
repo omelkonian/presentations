@@ -15,7 +15,7 @@
 
 % Tikz
 \usepackage{tikz}
-\usetikzlibrary{chains,arrows,automata,fit,positioning,calc}
+\usetikzlibrary{arrows,positioning,matrix,fit,decorations.text}
 
 % Colors
 \usepackage{xcolor}
@@ -31,6 +31,14 @@
 %% Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+%% Counters for `enumerate`
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+
 \renewcommand{\i}{\textit}  % Just to speed up typing: replace these in the final version
 \renewcommand{\t}{\texttt}  % Just to speed up typing: replace these in the final version
 \newcommand{\s}{\textsf}  % Just to speed up typing: replace these in the final version

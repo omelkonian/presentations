@@ -1,42 +1,28 @@
 \section{Introduction}
 
-\begin{frame}{Motivation}
-\begin{itemize}
-\item A lot of blockchain applications recently
-\item Sophisticated transactional schemes via \alert{smart contracts}
-\item Reasoning about their execution is:
-  \begin{enumerate}
-  \item \textit{necessary}, significant funds are involved
-  \item \textit{difficult}, due to concurrency
-  \end{enumerate}
-\item Hence the need for tools that verify no such bugs exist
-  \begin{itemize}
-  \item This has to be done \alert{statically}!
-  \item \alert{Formal methods} to the rescue!
-  \end{itemize}
-\end{itemize}
-\end{frame}
+
+\newcommand\withLogo[2]{#2 \hfill \includegraphics[keepaspectratio=true,height=17pt]{#1}}
 
 \begin{frame}{Background}
 
-\begin{alertblock}{Bitcoin}
+\begin{alertblock}{\withLogo{bitcoin}{Bitcoin}}
 \begin{itemize}
-\item Based on \textit{unspent transaction outputs} (UTxO)
-\item Smart contracts in the simple language \textsc{script}
+\item Based on \textit{unspent transaction outputs} (UTXO)
+\item Simple, non Turing-complete smart contracts in \textsc{script}
 \end{itemize}
 \end{alertblock}
 
-\begin{alertblock}{Ethereum}
+\begin{alertblock}{\withLogo{ethereum}{Ethereum}}
 \begin{itemize}
-\item Based on the notion of accounts
-\item Smart contracts in (almost) Turing-complete Solidity/EVM
+\item Account-based
+\item Turing-complete smart contracts in Solidity/EVM
 \end{itemize}
 \end{alertblock}
 
-\begin{alertblock}{Cardano (IOHK)}
+\begin{alertblock}{\withLogo{ada}{Cardano (IOHK)}}
 \begin{itemize}
-\item UTxO-based, with several extensions
-\item Due to the extensions, smart contracts become more expressive
+\item UTXO-based + extensions
+\item Turing-complete smart contracts in Plutus
 \end{itemize}
 \end{alertblock}
 
@@ -44,9 +30,9 @@
 
 \begin{frame}{Methodology}
 \begin{itemize}
-\item Keep things on an abstract level
+\item Focus on validating the relevant meta-theory
   \begin{itemize}
-  \item Setup long-term foundations
+  \item In contrast to validating individual contracts
   \end{itemize}
 \item Fully mechanized approach, utilizing Agda's rich type system
 \item Fits well with IOHK's research-oriented approach
@@ -69,8 +55,8 @@
   font=\small
   ]
   \matrix{
-     \node[basic box] (a) {pure\\ research};
-  \& \node[basic box] (b) {mechanized\\ models};
+     \node[basic box,draw=mLightBrown] (a) {pure\\ research};
+  \& \node[basic box,draw=mLightBrown] (b) {mechanized\\ models};
   \& \node[basic box] (c) {reference\\ implementations};
   \& \node[basic box] (d) {production\\ code}; \\
   };
