@@ -7,7 +7,7 @@
   progressbar=frametitle,
   numbering=none,
 ]{metropolis}
-\setbeamersize{text margin left=.5cm,text margin right=.5cm}
+\setbeamersize{text margin left=.7cm,text margin right=.7cm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Packages
@@ -23,6 +23,7 @@
 % Images
 \usepackage{graphics}
 \graphicspath{{img/}}
+\usepackage{caption}
 
 % Math
 \usepackage{proof}
@@ -190,6 +191,7 @@ Orestis Melkonian, Michael Peyton Jones, Philip Wadler \\[5pt]
 \setbeamerfont{subtitle}{size=\large}
 \end{center}
 
+\input{0-diagrams.tex}
 \input{1-intro.tex}
 \input{2-informal.tex}
 \input{3-formal.tex}

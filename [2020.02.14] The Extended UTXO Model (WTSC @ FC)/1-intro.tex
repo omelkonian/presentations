@@ -1,9 +1,8 @@
 \section{Introduction}
 
-
 \newcommand\withLogo[2]{#2 \hfill \includegraphics[keepaspectratio=true,height=17pt]{#1}}
 
-\begin{frame}{Background}
+\begin{frame}[plain] %{Background}
 
 \begin{alertblock}{\withLogo{bitcoin}{Bitcoin}}
 \begin{itemize}
@@ -69,10 +68,35 @@
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Contributions}
+\begin{frame}[label=contributions]{Contributions}
+
 \begin{itemize}
-\item Detailed description of the Extended UTXO model (EUTXO)
-\item Formalization in Agda
-\item Formal proof of bisimulation with a specific form of state machines
+\setlength\itemsep{.5cm}
+
+\item \textbf{Detailed description of the Extended UTXO model (EUTXO)}
+\scalebox{.4}{
+\centering
+\begin{tikzpicture}
+  \utxo
+\end{tikzpicture}
+\hspace{1cm}
+\rule{1pt}{3cm}
+\hspace{1cm}
+\begin{tikzpicture}[yshift=-.5cm]
+  \eutxo
+\end{tikzpicture}
+}
+
+\item \textbf{Formalization in} \raisebox{-.5\height}{\includegraphics[height=.2\textheight]{agda}}\\
+
+\item \textbf{Proof of bisimulation with a specific form of state machines}\\
+\centering
+\scalebox{.7}{
+\begin{tikzpicture}
+  \multisig
+\end{tikzpicture}
+}
+
 \end{itemize}
+
 \end{frame}

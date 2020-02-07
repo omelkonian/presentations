@@ -7,13 +7,13 @@
   \begin{itemize}
   \item passed as extra argument of type \s{Data} during validation
   \item allows a contract to carry data without changing its code
-  \item otherwise we would not be able to identity a contract by its code's hash
+  \item otherwise we could not identify a contract by its code's hash
   \end{itemize}
 \item More information about the transaction available to the validator
   \begin{itemize}
   \item passed as extra argument of type \s{TxInfo} during validation
   \item allows inspection of the transaction's outputs, thus supporting\\
-\alert{contract continuity} (i.e. outputs target the expected validator)
+\alert{contract continuity} (i.e. outputs use the expected validator)
   \end{itemize}
 \seti
 \end{enumerate}
@@ -113,14 +113,6 @@
     \sum_{i \in t.\inputs} \getSpent(i, l).\val = \sum_{o \in t.\outputs} o.\val
   \end{displaymath}
 
-\item
-  \label{rule:no-double-spending}
-  \textbf{No output is double spent}
-  \begin{displaymath}
-    \textrm{If } i_1, i_2 \in t.\inputs \textrm{ and }  i_1.\outputref = i_2.\outputref
-    \textrm{ then } i_1 = i_2
-  \end{displaymath}
-
 \seti
 \end{enumerate}
 
@@ -130,6 +122,14 @@
 
 \begin{enumerate}
 \conti
+
+\item
+  \label{rule:no-double-spending}
+  \textbf{No output is double spent}
+  \begin{displaymath}
+    \textrm{If } i_1, i_2 \in t.\inputs \textrm{ and }  i_1.\outputref = i_2.\outputref
+    \textrm{ then } i_1 = i_2
+  \end{displaymath}
 
 \item
   \label{rule:all-inputs-validate}

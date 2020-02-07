@@ -1,0 +1,107 @@
+\tikzset{
+  % UTXO vs EUTXO
+  tx/.style =
+  { draw           = gray,
+    shape          = rectangle,
+    align          = center,
+    minimum width  = .5cm,
+    minimum height = 1.5cm },
+  mid/.style =
+  { draw,
+    yshift       = .5cm,
+    shape        = circle,
+    inner sep    = 0pt,
+    minimum size = 4pt },
+  math/.style =
+  { yshift = -.5cm },
+  arg/.style =
+  { anchor = center,
+    align  = left,
+    font   = \scriptsize },
+  to/.style =
+  { -,
+    bend left = 30,
+    thick },
+  every matrix/.style =
+  { column sep            = 2.2cm,
+    ampersand replacement = \& },
+  font=\small,
+  % multisig
+  state/.style =
+  { shape        = circle,
+    fill         = gray!50,
+    align        = center,
+    minimum size = 2.5cm },
+  transition/.style =
+  { ->,
+    thick
+  },
+  move/.style =
+  { align  = center,
+    anchor = center,
+    font   = \scriptsize }
+}
+
+\newcommand\utxo{
+  \matrix (mat) [matrix of nodes, nodes in empty cells] {
+     \node[mid,red]   (a) {};
+  \& \node[tx]        (b) {};
+  \& \node[mid,red]   (c) {};
+  \& \node[tx]        (d) {};
+  \& \node[mid,black] (e) {};
+  \\ \& \& \& \& \\
+  };
+  \path
+  (a) edge[to, red]
+  (b)
+  (b) edge[to, black] node[arg, yshift=-.7cm] {$\nu$ : Validator\\ x : Value}
+  (c)
+  (c) edge[to, red] node[arg, yshift=.4cm] {$\rho$ : Redeemer}
+  (d)
+  (d) edge[to, black]
+  (e)
+  ;
+  \node[math,fit=(mat-2-1)(mat-2-5)]{$\nu(\rho) \overset{\text{\tiny ?}}{=} \s{True}$};
+}
+
+\newcommand\eutxo{
+  \matrix (mat) [matrix of nodes, nodes in empty cells] {
+     \node[mid,red]   (a) {};
+  \& \node[tx]        (b) {};
+  \& \node[mid,red]   (c) {};
+  \& \node[tx,label=below:\scriptsize$\sigma$ : TxInfo] (d) {};
+  \& \node[mid,black] (e) {};
+  \\ \& \& \& \& \\
+  };
+  \path
+  (a) edge[to, red]
+  (b)
+  (b) edge[to, black] node[arg, yshift=-1cm] {$\nu$ : Validator\\ x : Value\\ $\delta$ : Data}
+  (c)
+  (c) edge[to, red] node[arg, yshift=.4cm] {$\rho$ : Redeemer}
+  (d)
+  (d) edge[to, black]
+  (e)
+  ;
+  \node[math,fit=(mat-2-1)(mat-2-5)]{$\nu(\rho,\ x,\ \delta,\ \sigma) \overset{\text{\tiny ?}}{=} \s{True}$};
+}
+
+\newcommand\multisig{
+  \node[state] (a) {\textbf{Holding}};
+  \node[state, right = 2cm of a] (b) {\textbf{Collecting}\\($v$, $p$, $d$, $sigs$)};
+
+  \path
+  (a.north east) edge[transition, bend left = 30]
+    node[move, above] {\textbf{Propose}($v$, $p$, $d$)\\$sigs' = \{\}$}
+  (b.north west)
+  (b) edge[transition, out = 30, in = -30, looseness = 3]
+      node[move, right] {\textbf{Add}(sig)\\$sigs' = sigs \cup sig$\\ if $sig \in sigs_{auth}$}
+      (b)
+      edge[transition, bend left = 15]
+      node[move, above] {\textbf{Pay}()\\ if $|sigs| \geq n$}
+      (a)
+      edge[transition, bend left = 30]
+      node[move, below] {\textbf{Cancel}()\\ if $d$ expired}
+      (a)
+  ;
+}

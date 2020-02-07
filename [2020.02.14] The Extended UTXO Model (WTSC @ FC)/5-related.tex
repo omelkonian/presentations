@@ -1,28 +1,29 @@
 \begin{frame}{Related Work}
 
 \begin{itemize}
-\item \alert{Bitcoin Covenants}
+\item \alert{Bitcoin Covenants}~~[Möser et al. @ FC'16]
   \begin{itemize}
   \item Allows restricting how output values will be used in the future
   \item Major inspiration for our introduction of \textit{data values}
   \end{itemize}
-\item \alert{Bitcoin Modelling Language (BitML)}
+\item \alert{Bitcoin Modelling Language (BitML)}~~[Bartoletti et al. @ CCS'18]
   \begin{itemize}
-  \item A process-calculus for Bitcoin smart contracts, whose operational semantics comprise a state machine
-  \item Compiles down to Bitcoin transactions, without any extensions
+  \item Process-calculus with automata-based operational semantics
+  \item Compiles down to standard Bitcoin transactions
   \item Quite complicated translation and requires off-chain communication
   \end{itemize}
-\item \alert{Scilla}
+\item \alert{Scilla}~~[Sergey et al. @ OOPSLA'19]
   \begin{itemize}
-  \item For Ethereum contracts, using message-passing state machines dubbed \textit{Communicating State Transition Systems}
-  \item Embedded in Coq, hence amendable to formal verification
-  \item Allows proving temporal (hyper-)properties
+  \item For Ethereum-like contracts, using \textit{communicating automata}
+  \item Embedded in Coq, allows proving temporal (hyper-)properties
   \end{itemize}
-\item \alert{Bitcoin Contracts as Timed Automata}
+\item \alert{Timed Automata}~~[Andrychowicz et al. @ FORMATS'14]
   \begin{itemize}
-  \item Pragmatic model checking using \textsc{UPPAAL}
+  \item Pragmatic model checking of Bitcoin contracts using \textsc{UPPAAL}
   \item Does not come with formal guarantees though
   \end{itemize}
 \end{itemize}
 
 \end{frame}
+
+\againframe{contributions}
