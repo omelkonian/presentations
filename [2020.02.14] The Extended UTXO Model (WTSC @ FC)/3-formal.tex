@@ -39,49 +39,6 @@
 
 \end{frame}
 
-
-
-\newcommand\bs[1]{\mbox{\textbf{\s{#1}}}}
-\begin{frame}{Ledger Primitives}
-
-\begin{displaymath}
-\begin{array}{rll}
-  \bs{Quantity} && \mbox{an amount of currency}\\
-  \bs{Tick}  && \mbox{a tick}\\
-  \bs{Address} && \mbox{an ``address'' in the blockchain}\\
-  \bs{Data}  && \mbox{a type of structured data}\\
-  \bs{DataHash} && \mbox{the hash of a value of type \Data{}}\\
-  \bs{TxId} && \mbox{the identifier of a transaction}\\
-  \bs{txId} : \s{Tx} \rightarrow \s{TxId} && \mbox{get a transaction's identifier}\\
-  \bs{Script} && \mbox{the (opaque) type of scripts}\\
-  \bs{scriptAddr} : \s{Script} \rightarrow \s{Address} && \mbox{the address of a script (i.e. its hash)}\\
-  \bs{dataHash} : \s{Data} \rightarrow \s{DataHash} && \mbox{the hash of a data value}\\
-  \mathbf{\llbracket \_ \rrbracket} : \script \rightarrow \s{Args} \rightarrow \s{Bool} && \mbox{applying a script to its arguments}\\
-\end{array}
-\end{displaymath}
-
-\end{frame}
-
-\begin{frame}{Defined Types}
-
-\begin{displaymath}
-\begin{array}{rll}
-  \bs{Output }    &=&(\val: \qty, \addr: \Address, \dataHsh: \DataHash)\\[8pt]
-
-  \bs{OutputRef } &=&(\txrefid: \TxId, \idx: \N)\\[8pt]
-
-  \bs{Input }     &=&(\outputref: \s{OutputRef}, \validator: \script,\\
-                  & &\ \dataVal: \Data, \redeemerVal: \Data)\\[8pt]
-
-  \bs{Tx }        &=&(\inputs: \Set{\s{Input}}, \outputs: \List{\s{Output}},\\
-                  & &\ \validityInterval: \Interval{\tick})\\[8pt]
-
-  \bs{Ledger }    &=&\!\List{\eutxotx}\\
-\end{array}
-\end{displaymath}
-
-\end{frame}
-
 \begin{frame}{Validity of EUTXO Transactions (I)}
 
 \begin{enumerate}
@@ -103,7 +60,7 @@
   \label{rule:all-inputs-refer-to-unspent-outputs}
   \textbf{All inputs refer to unspent outputs}
   \begin{displaymath}
-    t.\inputs \subseteq \unspent(l)
+    \{i.\outputref : i \in t.\inputs \} \subseteq \unspent(l)
   \end{displaymath}
 
 \item

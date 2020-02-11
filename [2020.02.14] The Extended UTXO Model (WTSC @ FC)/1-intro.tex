@@ -1,29 +1,21 @@
+\newcommand\withLogo[2]{\raisebox{-.25\height}{\includegraphics[keepaspectratio=true,height=27pt]{#1}}~~#2}
+\newcommand\no{\Large $\times$}
+\newcommand\yes{\Large $\checkmark$}
+
 \section{Introduction}
+\begin{frame}[plain]
 
-\newcommand\withLogo[2]{#2 \hfill \includegraphics[keepaspectratio=true,height=17pt]{#1}}
 
-\begin{frame}[plain] %{Background}
-
-\begin{alertblock}{\withLogo{bitcoin}{Bitcoin}}
-\begin{itemize}
-\item Based on \textit{unspent transaction outputs} (UTXO)
-\item Simple, non Turing-complete smart contracts in \textsc{script}
-\end{itemize}
-\end{alertblock}
-
-\begin{alertblock}{\withLogo{ethereum}{Ethereum}}
-\begin{itemize}
-\item Account-based
-\item Turing-complete smart contracts in Solidity/EVM
-\end{itemize}
-\end{alertblock}
-
-\begin{alertblock}{\withLogo{ada}{Cardano (IOHK)}}
-\begin{itemize}
-\item UTXO-based + extensions
-\item Turing-complete smart contracts in Plutus
-\end{itemize}
-\end{alertblock}
+\renewcommand{\arraystretch}{2.5}
+\begin{tabular}{l|l|c|c}
+\textbf{\hfil\small Blockchain\hfil} & \textbf{\hfil\small Model\hfil} & \textbf{\small Turing-complete} & \textbf{\small Deterministic} \\
+\hline
+\withLogo{bitcoin}{Bitcoin} & UTXO & \no & \yes \\
+\hline
+\hspace{3pt}\withLogo{ethereum}{\hspace{3pt}Ethereum} & Accounts & \yes & \no \\
+\hline
+\withLogo{ada}{Cardano (IOHK)} & UTXO$^{++}$ & \yes & \yes \\
+\end{tabular}
 
 \end{frame}
 
@@ -71,31 +63,27 @@
 \begin{frame}[label=contributions]{Contributions}
 
 \begin{itemize}
-\setlength\itemsep{.5cm}
+\setlength\itemsep{.25cm}
 
 \item \textbf{Detailed description of the Extended UTXO model (EUTXO)}
-\scalebox{.4}{
-\centering
-\begin{tikzpicture}
-  \utxo
-\end{tikzpicture}
-\hspace{1cm}
-\rule{1pt}{3cm}
-\hspace{1cm}
-\begin{tikzpicture}[yshift=-.5cm]
-  \eutxo
-\end{tikzpicture}
+\begin{center}
+\scalebox{.7}{
+  \begin{tikzpicture}
+    \eutxo
+  \end{tikzpicture}
 }
+\end{center}
 
-\item \textbf{Formalization in} \raisebox{-.5\height}{\includegraphics[height=.2\textheight]{agda}}\\
+\item \textbf{Formalization in} \raisebox{-.5\height}{\includegraphics[height=.18\textheight]{agda}}\\
 
 \item \textbf{Proof of bisimulation with a specific form of state machines}\\
-\centering
-\scalebox{.7}{
-\begin{tikzpicture}
-  \multisig
-\end{tikzpicture}
+\begin{center}
+\scalebox{.6}{
+  \begin{tikzpicture}
+    \multisig
+  \end{tikzpicture}
 }
+\end{center}
 
 \end{itemize}
 
