@@ -64,7 +64,7 @@
   \node[math,fit=(mat-2-1)(mat-2-5)]{$\nu(\rho) \overset{\text{\tiny ?}}{=} \s{True}$};
 }
 
-\newcommand\eutxo{
+\newcommand\eutxo[1][black]{
   \matrix (mat) [matrix of nodes, nodes in empty cells] {
      \node[mid,red]   (a) {};
   \& \node[tx]        (b) {};
@@ -76,11 +76,11 @@
   \path
   (a) edge[to, red]
   (b)
-  (b) edge[to, black] node[arg, yshift=-1cm] {$\nu$ : Validator\\ x : Value\\ $\delta$ : Data}
+  (b) edge[to, #1] node[arg, yshift=-1cm, text=black] {$\nu$ : Validator\\ x : Value\\ $\delta$ : Data}
   (c)
   (c) edge[to, red] node[arg, yshift=.4cm] {$\rho$ : Redeemer}
   (d)
-  (d) edge[to, black]
+  (d) edge[to, #1]
   (e)
   ;
   \node[math,fit=(mat-2-1)(mat-2-5)]{$\nu(\rho,\ x,\ \delta,\ \sigma) \overset{\text{\tiny ?}}{=} \s{True}$};

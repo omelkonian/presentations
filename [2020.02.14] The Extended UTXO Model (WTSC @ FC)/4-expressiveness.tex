@@ -4,18 +4,16 @@
 
 To formally reason about the expressiveness of EUTXO, we introduce a specific form of state machines:
 \begin{itemize}
-\item Type of states \s{S}, type of inputs \s{I}
-\item $\s{final} : \s{S} \rightarrow \s{Bool}$
-\item $\s{step} : \s{S} \rightarrow \s{I} \rightarrow \s{Maybe}\ (\s{S} \times \s{TxConstraints})$
+\item \textbf{$\s{step} : \s{State} \rightarrow \s{Input} \rightarrow \s{Maybe}\ (\s{State} \times \s{TxConstraints})$}
 \end{itemize}
 
-These are similar to Mealy machines, but differ in some aspects:
+Similar to Mealy machines (FSM + output), but differ in some aspects:
 \begin{enumerate}
 \item No notion of initial states
 \item Cannot transition out of a final state
 \item Blockchain-specific output values (\s{TxConstraints})
   \begin{itemize}
-  \item these typically are first-order equality constraints on the fields of \s{Tx}
+  \item e.g. for the \textbf{Pay} move of Multisig, $p \in \{ o.address : o \in tx.outputs \}$
   \end{itemize}
 \end{enumerate}
 
