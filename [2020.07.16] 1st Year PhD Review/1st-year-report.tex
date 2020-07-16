@@ -1,0 +1,354 @@
+\documentclass[aspectratio=43]{beamer}
+%% \documentclass[aspectratio=169]{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+\setbeamersize{text margin left=.7cm,text margin right=.7cm}
+\usepackage{appendixnumberbeamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[backend=bibtex,style=authoryear]{biblatex}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,matrix,fit,backgrounds,decorations.text,decorations.pathmorphing,calc,shapes}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{contour}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+\newcommand\BitML{\textsc{BitML}}
+% My publications
+\newcommand\citetyde{\textbf{TyDe @ ICFP}: \textit{Formal investigation of the Extended UTxO model}}
+\newcommand\citesrc{\textbf{SRC @ ICFP}: \textit{Formalizing BitML Calculus in Agda}}
+\newcommand\citewtsc{\textbf{WTSC @ FC}: \textit{The Extended UTXO Model}}
+\newcommand\citeisola{\textbf{ISoLA}: \textit{Native Custom Tokens in the Extended UTXO Model}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}
+\usepackage[tt=false]{libertine}
+\usepackage[libertine]{newtxmath}
+
+%----------------------------------------------------------------------------
+
+\title{1$^{st}$-year PhD Report}
+%\subtitle{}
+\vspace{-1cm}
+\author{Orestis Melkonian}
+\date{July 16, 2020}
+\titlegraphic{
+\vspace*{6cm}
+\includegraphics[keepaspectratio=true,height=1.2cm]{uoe}\\
+\includegraphics[keepaspectratio=true,height=1.0cm]{iohk}
+}
+
+\begin{document}
+\begin{center}
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{subtitle}{size=\small}
+\maketitle
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{subtitle}{size=\large}
+\end{center}
+
+\input{0-diagrams.tex}
+
+\section{Introduction}
+
+\begin{frame}{Motivation}
+\begin{itemize}
+\item Smart contract vulnerabilities lead to dramatic monetary losses (cf. DAO attack)
+\item Hence the need to make sure contract behaviour is provably correct/safe
+\item Chains are immutable $\to$ need to provide guarantees \alert{statically}
+\item Formal verification to the rescue!
+\item Relatively few mechanised results thus far
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Research Questions}
+\begin{itemize}
+\item A mechanisation of the soundness of the BitML compiler
+  \begin{itemize}
+  \item Encoded in constructive type theory
+  \item Mechanised in the Agda proof assistant
+  \item \alert{EXTRA}: Hope to distil general principles for the mechanisation
+  of compilation correctness proofs across application domains
+  \end{itemize}
+\item A theoretical basis for conducting meta-theory of UTxO-based blockchain models
+  \begin{itemize}
+  \item Relative expressiveness of the (E)UTxO accounting model
+  \item Allow reasoning about smart contracts and verifying their properties
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Methodology}
+\begin{center}
+  \begin{tikzpicture}
+  \method
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+% This PhD is the continuation of my previous MSc thesis in the Uni of Utrecht.
+\section{MSc in Utrecht}
+\begin{frame}{MSc Thesis}
+\begin{itemize}
+\item Under the supervision of
+  \begin{itemize}
+  \item Wouter Swierstra (Utrecht University)
+  \item Manuel Chakravarty (IOHK)
+  \end{itemize}
+\item Two objects of study:
+  \begin{enumerate}
+  \item The \textit{Bitcoin Modelling Language (BitML)} and its compilation to Bitcoin transactions
+  \item The \textit{\textbf{Extended} UTxO Model}, as designed for the Cardano blockchain
+  \end{enumerate}
+\end{itemize}
+\end{frame}
+
+% Let's briefly see what I managed to formalise within the context of my MSc thesis.
+
+% Regarding the EUTXO model, I ...
+\begin{frame}{UTXO [2018-2019]}
+\begin{center}
+  \begin{tikzpicture}
+  \utxo
+  \begin{pgfonlayer}{background}
+    \onslide<+>{
+      \node [MSc, MSc-label, fit=(utxo)] {};
+    }
+    \onslide<+->{
+      \node [MSc, MSc-label, fit=(utxo) (eutxo)] {};
+    }
+  \end{pgfonlayer}
+% This part of my thesis was presented as an extended abstract at the last year's workshop on TyDe, part of ICFP.
+  \onslide<+>{
+    \node [cit, above = of eutxo.north] {\citetyde};
+  }
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Independently, I formalised the semantic/high-level part of the BitML work.
+% That is, encoded BitML contracts in Agda, defined their small-step operational semantics,
+% which give rise to a game-theoretic semantics talking about multiple participants interacting
+% using specific strategies and being able to make certain moves.
+\begin{frame}{BitML [2018-2019]}
+\begin{center}
+  \begin{tikzpicture}
+  \bitml
+  \begin{pgfonlayer}{background}
+    \onslide<+>{
+      \node [MSc, MSc-label, fit=(contracts)] {};
+    }
+    \onslide<+>{
+      \node [MSc, MSc-label, fit=(contracts) (lts)] {};
+    }
+    \onslide<+->{
+      \node [MSc, MSc-label, fit=(contracts) (sm)] {};
+    }
+  \end{pgfonlayer}
+  \onslide<+>{
+    \node [cit, below = of msc] {\citesrc};
+  }
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+% This half of my MSc thesis was presented as an extended abstract and poster at ICFP's SRC.
+
+
+% So, let's move on to my 1st year as a PhD student here in Edinburgh.
+\section{PhD in Edinburgh}
+
+% I initially focused on progressing on the BitML formalisation.
+% 1) Thoroughly reviewing the BitML formalisation and simplifying definitions/proofs [Sept - Nov]
+% 2) formal-bitcoin + computational-model of Bitcoin transactions + compiling BitML->Bitcoin [Nov - Dec]
+\begin{frame}{BitML [Sep-Dec 2019]}
+\begin{center}
+  \begin{tikzpicture}
+  \bitml
+  \begin{pgfonlayer}{background}
+    \node [MSc, MSc-label, fit=(contracts) (sm)] {};
+    \onslide<+>{
+      \node [PhD, PhD-label, fit=(transactions)] {};
+    }
+    \onslide<+>{
+      \node [PhD, PhD-label, fit=(transactions) (bc)] {};
+    }
+    \onslide<+->{
+      \node [PhD, PhD-label, fit=(transactions) (cm)] {};
+    }
+    \onslide<+->{
+      \node [PhD, fit=(contracts.south) (comp) (transactions)] {};
+    }
+  \end{pgfonlayer}
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+% Then, there was a context switch, mostly due to collective interest to work on this by the entire Plutus team,
+% towards developing the meta-theory of EUTXO further. [Dec - June]
+\begin{frame}{UTXO [Jan-Jun 2020]}
+\begin{center}
+  \begin{tikzpicture}
+  \utxo
+  \begin{pgfonlayer}{background}
+    \node [MSc, MSc-label, fit=(utxo) (eutxo)] {};
+    \onslide<+>{
+      \node [PhD, PhD-label, fit=(iso) (cem)] {};
+    }
+  \end{pgfonlayer}
+% 1) Paper I: The Extended UTxO Model @ WTSC
+  %% \item Informal description of EUTxO and corresponding Agda mechanization
+  %% \item Proved a bisimulation of EUTxO between a novel variant of Mealy machines, dubbed \textit{Contraint Emitting Machines} (CEMs)
+  %% \item The bisimulation is \alert{weak} in the EUTxO$\to$CEM direction
+  %%   \begin{itemize}
+  %%   \item \textit{Intuition}: Irrelevant transactions may be submitted, that does not influence the simulated state machine
+  %%   \end{itemize}
+  \onslide<+>{
+    \begin{pgfonlayer}{background}
+    \node [PhD, fit=(iso) (cem)] {};
+    \end{pgfonlayer}
+    \node [cit, below = of cem] {\citewtsc};
+  }
+  \begin{pgfonlayer}{background}
+    \onslide<+->{
+      \node [PhD, PhD-label, fit=(l) (cem2)] {};
+      \node [PhD, fit=(iso) (cem2)] {};
+    }
+  \end{pgfonlayer}
+% 2) Paper II: Native Custom Tokens in the Extended UTXO Model @ ISoLA
+  %% \item Adding multi-currency support to EUTxO
+  %% \item Extending previous correspondence to CEMs to support preservation of inductive (safety) properties
+  \onslide<+>{
+    \node [cit, below = of cem] {\citeisola};
+  }
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+%% Finally, during the last month [Jul] I went back to BitML
+%% \item Defined the \textbf{coherence} relation between high-level/symbolic runs and low-level/computational ones
+%%   \item almost complete, a few postulates still need to be proven
+\begin{frame}{BitML [Jul 2020]}
+\begin{center}
+  \begin{tikzpicture}
+  \bitml
+  \begin{pgfonlayer}{background}
+    \node [MSc, MSc-label, fit=(contracts) (sm)] {};
+    \node [PhD, PhD-label, fit=(transactions) (cm)] {};
+    \node [PhD, fit=(contracts.south) (comp) (transactions)] {};
+    \pause
+    \node [PhD2, fit=(cm.north east) (coh)] {};
+  \end{pgfonlayer}
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+\section{Future Directions}
+
+\begin{frame}{BitML}
+\begin{itemize}
+\item Translating symbolic to computational runs
+\item Prove \alert{computational soundness}: the compiler preserves coherence
+\end{itemize}
+\begin{center}
+\scalebox{.8}{
+  \begin{tikzpicture}
+  \bitml
+  \begin{pgfonlayer}{background}
+    \node [MSc, MSc-label, fit=(contracts) (sm)] {};
+    \node [PhD, PhD-label, fit=(transactions) (cm)] {};
+    \node [PhD, fit=(contracts.south) (comp) (transactions)] {};
+    \node [PhD2, fit=(cm.north east) (coh)] {};
+    \node [PhD3, fit=(comps)] {};
+    \node [PhD3, fit=(sm.south) (n) (cm.north)] {};
+  \end{pgfonlayer}
+  \end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}{UTxO}
+\begin{itemize}
+\item Smart Contract Verification
+\begin{itemize}
+\item Temporal/branching-time logics (LTL, CTL, CTL$*$, etc...)
+\end{itemize}
+
+\item Further Meta-theory
+\begin{itemize}
+\item Coalgebraic approach to bisimulation
+\item Coinductive proof techniques
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Confluence}
+\centering \textbf{BitML $\to$ EUTxO}
+\vspace{1cm}
+\begin{itemize}
+\item BitML's semantics can be directly encoded as a CEM
+\item May lead to simpler soundness proof
+\item Allows comparison with Marlowe
+  \begin{itemize}
+  \item which is implemented on top of EUTxO, in a similar fashion)
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Discussion}
+\begin{itemize}
+\item Coherence of topic (UTxO \alert{versus} BitML)
+  \begin{itemize}
+  \item where to focus on?
+  \item which research path seems the most promising?
+  \item is it worthy material for a PhD dissertation?
+%% \item stapler dissertation?
+  \end{itemize}
+\pause
+\item Collaboration \alert{versus} lonesomeness
+  \begin{itemize}
+  \item work so far done in collab. with the Plutus team
+  \item in antithesis with the inherent nature of a PhD
+  \end{itemize}
+\pause
+\item \alert{Future} directions
+  \begin{itemize}
+  \item do they sound interesting and worthy to explore?
+  \item other comments/suggestions?
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+%% \appendix
+%% \begin{frame}[allowframebreaks]{References}
+%% \bibliography{1st-year-report}
+%% \bibliographystyle{abbrv}
+%% \nocite{*}
+%% \end{frame}
+
+\end{document}
