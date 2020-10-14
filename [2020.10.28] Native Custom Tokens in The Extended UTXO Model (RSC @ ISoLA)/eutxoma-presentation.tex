@@ -1,0 +1,273 @@
+\documentclass[aspectratio=43]{beamer}
+%% \documentclass[aspectratio=169]{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+\setbeamersize{text margin left=.7cm,text margin right=.7cm}
+\usepackage{appendixnumberbeamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,matrix,fit,backgrounds,decorations.text,decorations.pathmorphing,calc,shapes}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{contour}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+\usepackage{caption}
+
+% Math
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{proof}
+\newenvironment{proposition}[1]
+  {\begin{alertblock}{#1}\begin{displaymath}}
+  {\end{displaymath}\end{alertblock}}
+
+\newcommand\ADA[0]{\raisebox{-.25\height}{\includegraphics[keepaspectratio=true,height=10pt]{ada}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+%% Counters for `enumerate`
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\renewcommand{\i}{\textit}  % Just to speed up typing: replace these in the final version
+\renewcommand{\t}{\texttt}  % Just to speed up typing: replace these in the final version
+\newcommand{\s}{\textsf}  % Just to speed up typing: replace these in the final version
+\newcommand{\msf}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\mi}[1]{\ensuremath{\mathit{#1}}}
+
+%% A figure with rules above and below.
+\newcommand\rfskip{7pt}
+%\newenvironment{ruledfigure}[1]{\begin{figure}[#1]\hrule\vspace{\rfskip}}{\vspace{\rfskip}\hrule\end{figure}}
+\newenvironment{ruledfigure}[1]{\begin{figure}[#1]}{\end{figure}}
+
+%% Various text macros
+\newcommand{\true}{\ensuremath{\mathsf{true}}} % \textsf becomes slanted in math mode
+\newcommand{\false}{\ensuremath{\textsf{false}}}
+
+\newcommand{\hash}[1]{\ensuremath{#1^{\#}}}
+
+\newcommand{\List}[1]{\ensuremath{\s{List}[#1]}}
+\newcommand{\Set}[1]{\ensuremath{\s{Set}[#1]}}
+\newcommand{\FinSet}[1]{\ensuremath{\s{FinSet}[#1]}}
+\newcommand{\Interval}[1]{\ensuremath{\s{Interval}[#1]}}
+\newcommand{\FinSup}[2]{\ensuremath{\s{FinSup}[#1,\linebreak[0]#2]}}
+% ^ \linebreak is to avoid a bad line break when we talk about finite
+% maps.  We may be able to remove it in the final version.
+
+\newcommand{\supp}{\msf{supp}}
+
+\newcommand{\Script}{\ensuremath{\s{Script}}}
+\newcommand{\scriptAddr}{\msf{scriptAddr}}
+\newcommand{\ctx}{\ensuremath{\s{Context}}}
+\newcommand{\vlctx}{\ensuremath{\s{ValidatorContext}}}
+\newcommand{\mpsctx}{\ensuremath{\s{PolicyContext}}}
+\newcommand{\toData}{\ensuremath{\s{toData}}}
+\newcommand{\toTxData}{\ensuremath{\s{toTxData}}}
+\newcommand{\fromData}{\msf{fromData}}
+
+\newcommand{\mkContext}{\ensuremath{\s{mkContext}}}
+\newcommand{\mkVlContext}{\ensuremath{\s{mkValidatorContext}}}
+\newcommand{\mkMpsContext}{\ensuremath{\s{mkPolicyContext}}}
+
+\newcommand{\applyScript}[1]{\ensuremath{\llbracket#1\rrbracket}}
+\newcommand{\applyMPScript}[1]{\ensuremath{\llbracket#1\rrbracket}}
+
+% Macros for eutxo things.
+\newcommand{\tx}{\mi{tx}}
+\newcommand{\TxId}{\ensuremath{\s{TxId}}}
+\newcommand{\txId}{\msf{txId}}
+\newcommand{\txrefid}{\mi{id}}
+\newcommand{\Address}{\ensuremath{\s{Address}}}
+\newcommand{\DataHash}{\ensuremath{\s{DataHash}}}
+\newcommand{\hashData}{\msf{dataHash}}
+\newcommand{\idx}{\mi{index}}
+\newcommand{\inputs}{\mi{inputs}}
+\newcommand{\outputs}{\mi{outputs}}
+\newcommand{\forge}{\mi{forge}}
+\newcommand{\forgeScripts}{\mi{forgeScripts}}
+\newcommand{\sigs}{\mi{sigs}}
+\newcommand{\fee}{\mi{fee}}
+\newcommand{\addr}{\mi{addr}}
+\newcommand{\val}{\mi{value}}  %% \value is already defined
+
+\newcommand{\validator}{\mi{validator}}
+\newcommand{\redeemer}{\mi{redeemer}}
+\newcommand{\datum}{\mi{datum}}
+\newcommand{\datumHash}{\mi{datumHash}}
+\newcommand{\datumWits}{\mi{datumWitnesses}}
+\newcommand{\Data}{\ensuremath{\s{Data}}}
+\newcommand{\Input}{\ensuremath{\s{Input}}}
+\newcommand{\Output}{\ensuremath{\s{Output}}}
+\newcommand{\OutputRef}{\ensuremath{\s{OutputRef}}}
+\newcommand{\Signature}{\ensuremath{\s{Signature}}}
+\newcommand{\Ledger}{\ensuremath{\s{Ledger}}}
+
+\newcommand{\outputref}{\mi{outputRef}}
+\newcommand{\outputrefs}{\mi{outputRefs}}
+\newcommand{\txin}{\mi{in}}
+\newcommand{\id}{\mi{id}}
+\newcommand{\lookupTx}{\msf{lookupTx}}
+\newcommand{\getSpent}{\msf{getSpentOutput}}
+
+\newcommand{\Tick}{\ensuremath{\s{Tick}}}
+\newcommand{\currentTick}{\msf{currentTick}}
+\newcommand{\spent}{\msf{spentOutputs}}
+\newcommand{\unspent}{\msf{unspentOutputs}}
+\newcommand{\txunspent}{\msf{unspentTxOutputs}}
+\newcommand{\eutxotx}{\msf{Tx}}
+
+\newcommand{\Quantity}{\ensuremath{\s{Quantity}}}
+\newcommand{\Asset}{\ensuremath{\s{Asset}}}
+\newcommand{\Policy}{\ensuremath{\s{Policy}}}
+\newcommand{\Quantities}{\ensuremath{\s{Quantities}}}
+\newcommand{\nativeCur}{\ensuremath{\mathrm{nativeC}}}
+\newcommand{\nativeTok}{\ensuremath{\mathrm{nativeT}}}
+
+\newcommand\B{\ensuremath{\mathbb{B}}}
+\newcommand\N{\ensuremath{\mathbb{N}}}
+\newcommand\Z{\ensuremath{\mathbb{Z}}}
+\renewcommand\H{\ensuremath{\mathbb{H}}}
+%% \H is usually the Hungarian double acute accent
+\newcommand{\emptyBs}{\ensuremath{\emptyset}}
+
+\newcommand{\emptymap}{\ensuremath{\{\}}}
+
+\newcommand{\outRef}{\mi{out}_{\mi{ref}}}
+\newcommand{\fps}{\mi{fps}}
+\newcommand{\fpss}{\mi{fpss}}
+
+\usepackage{etoolbox}
+
+\newcommand{\Cardano}{Cardano}
+\newcommand{\PlutusCore}{Plutus Core}
+\newcommand{\GitUser}{omelkonian}
+
+% Macros for formalisation
+\newcommand\agdaRepo{https://github.com/omelkonian/formal-utxo/tree/2d32}
+\newcommand\ra{\rightarrow}
+\newcommand\nft{\ensuremath{\blacklozenge}}
+\newcommand\NF{\s{NonFungible}}
+\newcommand\Trace{\s{Trace}}
+\newcommand\Provenance{\s{Provenance}}
+\newcommand\provenance{\s{provenance}}
+\newcommand\isFinal{\msf{isFinal}}
+\newcommand\step{\msf{step}}
+\newcommand\satisfies{\msf{satisfies}}
+\newcommand\checkOutputs{\msf{checkOutputs}}
+\newcommand\initial{\msf{initial}}
+\newcommand\extract{\msf{extract}}
+
+\newcommand\All{\msf{All}}
+\newcommand\AllS{\msf{All}^\s{S}}
+
+\newcommand\mkValidator[1]{\msf{validator}_#1}
+\newcommand\mkPolicy[1]{\msf{policy}_#1}
+\newcommand\valC{\mkValidator{\mathcal{C}}}
+\newcommand\polC{\mkPolicy{\mathcal{C}}}
+
+\newcommand\CStepArrow[3]{\ensuremath{
+#1 \xrightarrow{\hspace{5pt} #2 \hspace{5pt}} (#1' , #3)
+}}
+
+\newcommand\txeq{tx^\equiv}
+\newcommand\Sim[2]{\ensuremath{
+#1 \sim #2
+}}
+\newcommand\CStep[1]{\ensuremath{
+ #1 \xrightarrow{\hspace{5pt} i \hspace{5pt}} (#1' , \txeq)
+%%\textsf{step}\, #1\, i \equiv \textsf{just}\, #1'
+}}
+\newcommand\LStep[2]{\ensuremath{
+#1 \xrightarrow{\hspace{5pt} #2 \hspace{5pt}} #1'
+}}
+\newcommand\transTo{\ensuremath{
+    \rightsquigarrow^*
+}}
+\newcommand\transToN{\ensuremath{
+    \rightsquigarrow^{+}
+}}
+
+% multisig
+\newcommand{\msc}{\mathrm{msc}}
+\newcommand{\sig}{\mathit{sig}}
+%\newcommand{\sigs}{\mathit{sigs}}
+\newcommand{\auth}{\mathrm{auth}}
+\newcommand{\Holding}{\msf{Holding}}
+\newcommand{\Collecting}[4]{\msf{Collecting}(#1, #2, #3, #4)}
+\newcommand{\Propose}[3]{\msf{Propose}(#1, #2, #3)}
+\newcommand{\Add}[1]{\msf{Add}(#1)}
+\newcommand{\Cancel}{\msf{Cancel}}
+\newcommand{\Pay}{\msf{Pay}}
+
+% Names, for consistency
+\newcommand{\UTXO}{UTXO}
+\newcommand{\EUTXO}{E\UTXO{}}
+\newcommand{\ExUTXO}{Extended \UTXO{}}
+\newcommand{\CEM}{CEM}
+\newcommand{\UTXOma}{\UTXO$_{\textrm{ma}}$}
+\newcommand{\EUTXOma}{\EUTXO$_{\textrm{ma}}$}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}
+\usepackage[tt=false]{libertine}
+\usepackage[libertine]{newtxmath}
+
+%----------------------------------------------------------------------------
+
+\title{Native Custom Tokens in The Extended UTXO Model}
+%\subtitle{}
+\author{
+Manuel M.T. Chakravarty, James Chapman, Kenneth MacKenzie, \\
+\textbf{Orestis Melkonian}, Jann M\"uller, Michael Peyton Jones, Polina Vinogradova, Philip Wadler \\[5pt]
+}
+\date{\textit{October 28, 2020}}
+\titlegraphic{
+\vspace*{6.5cm}
+\includegraphics[keepaspectratio=true,height=1.0cm]{uoe}\\
+\includegraphics[keepaspectratio=true,height=0.8cm]{iohk}
+}
+
+\begin{document}
+\begin{center}
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{author}{size=\scriptsize}
+\maketitle
+\setbeamerfont{title}{size=\Large}
+\end{center}
+
+\input{0-diagrams.tex}
+\input{1-intro.tex}
+\input{2-eutxo.tex}
+\input{3-eutxoma.tex}
+\input{4-metatheory.tex}
+\input{5-related.tex}
+
+\againframe{contributions}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\end{document}

@@ -1,0 +1,43 @@
+\section{\EUTXOma}
+
+\begin{frame}{Token Bundles}
+  \[
+  \{\ADA \mapsto \{\ADA \mapsto 3\}, WoW \mapsto \{sword \mapsto 1, shield \mapsto 1\}\}
+  \]
+\end{frame}
+
+\begin{frame}{Operations on Token Bundles}
+  \begin{align*}
+  & \{\ADA \mapsto \{\ADA \mapsto 3\}, WoW \mapsto \{sword \mapsto 1, shield \mapsto 1\}\} \\
+  + \ & \{\ADA \mapsto \{\ADA \mapsto 1\}, WoW \mapsto \{armour \mapsto 1\}\} \\
+  = \ & \{\ADA \mapsto \{\ADA \mapsto 4\}, WoW \mapsto \{sword \mapsto 1, shield \mapsto 1, armour \mapsto 1\}\} \ .
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Forging}
+  \begin{itemize}[<+->]
+  \item $Tx = \{ \dots \forge : \msf{TokenBundle}, policies : \sigma \rightarrow \msf{Bool} \dots \}$
+  \item $\forge \in \mathbb{Z}^+ $ for minting, $\forge \in \mathbb{Z}^-$ for burning
+  \item $\forall\ p\sharp \in \forge.domain: p \in policies \land p(\sigma) = \msf{True}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Applications}
+  \begin{itemize}
+  \item Tokenised roles
+  \item Fairness in ICO setup
+  \item Algorithmic stablecoins
+
+  \hspace{1cm} $\vdots$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Applications: Threaded State Machines}
+  \begin{itemize}[<+->]
+  \item Every CEM instance is associated with a unique token $\nft$
+  \item \textbf{CEM policy:} check $\nft$ is minted in an initial state
+  \item \textbf{CEM validator:} check $\nft$ is propagated at each transition
+  \item[] $\implies$ can distinguish between different executions
+  \item[] $\implies$ solve the initialisation problem
+  \end{itemize}
+\end{frame}

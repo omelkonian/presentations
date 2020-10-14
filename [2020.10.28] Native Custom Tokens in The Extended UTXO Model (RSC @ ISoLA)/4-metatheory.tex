@@ -1,0 +1,180 @@
+\section{Meta-theory}
+
+\begin{frame}{Token Provenance}
+  \begin{itemize}
+  \item $\s{Token} = \s{Policy} \times \s{Asset}$
+  \pause
+  \item $\Trace(l,o,\nft,n) = t_0,\dots, t_i, t_{i+1},\dots, t_k$, where
+    \begin{enumerate}
+    \item $t_0.\forge^\nft \geq n$
+    \item $t_i \overset{\nft}{\longrightarrow} t_{i+1} \geq n$
+    \item $o \in t_k.\outputs$
+    \end{enumerate}
+  \pause
+  \item $\Provenance(l,o,\nft) = \dots \Trace(l,o,\nft, n_i) \dots$ s.t. $\sum n_i \ge o.\val^\nft$
+  \end{itemize}
+
+  \pause
+
+  \begin{proposition}{Every output has a provenance}
+  \infer[\textsc{Provenance}]
+    {\provenance(l,o,\nft) : \Provenance(l,o,\nft)}
+    {o \in \{ t.\outputs \ | \ t \in l \}}
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Example Traces}
+  \centering
+  \scalebox{.7}{
+    \begin{tikzpicture}
+      \traces
+      \begin{pgfonlayer}{background}
+        \onslide<+->{\node [Trace, fit=(j)] {};}
+
+        \onslide<+-6>{\node [Trace, fit=(j)(i)] {};}
+        \onslide<+-6>{\node [TraceNF, fit=(i)(h)] {};}
+        \onslide<+-6>{\node [TraceNF, fit=(h)(g)] {};}
+        \onslide<+-6>{\node [TraceNF, fit=(g)(f)] {};}
+        \onslide<+>{\node [TraceNF, fit=(f)(e)] {};}
+
+        \onslide<+-11>{\node [Trace, fit=(j)(i)] {};}
+        \onslide<+-11>{\node [TraceFF, fit=(i)(d)] {};}
+        \onslide<+-11>{\node [TraceFF, fit=(d)(c)] {};}
+        \onslide<+-11>{\node [TraceFF, fit=(c)(b)] {};}
+        \onslide<+>{\node [TraceFF, fit=(b)(a)] {};}
+
+        \onslide<+->{\node [Trace, fit=(j)(i)] {};}
+        \onslide<+->{\node [TraceFU, fit=(i)(d)] {}; \node [TraceF, fit=(i)(h)] {};}
+        \onslide<+->{\node [TraceFU, fit=(d)(c)] {}; \node [TraceF, fit=(h)(g)] {};}
+        \onslide<+->{\node [TraceFU, fit=(c)(b)] {}; \node [TraceF, fit=(g)(f)] {};}
+        \onslide<+->{\node [TraceFU, fit=(b)(a)] {}; \node [TraceF, fit=(f)(e)] {};}
+      \end{pgfonlayer}
+    \end{tikzpicture}
+  }
+\end{frame}
+
+\begin{frame}{Forging Policies}
+  \begin{proposition}{Provenance is never empty}
+  \infer[\textsc{Provenance}^+]
+    {|\provenance(l, o, \nft)| > 0}
+    {%
+      o \in \{ t.\outputs \ | \ t \in l \}
+    & o.\val^\nft > 0
+    }
+  \end{proposition}
+  \pause
+  \vspace{1cm}
+  \begin{proposition}{Global Preservation}
+  \sum_{t \in l} t.\forge = \sum_{o \in \unspent(l)} o.\val
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Non-fungible Provenance}
+  \begin{proposition}{Provenance for non-fungible tokens}
+  \infer[\textsc{NF-Provenance}]
+    {|\provenance(l, o, \nft)| = 1}
+    {%
+      o \in \{ t.\outputs \ | \ t \in l \}
+    & o.\val^\nft > 0
+    & \sum_{t \in l} t.\forge^\nft \leq 1
+    }
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Threaded CEMs}
+  \begin{displaymath}
+  \polC(\mi{txInfo}, c) = \left\{
+    \begin{array}{lll}
+    \true  & \mi{if} \ \mi{txInfo}.\forge^\nft = 1 \\
+           & \mi{and} \ \s{origin} \in \mi{txInfo}.\outputrefs \\
+           & \mi{and} \ \initial(\mi{txInfo}.\mi{outputs}^\nft) \\
+    \false & \mi{otherwise}
+    \end{array}
+  \right.
+  \end{displaymath}
+  \pause
+  \begin{displaymath}
+  \color{gray}
+  \valC(s, i, \mi{txInfo}) = \left\{
+    \begin{array}{ll}
+    \true  & \mi{if}  \ \CStep{s} \\
+           & \mi{and} \ \satisfies(\mi{txInfo}, \txeq) \\
+           & \mi{and} \ \checkOutputs(s', \mi{txInfo}) \\
+           & \begingroup\color{black}
+             \mi{and} \ \s{propagates}(\mi{txInfo}, \nft, s, s')
+             \endgroup \\
+    \false & \mi{otherwise}
+    \end{array}
+  \right.
+  \end{displaymath}
+\end{frame}
+
+\begin{frame}{Threaded CEMs: Initiality}
+  \begin{proposition}{All traces originate from initial states}
+  \infer[\textsc{Initiality}]
+    { \exists tr. \ \s{provenance}(l, o, \nft) = \{ tr \}
+    \ \land \
+      \polC(tr_0.\s{context}) = \true
+    }
+    {%
+      o \in \{ t.\outputs \ | \ t \in l \}
+    & o.\val^\nft > 0
+    }
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Property Preservation}
+  \begin{proposition}{Well-rooted sequences}
+  \infer[]
+    {s \transTo s}
+    {\initial(s) = \true}
+  \qquad
+  \infer[]
+    {s \transTo s''}
+    { s \transTo s'
+    & \CStep{s'}
+    }
+  \end{proposition}
+  \vspace{1cm}
+  \pause
+  \begin{proposition}{A property $P$ is invariant when:}
+  \infer[]
+    {\texttt{invariant}\ P}
+    { \initial \implies P
+    & \ \ \forall(s \transTo s'). P(s) \implies P(s')
+    }
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Example: Counter CEM}
+  \begin{proposition}{}
+  \begin{array}{l}
+    (\mathbb {Z}, \{\mathsf{inc}\}, \step, \initial)\
+    \mathbf{where}\
+    \step(i,\mathsf{inc}) = \mathsf{just}(i + 1);\
+    \initial(0) = \true
+  \end{array}
+  \end{proposition}
+  \pause
+  \begin{itemize}
+  \item $Q = (\_ >= 0)$ is invariant, since $Q(0)$ and $Q(x) \implies Q(x + 1)$
+  \end{itemize}
+  \pause
+  \begin{proposition}{Extracting CEM traces from EUTXO traces}
+  \infer[\textsc{Extraction}]
+    {tr.source \transTo tr.destination}
+    {\provenance(l, o, \nft) = \{ tr \}}
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{Beyond Safety}
+  \begin{itemize}
+  \item so far only \alert{safety} properties
+  \pause
+  \item what about \alert{temporal} ones?
+  \pause
+    \begin{itemize}
+    \item[] $\overset{?}{\implies}$ \textit{coinductive} techniques for \textit{infinitary} semantics
+    \end{itemize}
+  \end{itemize}
+\end{frame}

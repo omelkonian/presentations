@@ -1,0 +1,158 @@
+\tikzset{
+  % UTXO vs EUTXO
+  tx/.style =
+  { draw           = gray,
+    shape          = rectangle,
+    align          = center,
+    minimum width  = .5cm,
+    minimum height = 1.5cm },
+  mid/.style =
+  { draw,
+    yshift       = .5cm,
+    shape        = circle,
+    inner sep    = 0pt,
+    minimum size = 4pt },
+  math/.style =
+  { yshift = -.5cm },
+  arg/.style =
+  { anchor = center,
+    align  = left,
+    font   = \scriptsize },
+  coins/.style =
+  { anchor = center,
+    align  = left,
+    font   = \large },
+  to/.style =
+  { -,
+    bend left = 30,
+    thick },
+  every matrix/.style =
+  { column sep            = 2.2cm,
+    ampersand replacement = \& },
+  font=\small,
+  % multisig
+  state/.style =
+  { shape        = circle,
+    fill         = gray!50,
+    align        = center,
+    minimum size = 2.5cm },
+  transition/.style =
+  { ->,
+    thick
+  },
+  move/.style =
+  { align  = center,
+    anchor = center,
+    font   = \scriptsize },
+  Trace/.style =
+  { rectangle,
+    inner sep = .5cm,
+    rounded corners = 5mm,
+    minimum height=1cm,
+    fill=yellow!45,
+    text=yellow!45 },
+  TraceNF/.style =
+  { Trace,
+    label={below:$1 \nft$} },
+  TraceF/.style =
+  { Trace,
+    label={below:$1 \ADA$} },
+  TraceFU/.style =
+  { Trace,
+    label={above:$1 \ADA$} },
+  TraceFF/.style =
+  { Trace,
+    label={above:$2 \ADA$} }
+}
+
+\newcommand\utxo{
+  \matrix (mat) [matrix of nodes, nodes in empty cells] {
+     \node[mid,red]   (a) {};
+  \& \node[tx]        (b) {};
+  \& \node[mid,red]   (c) {};
+  \& \node[tx]        (d) {};
+  \& \node[mid,black] (e) {};
+  \\ \& \& \& \& \\
+  };
+  \path
+  (a) edge[to, red]
+  (b)
+  (b) edge[to, black] node[arg, yshift=-.7cm] {$\nu$ : Validator\\ x : Value}
+  (c)
+  (c) edge[to, red] node[arg, yshift=.4cm] {$\rho$ : Redeemer}
+  (d)
+  (d) edge[to, black]
+  (e)
+  ;
+  \node[math,fit=(mat-2-1)(mat-2-5)]{$\nu(\rho) \overset{\text{\tiny ?}}{=} \s{True}$};
+}
+
+\newcommand\eutxo[1][black]{
+  \matrix (mat) [matrix of nodes, nodes in empty cells] {
+     \node[mid,red]   (a) {};
+  \& \node[tx]        (b) {};
+  \& \node[mid,red]   (c) {};
+  \& \node[tx,label=below:\scriptsize$\sigma$ : TxInfo] (d) {};
+  \& \node[mid,black] (e) {};
+  \\ \& \& \& \& \\
+  };
+  \path
+  (a) edge[to, red]
+  (b)
+  (b) edge[to, #1] node[arg, yshift=-1cm, text=black] {$\nu$ : Validator\\ x : Value\\ $\delta$ : Data}
+  (c)
+  (c) edge[to, red] node[arg, yshift=.4cm] {$\rho$ : Redeemer}
+  (d)
+  (d) edge[to, #1]
+  (e)
+  ;
+  \node[math,fit=(mat-2-1)(mat-2-5)]{$\nu(\rho,\ x,\ \delta,\ \sigma) \overset{\text{\tiny ?}}{=} \s{True}$};
+}
+
+\newcommand\multisig{
+  \node[state] (a) {\textbf{Holding}};
+  \node[state, right = 2cm of a] (b) {\textbf{Collecting}\\($v$, $p$, $d$, $sigs$)};
+
+  \path
+  (a.north east) edge[transition, bend left = 30]
+    node[move, above] {\textbf{Propose}($v$, $p$, $d$)\\$sigs' = \{\}$}
+  (b.north west)
+  (b) edge[transition, out = 30, in = -30, looseness = 3]
+      node[move, right] {\textbf{Add}(sig)\\$sigs' = sigs \cup sig$\\ if $sig \in sigs_{auth}$}
+      (b)
+      edge[transition, bend left = 15]
+      node[move, above] {\textbf{Pay}()\\ if $|sigs| \geq n$}
+      (a)
+      edge[transition, bend left = 30]
+      node[move, below] {\textbf{Cancel}()\\ if $d$ expired}
+      (a)
+  ;
+}
+
+\newcommand\traces{
+  \matrix (mat) [matrix of nodes, nodes in empty cells, column sep = 2.2cm] {
+    \node[tx,label=below:\large$2 \ADA$] (a) {}; \& \node[mid,red] (b) {}; \& \node[tx] (c) {}; \& \node[mid,red] (d) {}; \& \& \\
+    \& \& \& \& \node[tx] (i) {}; \& \node[mid,black] (j) {}; \\
+    \node[tx,label=below:\large{$1 \ADA ,\ 1 \nft$}] (e) {}; \& \node[mid,red] (f) {}; \& \node[tx] (g) {}; \& \node[mid,red] (h) {}; \& \& \\
+  };
+  \path
+  (a) edge[to]
+  (b)
+  (b) edge[to, red]
+  (c)
+  (c) edge[to]
+  (d)
+  (d) edge[to, red]
+  (i)
+  (e) edge[to]
+  (f)
+  (f) edge[to, red]
+  (g)
+  (g) edge[to]
+  (h)
+  (h) edge[to, red]
+  (i)
+  (i) edge[to] node[coins, yshift=.5cm, text=black] {$2 \ADA$} node[coins, yshift=-.5cm, text=black] {$1 \nft$}
+  (j)
+  ;
+}
