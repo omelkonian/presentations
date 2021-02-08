@@ -341,14 +341,7 @@
 %%
 %% https://tex.stackexchange.com/questions/85033/colored-symbols/85035#85035
 %%
-\newcommand*{\mathcolor}{}
-\def\mathcolor#1#{\mathcoloraux{#1}}
-\newcommand*{\mathcoloraux}[3]{%
-  \protect\leavevmode
-  \begingroup
-    \color#1{#2}#3%
-  \endgroup
-}
+\newcommand\mathcolor[2]{\color{#1}#2}
 
 \newcommand{\HSKeyword}[1]{\mathcolor{hsgold3}{\textbf{#1}}}
 \newcommand{\HSNumeral}[1]{\mathcolor{hsred3}{#1}}
