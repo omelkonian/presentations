@@ -1,0 +1,146 @@
+\tikzset{
+  % global
+  every matrix/.style =
+  { ampersand replacement = \&,
+    matrix of nodes,
+    nodes in empty cells },
+  % nodes
+  box/.style =
+  { %draw, rectangle,
+    align          = center,
+    minimum width  = .5cm,
+    minimum height = 1.5cm },
+  BG/.style =
+  { rectangle,
+    inner sep       = 0.2cm,
+    rounded corners = 5mm },
+  MSc/.style =
+  { BG,
+    fill=yellow!25,
+    text=yellow!25 },
+  MSc-label/.style =
+  { label={[name=msc]above left:\contour{yellow!25}{MSc}} },
+  PhD/.style =
+  { BG,
+    fill=orange!25,
+    text=orange!25 },
+  PhD-label/.style =
+  { label={[name=phd]below:\contour{orange!25}{PhD-\I}} },
+  PhD2/.style =
+  { BG,
+    fill=green!25,
+    text=green!25 },
+  PhD2-label/.style =
+  { label={[name=phd]#1:\contour{green!25}{PhD-\II}} },
+  greenDot/.style =
+  { rectangle, left color = red!35, middle color = green!55, bottom color = green!55, right color = green!55,
+    line width      = 1mm,
+    inner sep       = 0.2cm,
+    rounded corners = 5mm },
+  redDot/.style =
+  { draw=red!55, rectangle, dashed,
+    line width      = 1mm,
+    inner sep       = 0.2cm,
+    rounded corners = 5mm },
+  %% font=\small,
+  txt/.style =
+  { align=center },
+  note/.style =
+  { font=\small\itshape },
+  cit/.style =
+  { inner sep = 0.3cm, rounded corners = 2mm, fill=red!15, font=\normalsize, align=center },
+  % edges
+  to/.style = {->, thick},
+  squig/.style = {decorate, decoration={zigzag}}
+}
+
+\newcommand\utxo{
+  \matrix (mat) [column sep = 2.5cm, row sep = .25cm] {
+    \node[box] (utxo) {UTxO};
+    \& \node[box] (eutxo) {EUTxO}; \& \node[box] (eutxo2) {EUTxO$_{ma}$}; \\
+    \& \node[box] (cem) {CEMs}; \& \node[box] (cem2) {Traced CEMs}; \\
+  };
+  \node (iso) at ($(eutxo)!0.5!(cem)$) {$\approx$};
+  \node (iso2) at ($(eutxo2)!0.5!(cem2)$) {$\approx$};
+  \path
+  (utxo) edge[to]
+    node[above, note] {+ datum values}
+    node[below, note] {+ context}
+  (eutxo)
+  (eutxo) edge[to]
+    node[above, note] (l) {+ multi-currency}
+  (eutxo2)
+  ;
+}
+
+\newcommand\bitml{
+  \matrix (mat)
+    [ column sep = 1.5cm,
+      row sep = 2cm,
+      every node/.style = txt
+    ] {
+    \node {\textbf{\underline{Syntax}}};
+    \& \node {\textbf{\underline{Operational}}\\\textbf{\underline{Semantics}}};
+    \& \node {\textbf{\underline{Game-theoretic}}\\\textbf{\underline{Semantics}}}; \\[-1cm]
+    \node (contracts) {BitML\\Contracts};
+    \& \node (lts) {Small-step\\LTS};
+    \& \node (sm) {Symbolic\\Runs}; \\
+    \node (transactions) {Bitcoin\\Transactions};
+    \& \node (bc) {Blockchain\\Consistency};
+    \& \node (cm) {Computational\\Runs}; \\
+  };
+  \path
+  (contracts) edge[to]
+    node[right] (comp) {$\mathcal{C}$}
+  (transactions)
+  (cm) edge[to]
+    node[left] (n) {$\mathcal{N}$}
+  (sm)
+  (sm) edge[<->, bend left = 40]
+    node[right] (coh) {$\sim$}
+  (cm)
+  (comp.east) edge[<->, double]
+    node[above] (comps) {\textit{\alert{computational soundness}}}
+  (n.west)
+  (lts) edge[squig] (sm)
+  (bc) edge[squig] (cm)
+  ;
+}
+
+\newcommand\hoareSemantics{
+  \matrix (mat)
+    [ column sep = .1cm,
+      row sep = 1.5cm,
+      every node/.style = txt
+    ] {
+    \node (oper) {\textbf{Operational}\\[4pt]
+    \infer{Q(s')}{P(s) & (l , s) \rightsquigarrow^* s'}
+    %% $\forall s\ s'. P(s) \land (l , s) \rightsquigarrow^* (l', s') \rightarrow Q(s')$
+    };
+    \& \node {};
+    \& \node {};
+    \& \node {};
+    \& \node {};
+    \& \node (denot) {\textbf{Denotational}\\
+    $P \vdash Q \circ \llbracket l \rrbracket$}; \\
+    \node {};
+    \& \node (axiom) {\textbf{Axiomatic}\\
+    $\{ P \} l \{ Q \}$
+    };
+    \& \node {};
+    \& \node {};
+    \& \node {};
+    \& \node {}; \\
+  };
+  \path
+  (oper) edge[loosely dotted]
+    node[above] {\Huge $\simeq$}
+  (denot)
+  (oper) edge[loosely dotted]
+    node[left] {\Huge $\simeq$}
+  (axiom)
+  (denot) edge[loosely dotted]
+    node[right] {\Huge $\simeq$}
+  (axiom)
+  ;
+}

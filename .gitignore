@@ -1,11 +1,34 @@
-*.aux
-*.dvi
-*.log
-*.nav
-*.out
-*.pyg
-*.snm
-*.synctex.gz
-*.toc
-*.vrb
+# Tex
+**/*.aux
+**/*.bbl
+**/*.blg
+**/*.lof
+**/*.lot
+**/*.pyg
+**/*.gz
+**/*.toc
+**/*.ptb
+**/*.dvi
+**/*.xcp
+**/*.snm
+**/*.nav
+**/*.fls
+**/*.fdb_latexmk
+**/*.dvi
+**/*.vrb
+**/*.run.xml
+**/*-blx.bib
+
+# Tex-minted
 **/_minted*/
+
+# Agda
+**/*.agdai
+**/*.agda~
+**/latex/
+**/_build/
+**/MAlonzo/
+
+# Haskell
+**/*.hi
+**/*.o
