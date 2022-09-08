@@ -460,46 +460,40 @@ insert x (Node y l r)
 \end{frame}
 
 \begin{frame}[fragile]{Primitives}
-
 \begin{itemize}
 \item Export lowercase type variables to feel like home
 (i.e. \AgdaKeyword{variable} \AgdaBound{a b c ⋯ :} \AgdaDatatype{Set}):
+
 \begin{code}
 id : a → a
 id x = x
 \end{code}
 
 \pause
+
 \item Match Agda built-ins to Haskell built-ins:
 
 e.g. \AgdaDatatype{Agda.Builtin.Nat} $\leftrightarrow$ \hs{Numeric.Natural}
-
 \pause
 \item If not available in Agda, define them:
-
 \begin{code}
 infix -2 if_then_else_
 if_then_else_ : Bool → a → a → a
 if False then x else y = y
 if True  then x else y = x
 \end{code}
-
 \pause
 \begin{alertblock}{REMEMBER}
 We want to cover as many Haskell features as possible, not Agda features.
 \end{alertblock}
-
 \end{itemize}
-
 \resetVars
 \end{frame}
 
 \begin{frame}[fragile]{Prelude}
-
 Port Haskell's Prelude, staying faithful to the original functionality.
 
 \pause
-
 \def\sourceRatio{.65}
 \def\zoom{.9}
 \def\hsFontsize{\footnotesize}
@@ -525,9 +519,7 @@ head (x : _) = x
 head [] = error "empty list"
 \end{haskellcode}
 \end{minipage}
-
 \pause
-
 \begin{alertblock}{Don't forget}
 On the Haskell side, we can feed \hs{head} arbitrary input!
 \end{alertblock}
@@ -535,14 +527,15 @@ On the Haskell side, we can feed \hs{head} arbitrary input!
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses}
-
+\begin{center}
 Correspondence with Agda's \textbf{instance arguments}.
-\begin{itemize}
-\item class definitions $\sim$ record types
-\item instance declarations $\sim$ record values
-\item constraints $\sim$ instance arguments
-\end{itemize}
-
+\begin{tabular}{rcl}
+\smallImg{haskell} && \smallImg{agda} \\
+\textit{class definitions}  &$\sim$& \textit{record types} \\
+\textit{instance declarations} &$\sim$& \textit{record values} \\
+\textit{constraints} &$\sim$& \textit{instance arguments}
+\end{tabular}
+\end{center}
 \end{frame}
 
 \begin{frame}[fragile]{Typeclasses: class definitions $\sim$ record types}
@@ -1162,8 +1155,13 @@ No formal proof \smallImg{sadface}
 \pause
 ...yet!
 
-c.f. Cockx's NWO grant:
-\textit{A Trustworthy and Extensible Core Language for Agda}
+\setbeamercolor{grayBg}{
+  use={block title, normal text},
+  bg=block title.bg!50!normal text.bg
+}
+\begin{beamercolorbox}[wd=.95\textwidth,sep=.5em]{grayBg}
+c.f. Cockx's NWO grant: \textit{A Trustworthy and Extensible Core Language for Agda}
+\end{beamercolorbox}
 
 \pause
 \begin{itemize}
@@ -1177,9 +1175,9 @@ c.f. Cockx's NWO grant:
   \item most cases blindingly obvious
   \end{itemize}
 \end{itemize}
-\begin{alertblock}{NB}
-total functions + strong normalisation $\Rightarrow$ evaluation order doesn't matter
-\end{alertblock}
+\begin{beamercolorbox}[wd=.9\textwidth,sep=.5em]{grayBg}
+NB: total functions + strong normalisation $\Rightarrow$ evaluation order doesn't matter
+\end{beamercolorbox}
 \end{frame}
 
 \begin{frame}[fragile]{Future work}
