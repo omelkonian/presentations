@@ -1,4 +1,4 @@
-MAIN=agda2hs-iog
+MAIN=main
 AGDA=agda-erased
 TEX=xelatex -shell-escape -pdf -f -halt-on-error -cd
 
@@ -12,6 +12,7 @@ $(MAIN).pdf: $(MAIN).tex
 	$(TEX) $<
 
 clean:
-	rm -f *.aux *.log *.out *.bbl *.lof *.blg *.lot *.pyg *.gz *.toc *.ptb *.dvi *.snm *.nav $(MAIN).pdf
+	rm -f *.aux *.log *.out *.bbl *.lof *.blg *.lot *.pyg *.gz *.toc *.ptb *.dvi \
+	      *.snm *.nav *.vrb *.run.xml *blx.bib $(MAIN).tex $(MAIN).pdf
 
 .PHONY: default all clean
