@@ -35,6 +35,18 @@
 % Flexible environments
 \usepackage{environ}
 
+% Quotes
+\usepackage{csquotes}
+\SetBlockThreshold{2}
+\newcommand\myblockquote[2]{%
+  \blockquote{\hspace*{2em}\emph{`#1'}#2}\par}
+
+% Colorboxes
+\usepackage[many]{tcolorbox}
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
 % Names
 \newcommand\agdatohs{\textsc{agda2hs}\xspace}
 \newcommand\plutus{\textsc{Plutus}\xspace}
@@ -141,18 +153,6 @@ $
 
 \author{Jesper Cockx, \alert{Orestis Melkonian}, Lucas Escot, James Chapman, Ulf Norell}
 \date{}
-\titlegraphic{
-\vspace*{6cm}
-\begin{center}
-\[
-\vmid{\largeImg{agda}}
-\vmid{\scalebox{2}{\Huge$\ +\ $}}
-\vmid{\largeImg{haskell}}
-\vmid{\scalebox{2}{\Huge$\ =\ $}}
-\vmid{\largeImg{heart}}
-\]
-\end{center}
-}
 
 \begin{document}
 
@@ -227,14 +227,43 @@ postulate
   ⋯ TODO : A
 \end{code}
 
-\begin{center}
 \setbeamerfont{title}{size=\LARGE}
 \setbeamerfont{subtitle}{size=\Large}
+
+\titlegraphic{
+\vspace*{6cm}
+\begin{center}
+\[
+\vmid{\largeImg{agda}}
+\vmid{\scalebox{2}{\Huge$\ +\ $}}
+\vmid{\largeImg{haskell}}
+\vmid{\scalebox{2}{\Huge$\ =\ $}}
+\vmid{\largeImg{heart}}
+\]
+\end{center}
+}
+
+\begin{center}
 \vspace*{-2cm}
 \maketitle
-%% \setbeamerfont{title}{size=\Large}
-%% \setbeamerfont{subtitle}{size=\large}
 \end{center}
+
+\begin{frame}[fragile]{Similar substances}
+\begin{center}
+\hspace{1cm}
+\begin{minipage}{.4\textwidth}
+  \hspace{1cm}\textbf{Coq'aine}\\[.5cm]
+\img{5cm}{coqaine}
+\end{minipage}
+\hspace{.1\textwidth}
+\pause
+\begin{minipage}{.4\textwidth}
+\hspace{2cm}\textbf{Lean}\\[.5cm]
+\img{5cm}{lean}
+\end{minipage}
+\end{center}
+\end{frame}
+
 
 \begin{frame}[fragile]{Motivation: issues with current program extractors}
 \def\hsFontsize{\tiny}
@@ -256,7 +285,7 @@ module MAlonzo where
       (LT _) → Node y (insert x l) r
       (EQ _) → Node y l r
       (GT _) → Node y l (insert x r)
-  {-# COMPILE AGDA2HS insert #-}
+  {-# COMPILE GHC insert #-}
 \end{code}
 \end{sourcepage}
 \midrule
@@ -530,6 +559,7 @@ On the Haskell side, we can feed \hs{head} arbitrary input!
 \begin{center}
 Correspondence with Agda's \textbf{instance arguments}.
 \begin{tabular}{rcl}
+\\
 \smallImg{haskell} && \smallImg{agda} \\
 \textit{class definitions}  &$\sim$& \textit{record types} \\
 \textit{instance declarations} &$\sim$& \textit{record values} \\
@@ -1224,7 +1254,6 @@ More \textbf{applications} $+$ \textbf{comparisons} with LiquidHaskell, \texttt{
 \item EuroProofNet day dedicated to the topic of large formal libraries
 \item a hike along the Scottish seaside ~ \img{.9em}{whisky}
 \end{itemize}
-\pause
 \begin{center}
 \largeImg{join}
 \end{center}
@@ -1232,8 +1261,28 @@ More \textbf{applications} $+$ \textbf{comparisons} with LiquidHaskell, \texttt{
 \setbeamertemplate{headline}{}
 
 \setbeamertemplate{headline}{\vfill\largeImg{agda2hs-qrcode}\hfill\largeImg{aim-qrcode}}
+\setbeamerfont{standout}{shape=\normalfont}
 \begin{frame}[standout]
-Questions?
+%% \vspace{.5cm}
+\myblockquote{\textit{
+When the limestone of imperative programming is worn away,
+the granite of functional programming will be revealed underneath.
+}}{\hfill---Simon Peyton Jones}
+\end{frame}
+\begin{frame}[standout]
+\vspace{2.9cm}
+\begin{cross}
+\myblockquote{\textit{
+When the limestone of imperative programming is worn away,
+the granite of functional programming will be revealed underneath.
+}}{\hfill---Simon Peyton Jones}
+\end{cross}
+\vspace{.9cm}
+\myblockquote{
+\textit{
+When the doors of perception are cleansed,
+every thing would appear to man as it is, dependent.
+}}{\\\hfill---Agdus Huxley, paraphrasing William Blake}
 \end{frame}
 \setbeamertemplate{headline}{}
 
