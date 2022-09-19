@@ -1,0 +1,163 @@
+\tikzset{
+  % global
+  every matrix/.style =
+  { ampersand replacement = \&,
+    matrix of nodes,
+    nodes in empty cells },
+  % nodes
+  boxx/.style = {align = center},
+  box/.style =
+  { %draw, rectangle,
+    align          = center,
+    minimum width  = .5cm,
+    minimum height = 1.5cm },
+  BG/.style =
+  { rectangle,
+    inner sep       = 0.2cm,
+    rounded corners = 5mm,
+    line width      = 1mm },
+  MSc/.style =
+  { BG, fill=yellow!25, text=yellow!25 },
+  MSc-label/.style =
+  { label={[name=msc]above left:\contour{yellow!25}{MSc}} },
+  PhD/.style =
+  { BG, fill=orange!20, text=orange!20 },
+  PhD-label/.style =
+  { label={[name=phd]below:\contour{orange!20}{PhD-\I}} },
+  PhD2/.style =
+  { BG, fill=orange!30, text=orange!30 },
+  PhD2-label/.style =
+  { label={[name=phd]#1:\contour{orange!30}{PhD-\II}} },
+  PhD3/.style =
+  { BG, fill=green!25, text=green!25 },
+  PhD3-label/.style =
+  { label={[name=phd]#1:\contour{green!25}{PhD-\III}} },
+  greenBox/.style =
+  { BG, fill=green!15, },
+%%   greenDot/.style =
+%%   { BG , left color = red!35, middle color = green!55
+%%   , bottom color = green!55, right color = green!55 },
+  redDot/.style =
+  { BG, draw=red!55, dashed },
+  %% font=\small,
+  txt/.style    = {align=center},
+  note/.style   = {font=\small\itshape},
+  accept/.style = {fill = green!15},
+  reject/.style = {fill = red!15},
+  cit/.style =
+  { inner sep = 0.3cm, rounded corners = 2mm, font=\normalsize, align=center },
+  % edges
+  to/.style = {->, thick},
+  squig/.style = {decorate, decoration={zigzag}}
+}
+
+\newcommand\bitml{
+  \matrix (mat)
+    [ column sep = 1.5cm,
+      row sep = 2cm,
+      every node/.style = txt
+    ] {
+    \node {\textbf{\underline{Syntax}}};
+    \& \node (operA) {};
+    \& \node (operB) {};
+    \& \node {\textbf{\underline{Game-theoretic}}\\\textbf{\underline{Semantics}}}; \\[-1cm]
+    \node (contracts) {BitML\\Contracts};
+    \& \node (lts) {Small-step\\LTS};
+    \& \node (sm) {Symbolic\\Runs};
+    \& \node (ss) {Symbolic\\Strategies}; \\
+    \node (transactions) {Bitcoin\\Transactions};
+    \& \node (bc) {Blockchain\\Consistency};
+    \& \node (cm) {Computational\\Runs};
+    \& \node (cs) {Computational\\Strategies}; \\
+  };
+  \node[fit=(operA)(operB)]{\textbf{\underline{Operational Semantics}}};
+  \path
+  (contracts) edge[to]
+    node[right] (comp) {$\mathcal{C}$}
+  (transactions)
+  (sm) edge[<->, bend left = 40]
+    node[right] (coh) {$\sim$}
+  (cm)
+  (cm) edge[to]
+    node[left] (parsing) {\textit{\alert{parse}}}
+  (sm)
+  (ss) edge[to]
+    node[left] (n) {$\aleph$}
+  (cs)
+  (coh.east) edge[<->, double]
+    node[above] (compsA) {\textit{\alert{computational}}}
+    node[below] (compsB) {\textit{\alert{soundness}}}
+  (n.west)
+  (lts) edge[squig] (sm)
+  (bc) edge[squig] (cm)
+  ;
+}
+
+\newcommand\utxo{
+  \matrix (mat) [column sep = 2.5cm, row sep = .25cm] {
+    \node[box] (utxo) {UTxO};
+    \& \node[box] (eutxo) {EUTxO};
+    \& \node[box] (eutxo2) {EUTxO$_{ma}$}; \\
+    \& \node[box] (cem) {CEMs};
+    \& \node[box] (cem2) {Traced CEMs}; \\[1.5cm]
+    \node[boxx] (det) {Determinism};
+    \& \node[boxx] (formal) {Formal Cardano};
+    \& \node[boxx] (ccem) {Communicating CEMs}; \\
+  };
+  \node (iso) at ($(eutxo)!0.5!(cem)$) {$\approx$};
+  \node (iso2) at ($(eutxo2)!0.5!(cem2)$) {$\approx$};
+  \path
+  (utxo) edge[to]
+    node[above, note] {+ datum values}
+    node[below, note] {+ context}
+  (eutxo)
+  (eutxo) edge[to]
+    node[above, note] (l) {+ multi-currency}
+  (eutxo2)
+  (cem2) edge[to]
+    node[left, note] (mp) {+ message-passing}
+  (ccem)
+  (utxo) edge[to, bend right = 40]
+  (det)
+  (eutxo) edge[to, bend right = 40]
+  (formal)
+  ;
+}
+
+\newcommand\hoareSemantics{
+  \matrix (mat)
+    [ column sep = .1cm,
+      row sep = 1.5cm,
+      every node/.style = txt
+    ] {
+    \node (oper) {\textbf{Operational}\\[4pt]
+    \infer{Q(s')}{P(s) & (l , s) \rightsquigarrow^* s'}
+    %% $\forall s\ s'. P(s) \land (l , s) \rightsquigarrow^* (l', s') \rightarrow Q(s')$
+    };
+    \& \node {};
+    \& \node {};
+    \& \node {};
+    \& \node {};
+    \& \node (denot) {\textbf{Denotational}\\
+    $P \vdash Q \circ \llbracket l \rrbracket$}; \\
+    \node {};
+    \& \node (axiom) {\textbf{Axiomatic}\\
+    $\{ P \} l \{ Q \}$
+    };
+    \& \node {};
+    \& \node {};
+    \& \node {};
+    \& \node {}; \\
+  };
+  \path
+  (oper) edge[loosely dotted]
+    node[above] {\Huge $\simeq$}
+  (denot)
+  (oper) edge[loosely dotted]
+    node[left] {\Huge $\simeq$}
+  (axiom)
+  (denot) edge[loosely dotted]
+    node[right] {\Huge $\simeq$}
+  (axiom)
+  ;
+}

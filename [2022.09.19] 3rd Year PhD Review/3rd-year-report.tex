@@ -1,0 +1,378 @@
+%% \documentclass[aspectratio=43]{beamer}
+\documentclass[aspectratio=169]{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+\setbeamersize{text margin left=.7cm,text margin right=.7cm}
+\usepackage{appendixnumberbeamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[backend=bibtex,style=authoryear]{biblatex}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,matrix,fit,backgrounds,decorations.text,decorations.pathmorphing,calc,shapes}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{contour}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+
+% Inference rules
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{proof}
+\newenvironment{proposition}[1]
+  {\begin{alertblock}{#1}\begin{displaymath}}
+  {\end{displaymath}\end{alertblock}}
+
+% Cross-out formulas
+\usepackage[makeroom]{cancel}
+
+% Colorboxes around formulas
+\usepackage{fancybox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}
+\usepackage[tt=false]{libertine}
+\usepackage[libertine]{newtxmath}
+
+\usepackage{yfonts}
+\usepackage{xspace}
+\newcommand\I{\textgoth{I}\xspace}
+\newcommand\II{\textgoth{II}\xspace}
+\newcommand\III{\textgoth{III}\xspace}
+\newcommand\IV{\textgoth{IV}\xspace}
+
+\newcommand\agdatohs{\textsc{agda2hs}\xspace}
+
+%----------------------------------------------------------------------------
+
+\title{3$^{rd}$-year PhD Report}
+%\subtitle{}
+\vspace{-2cm}
+\author{Orestis Melkonian}
+\date{September 19, 2022}
+\titlegraphic{
+\vspace*{6cm}
+\includegraphics[keepaspectratio=true,height=1.2cm]{uoe}\hfill
+\includegraphics[keepaspectratio=true,height=1.0cm]{iohk}
+}
+
+\begin{document}
+\begin{center}
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{subtitle}{size=\small}
+\maketitle
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{subtitle}{size=\large}
+\end{center}
+
+\input{0-diagrams.tex}
+
+%%%%%%%%%
+% BitML %
+%%%%%%%%%
+\begin{frame}{BitML: Years \I \& \II}
+\vspace{-1cm}
+\begin{center}
+\begin{tikzpicture}
+\bitml
+\begin{pgfonlayer}{background}
+\node[MSc, MSc-label, fit=(contracts) (sm)] {};
+\node[PhD, PhD-label, fit=(transactions) (cm)] {};
+\node[PhD, fit=(contracts.south) (comp) (transactions)] {};
+\node[PhD2, PhD2-label={above}, fit=(sm.east) (ss)] {};
+\node[PhD2, PhD2-label={below}, fit=(cm.east) (cs)] {};
+\node[redDot, fit=(sm.south east) (coh.east) (cm.north east)] {};
+\end{pgfonlayer}
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{BitML: Year \III}
+\vspace{-1cm}
+\begin{center}
+\begin{tikzpicture}
+\bitml
+\begin{pgfonlayer}{background}
+\node[MSc, MSc-label, fit=(contracts) (sm)] {};
+\node[PhD, PhD-label, fit=(transactions) (cm)] {};
+\node[PhD, fit=(contracts.south) (comp) (transactions)] {};
+\node[PhD2, PhD2-label={above}, fit=(sm.east) (ss)] {};
+\node[PhD2, PhD2-label={below}, fit=(cm.east) (cs)] {};
+\node[PhD3, PhD3-label={right, xshift=-1cm, yshift=.8cm}, fit=(sm.south east) (coh.east) (cm.north east)] {};
+\node[redDot, fit=(parsing)] {};
+\node[redDot, fit=(ss.south) (n) (cs.north)] {};
+\end{pgfonlayer}
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Challenges for coherence}
+\begin{itemize}
+\item Proofs that construct mappings required \alert{meta-properties} on lists
+\item Tracing a contract's lifetimer required \alert{temporal hyper-properties}
+\item Scaling up $\to$ hit Agda's \alert{type-checking performance} limits
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The Abstraction Problem}
+\begin{itemize}
+\item Constructive proofs are too involved $\to$ slow/infinite type-checking
+\item Now even stuck on a concrete example!
+\end{itemize}
+
+3 possible solutions:
+\begin{enumerate}
+\item[(0).] hire a super-computer... (nah)
+\item fix Agda itself (+ community service)
+\item tweak placement of \alert{abstract} (slow edit/check loop)
+\item revert to \textit{spartan type theory} (i.e. no typeclasses, modules, etc..)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{BitML: Year \IV}
+
+Given a computational run $R^c$ and symbolic strategies $\sigma^s$:
+
+\[
+\infer
+  {\colorbox{green!20}{$\exists R^s. \ R^s \sim R^c$}
+   \colorbox{red!20}{$\quad R^s$ conforms to $\Sigma^s$}}
+  {\colorbox{green!20}{$R^c$} \colorbox{red!20}{conforms to $\Sigma^c \quad$
+  where $\Sigma^c$ := $\aleph(\Sigma^s)$}}
+\]
+
+\begin{alertblock}{BACKUP PLAN}
+Formalize only the first half of \textit{computational soundness} (i.e. \alert{parsing}).
+\end{alertblock}
+\end{frame}
+
+%%%%%%%%%%
+% SepLog %
+%%%%%%%%%%
+\begin{frame}{Separation Logic for UTxO: Year \II}
+\begin{center}
+\begin{tikzpicture}
+  \hoareSemantics
+\end{tikzpicture}
+\end{center}
+\begin{minipage}{.4\textwidth}
+\begin{proposition}{SL: \texttt{[FRAME]} rule}
+\infer
+  {\{ P * R \} l \{ Q * R \} }
+  {%
+    l \# R
+  & \{ P \} l \{ Q \}
+  }
+\end{proposition}
+\end{minipage}
+\hfill
+\begin{minipage}{.4\textwidth}
+\begin{proposition}{CSL: \texttt{[PARALLEL]} rule}
+\infer
+  {\{ P_1 * P_2 \} l \{ Q_1 * Q_2 \} }
+  { \deduce{\{ P_1 \} l_1 \{ Q_1 \} }
+           {l_1 \parallel l_2 = l}
+  & \deduce{\{ P_2 \} l_2 \{ Q_2 \} }
+           {l_1 \# P_2 \quad l_2 \# P_1 }
+  }
+\end{proposition}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Separation Logic for UTxO: Year \III}
+\begin{itemize}
+\item Previous model does not translate easily to UTxO
+\item Main issue: compositionality, due to side-conditions $l \# P$
+\item A step back: regain compositionality by separating on \alert{values} instead of \alert{participants}
+\item No side-conditions needed anymore!
+\end{itemize}
+\hspace{2cm}
+\begin{minipage}{.3\textwidth}
+\begin{proposition}{SL: \texttt{[FRAME]} rule}
+\infer
+  {\{ P * R \} l \{ Q * R \} }
+  {%
+    \xcancel{l \# R}
+  & \{ P \} l \{ Q \}
+  }
+\end{proposition}
+\end{minipage}
+\hspace{2cm}
+\begin{minipage}{.3\textwidth}
+\begin{proposition}{CSL: \texttt{[PARALLEL]} rule}
+\infer
+  {\{ P_1 * P_2 \} l \{ Q_1 * Q_2 \} }
+  { \deduce{\{ P_1 \} l_1 \{ Q_1 \} }
+           {l_1 \parallel l_2 = l}
+  & \deduce{\{ P_2 \} l_2 \{ Q_2 \} }
+           {\xcancel{l_1 \# P_2} \quad \xcancel{l_2 \# P_1}}
+  }
+\end{proposition}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Separation Logic for UTxO: Year \IV}
+\begin{itemize}
+\item Still some work to accommodate UTxO, due to names/addresses/hashes
+  \begin{itemize}
+  \item Currently formulating \textit{Abstract UTxO} (AUTxO)
+  \item Main idea: reference unspent outputs by \textit{value}, so as to utilize its monoidal structure
+  \item Have the ledger model + semantics, but need to modify the underlying separation logic
+  \end{itemize}
+\end{itemize}
+\begin{alertblock}{BACKUP PLAN}
+Write a functional pearl for the non-UTxO case only.
+\end{alertblock}
+\end{frame}
+
+
+%%%%%%%%
+% UTxO %
+%%%%%%%%
+\newcommand\citedet{%
+\textbf{FMBC @ FLOC'20}\\
+Determinism of ledger updates\\
+\scriptsize{\textit{
+P.Vinogradova, A.Knispel, J.Chapman, O.Melkonian
+}}}
+\newcommand\citeccem{%
+\textbf{FMBC @ FLOC'20}\\
+Designing EUTxO smart contracts as communicating state machines: the case of simulating accounts\\
+\scriptsize{\textit{
+P.Vinogradova, M.Chakravarty, J.Chapman, T.Ferariu, M.P.Jones, J.Krijnen
+}}}
+\newcommand\citeformal{%
+\textbf{FMBC @ FLOC'20}\\
+Human and machine-readable models of state machines for the Cardano ledger\\
+\scriptsize{\textit{
+A.Knispel, O.Melkonian, J.Chapman, P.Vinogradova
+}}}
+
+\begin{frame}{UTxO: Year \I \& \II}
+\begin{center}
+\scalebox{.8}{%
+\begin{tikzpicture}
+  \utxo
+  \begin{pgfonlayer}{background}
+  \node[MSc, MSc-label, fit=(utxo) (eutxo)] {};
+  \node[PhD, PhD-label, fit=(iso) (cem)] {};
+  \node[PhD2, PhD2-label={above}, fit=(l) (cem2)] {};
+  \end{pgfonlayer}
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+\begin{frame}{UTxO: Year \III}
+\begin{center}
+\scalebox{.8}{%
+\begin{tikzpicture}
+  \utxo
+  \begin{pgfonlayer}{background}
+  \node[MSc, MSc-label, fit=(utxo) (eutxo)] {};
+  \node[PhD, PhD-label, fit=(iso) (cem)] {};
+  \node[PhD2, PhD2-label={above}, fit=(l) (cem2)] {};
+  \node[PhD3, fit=(mp) (ccem)] {};
+  \node[PhD3, PhD3-label={right}, fit=(det) (ccem)] {};
+  \end{pgfonlayer}
+  \onslide<2>{
+    \node[cit, reject, yshift=-1cm] at (det.south) {\citedet};
+    \node[redDot, rounded corners = 2.5mm, inner sep = .05cm, fit=(det)] {};
+  }
+  \onslide<3>{
+    \node[cit, reject, yshift=-1cm] at (formal.south) {\citeformal};
+    \node[redDot, rounded corners = 2.5mm, inner sep = .05cm, fit=(formal)] {};
+  }
+  \onslide<4>{
+    \node[cit, reject, yshift=-1cm, xshift=-3.2cm] at (ccem.south) {\citeccem};
+    \node[redDot, rounded corners = 2.5mm, inner sep = .05cm, fit=(ccem)] {};
+  }
+\end{tikzpicture}
+}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%
+% agda2hs %
+%%%%%%%%%%%
+\newcommand\citeagda[1]{%
+\textbf{#1}\\
+\small{Reasonable Agda is Correct Haskell: Writing Verified Haskell using \agdatohs}
+}
+
+\begin{frame}{\agdatohs\hfill\alert{https://github.com/agda/agda2hs}}
+\begin{center}
+\begin{tikzpicture}
+\node[cit, reject] (subA) {\citeagda{CPP @ POPL'22}};
+\node[cit, reject, below = of subA] (subB) {\citeagda{ICFP'22}};
+\node[cit, accept, below = of subB] {\citeagda{Haskell Symposium @ ICFP'22}\\
+\scriptsize{\textit{J.Cockx, O.Melkonian, L.Escot, J.Chapman, U.Norell}}
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%
+% Nominal %
+%%%%%%%%%%%
+\begin{frame}{Nominal Agda\hfill\alert{https://omelkonian.github.io/nominal-agda/}}
+\begin{itemize}
+\item In collaboration with Jamie Gabbay (Herriot-Watt), after reviewing IEUTxO
+\item More of an educational process, but also quite connected to all of my projects
+\item Current formalized features:
+  \begin{itemize}
+  \item atoms
+  \item swapping + permutations
+  \item abstraction + concretion
+  \item support + freshness + И quantifier
+  \item ULC case study: syntax + α-equivalence + reduction rules
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%
+% Timeplan %
+%%%%%%%%%%%%
+\begin{frame}{Timeplan}
+\begin{itemize}
+\item \textbf{[2022 - mid 2023]} Closure
+  \begin{itemize}
+  \item ideally two more papers on BitML and separation logic at prestigious venues
+  \item if time runs out $\to$ fallback to backup plans
+  \end{itemize}
+\item \textbf{[mid 2023 - late 2023]} Thesis write-up
+  \begin{itemize}
+  \item IMHO enough material to fill up a dissertation
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%
+% Discussion %
+%%%%%%%%%%%%%%
+\begin{frame}[standout]
+Discussion
+\end{frame}
+
+\end{document}
