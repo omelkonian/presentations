@@ -43,8 +43,8 @@
 \textbf{Blockchain} & & \textbf{Concurrency Theory} \\
 \hline
 ledgers &$\leftrightarrow$& computer memory \\
-memory locations &$\leftrightarrow$& accounts \\
-data values &$\leftrightarrow$& account balances \\
+accounts &$\leftrightarrow$& memory locations \\
+account balances &$\leftrightarrow$& data values \\
 smart contracts &$\leftrightarrow$& programs accessing memory \\
 \end{tabular}
 \end{center}
