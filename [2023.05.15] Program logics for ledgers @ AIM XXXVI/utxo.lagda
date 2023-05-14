@@ -187,7 +187,6 @@ postulate Unique-mkUtxo : ∀ t → Unique $ map proj₁ $ mapWith∈ (t .output
 utxoTx : Tx → S
 utxoTx tx = fromList $ L.Mem.mapWith∈ (tx .outputs) (mkUtxo tx)
 \end{code}
-\vspace{-.5cm}
 \begin{AgdaMultiCode}
 \begin{code}
 record IsValidTx (tx : Tx) (utxos : S) : Type where
@@ -271,8 +270,8 @@ instance
 comp₀ : ∀ x → ⟦ l ++ l′ ⟧₀ x ≡ (⟦ l′ ⟧₀ ∘ ⟦ l ⟧₀) x
 comp₀ {l = []}    _ = refl
 comp₀ {l = t ∷ l} x = comp₀ {l} (⟦ t ⟧₀ x)
-
 \end{code}
+
 \begin{code}
 comp : ∀ x → ⟦ l ++ l′ ⟧ x ≡ (⟦ l ⟧ >=> ⟦ l′ ⟧) x
 comp {l = []}    x = refl
@@ -498,6 +497,7 @@ module HoareReasoning where
   _∎ : ∀ P → ℝ⟨ P ⟩ [] ⟨ P ⟩
   p ∎ = mkℝ hoare-base {P = p}
 \end{code}
+
 \begin{minipage}{.4\textwidth}
 \begin{code}
 ⊎-⟦⟧ : ∀ s₁′ →
@@ -511,7 +511,7 @@ module HoareReasoning where
 postulate instance
   Apart-L : L //^⦅ 0ℓ ⦆ Assertion
 \end{code}
-\vspace{-.5cm}
+
 \begin{code}
 [FRAME] : ∀ R →
   ∙ l ♯ R

@@ -212,6 +212,7 @@ absVL : ℂ.ValidLedger s l → ∃ λ l̂ → 𝔸.ValidLedger (absS s) l̂
 denot-abs-t : ∀ (vt : ℂ.IsValidTx t s) →
   𝔸.⟦ absT vt ⟧ (absS s) ≡ (absS <$> ℂ.⟦ t ⟧ s)
 \end{code}
+
 \begin{code}[hide]
 denot-abs-t {t}{s} vt =
   begin
@@ -389,7 +390,7 @@ soundness :
       ℂ⟨_⟩_⟨_⟩ : _
       ℂ⟨ P ⟩ l ⟨ Q ⟩ = ℂ.⟨ P ⟩ l ⟨ Q ⟩＠ s
   in
-\end{code}\vspace{-1cm}
+\end{code}
 \begin{code}
   𝔸⟨ P ⟩ absL vl ⟨ Q ⟩
   ────────────────────────────

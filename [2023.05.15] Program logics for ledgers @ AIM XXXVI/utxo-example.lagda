@@ -86,6 +86,7 @@ auto = keepˡ keepʳ keepˡ keepʳ []
 \begin{code}
 t₁-₄ = L ∋ ⟦ t₁ , t₂ , t₃ , t₄ ⟧
 \end{code}
+\vspace{1cm}
 \tikzset{
   tx/.style =
   { draw           = gray

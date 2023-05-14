@@ -179,6 +179,7 @@ oper⇒denot {l = A —→⟨ v ⟩ B ∷ _}{s} (step v≤ p)
   rewrite dec-yes (v ≤? s A) v≤ .proj₂
   = oper⇒denot p
 \end{code}
+
 \begin{code}
 denot⇔oper :
   ⟦ l ⟧ s ≡ just s′
@@ -226,8 +227,8 @@ P ↑∘ f = strong↑ P ∘ f
 \begin{code}[hide]
 lift↑ = strong↑
 pattern ret↑ x = M.Any.just x
-
 \end{code}
+
 \begin{code}
 ⟨_⟩_⟨_⟩ : Assertion → L → Assertion → Type
 ⟨ P ⟩ l ⟨ Q ⟩ = P ⊢ Q ↑∘ ⟦ l ⟧
@@ -243,8 +244,8 @@ pattern ret↑ x = M.Any.just x
 \end{code}
 \begin{code}[hide]
 ◇-⟦⟧ = TODO
-
 \end{code}
+
 \begin{code}
 [FRAME] : ∀ R →
   ⟨ P ⟩ l ⟨ Q ⟩
@@ -274,6 +275,7 @@ pattern ret↑ x = M.Any.just x
 \begin{code}[hide]
 ◇-interleave = TODO
 \end{code}
+
 \begin{code}
 [PAR] :
   ∙ l₁ ∥ l₂ ≡ l

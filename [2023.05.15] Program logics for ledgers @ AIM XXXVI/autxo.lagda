@@ -42,7 +42,6 @@ utxoTx = fromList ∘ outputs
 resolved : ∀ tx → Resolved tx
 resolved _ {r} _ = r
 \end{code}
-\vspace{-.5cm}
 \begin{AgdaMultiCode}
 \begin{code}
 record IsValidTx (tx : Tx) (utxos : S) : Type where

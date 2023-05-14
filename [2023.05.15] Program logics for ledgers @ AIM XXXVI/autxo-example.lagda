@@ -78,6 +78,7 @@ module _ A B {or} {_ : auto∶ A ≢ B} where postulate
 \begin{code}
 t₁-₄ = L ∋ ⟦ t₁ , t₂ , t₃ , t₄ ⟧
 \end{code}
+\vspace{1cm}
 \tikzset{
   tx/.style =
   { draw           = gray
@@ -146,17 +147,17 @@ t₁-₄ = L ∋ ⟦ t₁ , t₂ , t₃ , t₄ ⟧
 \begin{frame}[fragile]{Abstract UTxO: Example derivation (monolithic)}
 \begin{code}
 _ : ⟨ A ↦ 1 ∗ B ↦ 0 ∗ C ↦ 0 ∗ D ↦ 1 ⟩ t₁-₄ ⟨ A ↦ 1 ∗ B ↦ 0 ∗ C ↦ 0 ∗ D ↦ 1 ⟩
-_ = begin A ↦ 1 ∗ B ↦ 0 ∗ C ↦ 0 ∗ D ↦ 1   ~⟪ ∗↝ ⟩
-          (A ↦ 1 ∗ B ↦ 0) ∗ C ↦ 0 ∗ D ↦ 1 ~⟨ t₁ ∶- [FRAME] (C ↦ 0 ∗ D ↦ 1) (A ↝ B) ⟩
-          (A ↦ 0 ∗ B ↦ 1) ∗ C ↦ 0 ∗ D ↦ 1 ~⟪ ∗↔ ⟩
-          (C ↦ 0 ∗ D ↦ 1) ∗ A ↦ 0 ∗ B ↦ 1 ~⟨ t₂ ∶- [FRAME] (A ↦ 0 ∗ B ↦ 1) (C ↜ D) ⟩
-          (C ↦ 1 ∗ D ↦ 0) ∗ A ↦ 0 ∗ B ↦ 1 ~⟪ ∗↔ ⟩
-          (A ↦ 0 ∗ B ↦ 1) ∗ C ↦ 1 ∗ D ↦ 0 ~⟨ t₃ ∶- [FRAME] (C ↦ 1 ∗ D ↦ 0) (A ↜ B) ⟩
-          (A ↦ 1 ∗ B ↦ 0) ∗ C ↦ 1 ∗ D ↦ 0 ~⟪ ∗↔ ⟩
-          (C ↦ 1 ∗ D ↦ 0) ∗ A ↦ 1 ∗ B ↦ 0 ~⟨ t₄ ∶- [FRAME] (A ↦ 1 ∗ B ↦ 0) (C ↝ D) ⟩
-          (C ↦ 0 ∗ D ↦ 1) ∗ A ↦ 1 ∗ B ↦ 0 ~⟪ ∗↔ ⟩
-          (A ↦ 1 ∗ B ↦ 0) ∗ C ↦ 0 ∗ D ↦ 1 ~⟪ ↜∗ ⟩
-          A ↦ 1 ∗ B ↦ 0 ∗ C ↦ 0 ∗ D ↦ 1   ∎
+_ = begin A ↦ 1 ∗ B ↦ 0    ∗ C ↦ 0 ∗ D ↦ 1  ~⟪ ∗↝ ⟩
+          (A ↦ 1 ∗ B ↦ 0)  ∗ C ↦ 0 ∗ D ↦ 1  ~⟨ t₁ ∶- [FRAME] (C ↦ 0 ∗ D ↦ 1) (A ↝ B) ⟩
+          (A ↦ 0 ∗ B ↦ 1)  ∗ C ↦ 0 ∗ D ↦ 1  ~⟪ ∗↔ ⟩
+          (C ↦ 0 ∗ D ↦ 1)  ∗ A ↦ 0 ∗ B ↦ 1  ~⟨ t₂ ∶- [FRAME] (A ↦ 0 ∗ B ↦ 1) (C ↜ D) ⟩
+          (C ↦ 1 ∗ D ↦ 0)  ∗ A ↦ 0 ∗ B ↦ 1  ~⟪ ∗↔ ⟩
+          (A ↦ 0 ∗ B ↦ 1)  ∗ C ↦ 1 ∗ D ↦ 0  ~⟨ t₃ ∶- [FRAME] (C ↦ 1 ∗ D ↦ 0) (A ↜ B) ⟩
+          (A ↦ 1 ∗ B ↦ 0)  ∗ C ↦ 1 ∗ D ↦ 0  ~⟪ ∗↔ ⟩
+          (C ↦ 1 ∗ D ↦ 0)  ∗ A ↦ 1 ∗ B ↦ 0  ~⟨ t₄ ∶- [FRAME] (A ↦ 1 ∗ B ↦ 0) (C ↝ D) ⟩
+          (C ↦ 0 ∗ D ↦ 1)  ∗ A ↦ 1 ∗ B ↦ 0  ~⟪ ∗↔ ⟩
+          (A ↦ 1 ∗ B ↦ 0)  ∗ C ↦ 0 ∗ D ↦ 1  ~⟪ ↜∗ ⟩
+          A ↦ 1 ∗ B ↦ 0    ∗ C ↦ 0 ∗ D ↦ 1  ∎
 \end{code}
 \end{frame}
 \begin{frame}{Abstract UTxO: Example derivation (modular)}

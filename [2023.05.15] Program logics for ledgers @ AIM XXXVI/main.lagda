@@ -36,6 +36,9 @@
 \begin{itemize}
 \item Local \& modular reasoning for UTxO blockchain ledgers
 \item Entertain the following analogy with concurrency/PL:
+\end{itemize}
+
+\begin{center}
 \begin{tabular}{ccc}
 \textbf{Blockchain} & & \textbf{Concurrency Theory} \\
 \hline
@@ -44,9 +47,11 @@ memory locations &$\leftrightarrow$& accounts \\
 data values &$\leftrightarrow$& account balances \\
 smart contracts &$\leftrightarrow$& programs accessing memory \\
 \end{tabular}
+\end{center}
 \end{frame}
 \begin{frame}{Approach}
 Investigate multiple semantics in different systems of increasing complexity
+\vspace{1cm}
 \tikzset{
   %% font=\small,
   txt/.style =
@@ -54,6 +59,7 @@ Investigate multiple semantics in different systems of increasing complexity
   % edges
   to/.style = {->, thick}
 }
+\begin{center}
 \begin{tikzpicture}
   \matrix (mat)
     [ column sep = .1cm,
@@ -90,6 +96,7 @@ Investigate multiple semantics in different systems of increasing complexity
   (axiom)
   ;
 \end{tikzpicture}
+\end{center}
 \end{frame}
 
 \subfile{simple}
@@ -119,7 +126,8 @@ Investigate multiple semantics in different systems of increasing complexity
 
 \begin{frame}{Conclusion}
 Agda as a design guide, rather than merely a verification tool of existing systems.
-\includegraphics[keepaspectratio=true,height=1.0cm]{conor}
+
+\includegraphics[keepaspectratio=true,height=2.5cm]{conor}
 \end{frame}
 
 \begin{frame}[standout]{}

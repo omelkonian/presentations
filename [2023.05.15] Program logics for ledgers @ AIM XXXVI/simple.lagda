@@ -121,10 +121,10 @@ denot⇔oper = denot⇒oper , oper⇒denot
 \end{code}
 \begin{code}
 oper-comp :
-  ∙ l       , s  —→ s′
-  ∙ l′      , s′ —→ s″
+  ∙ l        , s   —→ s′
+  ∙ l′       , s′  —→ s″
     ──────────────────
-    l ++ l′ , s  —→ s″
+    l ++ l′  , s   —→ s″
 \end{code}
 \begin{code}[hide]
 oper-comp = TODO
@@ -216,8 +216,8 @@ _∗_ : Op₂ Assertion
 \end{code}
 \begin{code}[hide]
 ◇-⟦⟧ = TODO
-
 \end{code}
+
 \begin{code}
 [FRAME] :
   ⟨ P ⟩ l ⟨ Q ⟩
@@ -237,8 +237,8 @@ _∗_ : Op₂ Assertion
 \end{code}
 \begin{code}[hide]
 ◇-interleave = TODO
-
 \end{code}
+
 \begin{code}
 [PAR] :
   ∙ l₁ ∥ l₂ ≡ l
