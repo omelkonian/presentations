@@ -1,0 +1,87 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{subfiles} % for modular TeX development in separate files
+\usepackage{xargs} % multiple optional arguments
+\usepackage{xspace} % no-argument aliases
+\usepackage{environ} % flexible environments
+\usepackage{proof} % Inference rules
+\usepackage{amsxtra}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{contour}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+
+% Agda
+\usepackage{agda}
+\setlength{\mathindent}{0em}
+%% \usepackage{fontspec}
+\AtBeginEnvironment{code}{\fontsize{9}{12}\selectfont}
+
+\newcommand\agdaFont{%
+JuliaMono%
+%% DejaVuSansMono%
+%% mononoki%
+%% Linux Biolinum O%
+}
+\newcommand\agdaSerifFont{%
+JuliaMono%
+%% DejaVuSansMono%
+%% mononoki%
+%% Linux Libertine O%
+}
+\newfontfamily{\AgdaSerifFont}{\agdaSerifFont}
+\newfontfamily{\AgdaSansSerifFont}{\agdaFont}
+\newfontfamily{\AgdaTypewriterFont}{\agdaFont}
+\renewcommand{\AgdaFontStyle}[1]{{\AgdaSansSerifFont{}#1}}
+\renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaSansSerifFont{}#1}}
+\renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaCommentFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaBoundFontStyle}[1]{\textit{\AgdaSerifFont{}#1}}
+
+\newcommand{\AD}[1]{\AgdaDatatype{#1}}
+\newcommand{\AC}[1]{\AgdaInductiveConstructor{#1}}
+\newcommand{\AF}[1]{\AgdaFunction{#1}}
+\newcommand{\AB}[1]{\AgdaBound{#1}}
+\newcommand{\AK}[1]{\AgdaKeyword{#1}}
+\newcommand{\AR}[1]{\AgdaField{#1}}
+\newcommand{\AM}[1]{\AgdaModule{#1}}
+\newcommand{\AN}[1]{\AgdaNumber{#1}}
+\newcommand{\AS}[1]{\AgdaString{#1}}
+\newcommand{\ASy}[1]{\AgdaSymbol{#1}}
+\newcommand{\AMA}[1]{\AgdaMacro{#1}}
+\newcommand{\APr}[1]{\AgdaMacro{#1}}
+
+\usepackage{newunicodechar}
+\newunicodechar{∷}{::}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,matrix,cd,shapes,calc}
+\tikzset{
+  every matrix/.style =
+  { ampersand replacement = \&,
+    matrix of nodes,
+    nodes in empty cells }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}
+%% \usepackage[tt=false]{libertine}
+\usepackage{yfonts}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
