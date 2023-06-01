@@ -1,8 +1,6 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{Nominal/Swap/Base.agda}
-\begin{code}
-{- MOTTO: permutations distribute over everything -}
+\begin{code}[hide]
 open import Prelude.Init; open SetAsType
 open L.Mem
 open import Prelude.General
@@ -10,42 +8,47 @@ open import Prelude.DecEq
 open import Prelude.Decidable
 open import Prelude.Setoid
 open import Prelude.InferenceRules
-
-module Nominal.Swap.Base (Atom : Type) ⦃ _ : DecEq Atom ⦄ where
-
+\end{code}
+\begin{frame}[fragile]{Swapping}
+\begin{code}[inline]
+module
+\end{code}
+\begin{code}[hide,inline]
+  Nominal.Swap.Base
+\end{code}$\ \dots$
+\begin{code}[inline]
+  (Atom : Type) ⦃ _ : DecEq Atom ⦄ where
+\end{code}
+\begin{code}[hide]
 Atoms = List Atom
 
--- T0D0: use sized types to enforce size-preserving swap
+\end{code}
+\begin{code}
+
 record Swap (A : Type ℓ) : Type ℓ where
   field swap : Atom → Atom → A → A
-  -- T0D0: ++ swap forms a group action by the group of atom permutations
-  -- i.e. ∙ id x = x
-  --      ∙ p (p′ x) = (p ∘ p′) x
-
-  infixr 10 ⦅_↔_⦆_
   ⦅_↔_⦆_ = swap
-  -- NB: equivariant functions commute with this group action
+
+\end{code}
+\begin{code}[hide]
+  infixr 10 ⦅_↔_⦆_
 
   swaps : List (Atom × Atom) → A → A
   swaps []             = id
   swaps ((x , y) ∷ as) = swap x y ∘ swaps as
 
 open Swap ⦃...⦄ public
-
+\end{code}
+\begin{code}
 instance
   Swap-Atom : Swap Atom
   Swap-Atom .swap x y z =
-    if      z == x then y
-    else if z == y then x
-    else                z
-
--- T0D0: permutations as bijections on `Atom` (infinite variant)
-
--- T0D0: to connect everything with the group theory behind
--- π∘π′ = (π′^π)∘π, where _^_ is the group conjugation action
---      = (π∘π′∘π⁻¹)∘π
---      = (π·π′)∘π
-
+    if       z == x  then  y
+    else if  z == y  then  x
+    else                   z
+\end{code}
+\end{frame}
+\begin{code}[hide]
 record CongSetoid (A : Set ℓ) ⦃ _ : ISetoid A ⦄ ⦃ _ : SetoidLaws A ⦄ : Setω where
   field ≈-cong : ∀ {B : Set ℓ′} ⦃ _ : ISetoid B ⦄ ⦃ _ : SetoidLaws B ⦄ →
                  ∀ (f : A → B) → Congruent _≈_ _≈_ f
@@ -85,13 +88,14 @@ pattern 𝟘 = here refl
 pattern 𝟙 = there 𝟘
 pattern 𝟚 = there 𝟙
 pattern 𝟛 = there 𝟚
-
 module _ (A : Type ℓ) ⦃ _ : Swap A ⦄ ⦃ _ : LawfulSetoid A ⦄ where
 
   private variable
     x y : A
     𝕒 𝕓 𝕔 𝕕 : Atom
-
+\end{code}
+\begin{frame}{Swapping laws}
+\begin{code}
   record SwapLaws : Type (ℓ ⊔ₗ relℓ) where
     field
       cong-swap : x ≈ y → ⦅ 𝕒 ↔ 𝕓 ⦆ x ≈ ⦅ 𝕒 ↔ 𝕓 ⦆ y
@@ -101,6 +105,8 @@ module _ (A : Type ℓ) ⦃ _ : Swap A ⦄ ⦃ _ : LawfulSetoid A ⦄ where
       swap-swap : ⦅ 𝕒 ↔ 𝕓 ⦆ ⦅ 𝕔 ↔ 𝕕 ⦆ x
                 ≈ ⦅ ⦅ 𝕒 ↔ 𝕓 ⦆ 𝕔 ↔ ⦅ 𝕒 ↔ 𝕓 ⦆ 𝕕 ⦆ ⦅ 𝕒 ↔ 𝕓 ⦆ x
 
+\end{code}
+\begin{code}[hide]
     -- ** derived properties
     swap-comm :
       Disjoint (𝕒 ∷ 𝕓 ∷ []) (𝕔 ∷ 𝕕 ∷ [])
@@ -133,8 +139,12 @@ open SwapLaws ⦃...⦄ public
 
 private variable A : Type ℓ
 
+\end{code}
+\begin{code}
 instance
   SwapLaws-Atom : SwapLaws Atom
+\end{code}
+\begin{code}[hide]
   SwapLaws-Atom .cong-swap = λ where refl → refl
   SwapLaws-Atom .swap-id {a}{x}
     with x ≟ a
@@ -309,4 +319,5 @@ swap-≢ {z}{w}{x}{y} z≢w | no z≢x
 ... | yes refl = z≢x
 ... | no _     = z≢w
 \end{code}
+\end{frame}
 \end{document}

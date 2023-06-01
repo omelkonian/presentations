@@ -1,7 +1,7 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{ULC/Base.agda}
-\begin{code}
+\begin{frame}[fragile]{$\lambda$-terms, nominally}
+\begin{code}[hide]
 open import Prelude.Init; open SetAsType
 open import Prelude.DecEq
 open import Prelude.General
@@ -16,18 +16,27 @@ module ULC.Base (Atom : Type) ⦃ _ : DecEq Atom ⦄ where
 open import Nominal Atom
 
 -- ** ULC terms.
+\end{code}
+\begin{code}
 data Term : Type where
   `_  : Atom → Term
-  _·_ : Op₂ Term
+  _·_ : Term → Term → Term
   ƛ_  : Abs Term → Term
+pattern ƛ_⇒_ x y = ƛ abs x y
+
+\end{code}
+\begin{code}[hide]
 {-# TERMINATING #-}
+\end{code}
+\begin{code}
 unquoteDecl Swap-Term = DERIVE Swap [ quote Term , Swap-Term ]
+\end{code}
+\begin{code}[hide]
 
 infix  30 `_
 infixl 20 _·_
 infixr 10 ƛ_
 infixr 5 ƛ_⇒_
-pattern ƛ_⇒_ x y = ƛ abs x y
 
 variable
   x y z w x′ y′ z′ w′ 𝕩 𝕪 𝕫 𝕨 : Atom
@@ -119,4 +128,5 @@ conc-shape t̂ t̂′ eq = swap-shape (t̂ .term) (t̂′ .term) eq
 conc-shape≡ : ∀ t̂ → t̂ .term ≡⦅shape⦆ conc t̂ x
 conc-shape≡ t̂ = swap-shape≡ _ _ (t̂ .term)
 \end{code}
+\end{frame}
 \end{document}

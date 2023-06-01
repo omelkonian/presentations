@@ -1,7 +1,7 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{ULC/Alpha.agda}
-\begin{code}
+\begin{frame}[fragile]{$\alpha$-equivalence, nominally}
+\begin{code}[hide]
 open import Prelude.Init; open SetAsType
 open L.Mem
 open import Prelude.DecEq
@@ -23,31 +23,27 @@ open import ULC.Base    Atom ⦃ it ⦄
 open import ULC.Measure Atom ⦃ it ⦄
 open import Nominal     Atom
 
-private variable A : Type ℓ; f g h : Abs A
+private variable A : Type ℓ; f g h : Abs Term
 
 -- T0D0: factor out abstractions, deal with them generically
+\end{code}
+\begin{code}
 data _≡α_ : Term → Term → Type₀ where
-
-  ν≈ :
-    x ≈ y
-    ──────────
-    ` x ≡α ` y
-
-  ξ≡ :
-    ∙ L ≡α L′
-    ∙ M ≡α M′
-      ────────────────────
-      (L · M) ≡α (L′ · M′)
-
-  ζ≡_ : ∀ {f g : Abs Term} →
-    -- f ≗α g
-    И (λ 𝕩 → conc f 𝕩 ≡α conc g 𝕩)
-    ──────────────────────────────
-    (ƛ f) ≡α (ƛ g)
-
-_≢α_ = ¬_ ∘₂ _≡α_
+  ν≈ :  x ≈ y
+        ──────────
+        ` x ≡α ` y
+  ξ≡ :  ∙ L ≡α L′
+        ∙ M ≡α M′
+          ────────────────────
+          (L · M) ≡α (L′ · M′)
+  ζ≡_ :  И (λ 𝕩 → conc f 𝕩 ≡α conc g 𝕩)
+         ──────────────────────────────
+         (ƛ f) ≡α (ƛ g)
 
 pattern ν≡ = ν≈ refl
+\end{code}
+\begin{code}[hide]
+_≢α_ = ¬_ ∘₂ _≡α_
 
 instance
   Setoid-Term : ISetoid Term
@@ -155,20 +151,20 @@ cong-ƛ : t ≡α t′ → (ƛ x ⇒ t) ≡α (ƛ x ⇒ t′)
 cong-ƛ t≡ = ζ≡ ([] , λ _ _ → cong-swap t≡)
 
 instance
-  ∃FinSupp-Term : ∃FinitelySupported Term
-  ∃FinSupp-Term .∀∃fin = λ where
+  FinSupp-Term : FinitelySupported Term
+  FinSupp-Term .∀fin = λ where
     (` x) → [ x ] , λ a b a∉ b∉ →
       ≈-reflexive $ cong `_ $
         swap-noop b a x λ where 𝟘 → b∉ 𝟘; 𝟙 → a∉ 𝟘
     (l · m) →
-      let supˡ , pˡ = ∀∃fin l
-          supᵐ , pᵐ = ∀∃fin m
+      let supˡ , pˡ = ∀fin l
+          supᵐ , pᵐ = ∀fin m
       in (supˡ ++ supᵐ) , λ a b a∉ b∉ →
       ξ≡ (pˡ a b (a∉ ∘ ∈-++⁺ˡ) (b∉ ∘ ∈-++⁺ˡ))
          (pᵐ a b (a∉ ∘ ∈-++⁺ʳ _) (b∉ ∘ ∈-++⁺ʳ _))
-    (ƛ x ⇒ t) → fin-ƛ t (∀∃fin t) x
+    (ƛ x ⇒ t) → fin-ƛ t (∀fin t) x
      where
-      fin-ƛ : ∀ (t : Term) → ∃FinSupp t → (∀ x → ∃FinSupp (ƛ x ⇒ t))
+      fin-ƛ : ∀ (t : Term) → FinSupp t → (∀ x → FinSupp (ƛ x ⇒ t))
       fin-ƛ t (sup , p) x = x ∷ sup , λ a b a∉ b∉ →
         begin
           ⦅ b ↔ a ⦆ (ƛ x ⇒ t)
@@ -181,69 +177,17 @@ instance
           (ƛ x ⇒ t)
         ∎
 
-  FinSupp-Term : FinitelySupported Term
-  FinSupp-Term .∀fin (` x) = xs , eq , ¬eq
-    where
-      xs = [ x ]
-
-      eq : ∀ a b → a ∉ xs → b ∉ xs → swap b a (` x) ≈ ` x
-      eq a b a∉ b∉ =
-        ≈-reflexive $ cong `_ $
-          swap-noop b a x λ where 𝟘 → b∉ 𝟘; 𝟙 → a∉ 𝟘
-
-      ¬eq : ∀ a b → a ∈ xs → b ∉ xs → swap b a (` x) ≉ ` x
-      ¬eq a b 𝟘 b∉ rewrite swapʳ b a = λ where ν≡ → b∉ 𝟘
-
-  FinSupp-Term .∀fin (l · m)
-    with supˡ , pˡ , ¬pˡ ← ∀fin l
-    with supᵐ , pᵐ , ¬pᵐ ← ∀fin m
-    = xs , eq , ¬eq -- same as Nominal.Product
-    where
-      xs = nub (supˡ ++ supᵐ)
-
-      eq : ∀ a b → a ∉ xs → b ∉ xs → swap b a (l · m) ≈ l · m
-      eq a b a∉ b∉ =
-        ξ≡ (pˡ a b (a∉ ∘ ∈-nub⁺ ∘ ∈-++⁺ˡ)   (b∉ ∘ ∈-nub⁺ ∘ ∈-++⁺ˡ))
-           (pᵐ a b (a∉ ∘ ∈-nub⁺ ∘ ∈-++⁺ʳ supˡ) (b∉ ∘ ∈-nub⁺ ∘ ∈-++⁺ʳ supˡ))
-
-      -- TODO: should not hold, argument might remain unused
-      -- *WRONG* the problem only arises when considering _normal forms_
-      postulate ¬eq : ∀ a b → a ∈ xs → b ∉ xs → swap b a (l · m) ≉ l · m
-  FinSupp-Term .∀fin t̂@(ƛ x ⇒ t)
-    with xs , p , ¬p ← ∀fin t
-    = xs′ , eq , ¬eq -- same as Nominal.Abs
-    where
-      xs′ = filter (¬? ∘ (_≟ x)) xs
-      -- TODO: both should be provable
-      postulate
-        eq : ∀ y z → y ∉ xs′ → z ∉ xs′ → swap z y t̂ ≈ t̂
-        ¬eq : ∀ y z → y ∈ xs′ → z ∉ xs′ → swap z y t̂ ≉ t̂
-
-∃supp-var : ∃supp (` x) ≡ [ x ]
-∃supp-var = refl
-
 supp-var : supp (` x) ≡ [ x ]
 supp-var = refl
 
-∃supp-ξ : ∃supp (L · M) ≡ ∃supp L ++ ∃supp M
-∃supp-ξ = refl
-
-supp-ξ : supp (L · M) ≡ nub (supp L ++ supp M)
+supp-ξ : supp (L · M) ≡ supp L ++ supp M
 supp-ξ = refl
 
-∃supp-ƛ : ∃supp (ƛ x ⇒ N) ≡ x ∷ ∃supp N
-∃supp-ƛ = refl
-
-supp-ƛ : supp (ƛ x ⇒ N) ≡ filter (¬? ∘ (_≟ x)) (supp N)
+supp-ƛ : supp (ƛ x ⇒ N) ≡ x ∷ supp N
 supp-ƛ = refl
 
-∃supp-id : ∃supp (ƛ x ⇒ ` x) ≡ x ∷ x ∷ []
-∃supp-id = refl
-
-supp-id : supp (ƛ x ⇒ ` x) ≡ []
-supp-id {x = x} rewrite ≟-refl x = refl
-
--- supp-abs⊆ : ∀ (t̂ : Abs Term) {a b} (a∉ : a ∉ supp t̂) (b∉ : b ∉ supp t̂) →
---   (∀fin t̂ .proj₂ a b) a∉ b∉ .proj₁ ⊆ supp t̂
+supp-id : supp (ƛ x ⇒ ` x) ≡ x ∷ x ∷ []
+supp-id = refl
 \end{code}
+\end{frame}
 \end{document}

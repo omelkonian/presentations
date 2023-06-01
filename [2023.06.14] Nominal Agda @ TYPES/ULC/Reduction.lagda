@@ -1,7 +1,7 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{ULC/Reduction.agda}
-\begin{code}
+\begin{frame}[fragile]{Reduction}
+\begin{code}[hide]
 {-# OPTIONS --allow-unsolved-metas #-}
 open import Prelude.Init hiding ([_]); open SetAsType
 open L.Mem
@@ -26,61 +26,32 @@ open import Nominal          Atom ⦃ it ⦄
 
 -- ** Reduction rules.
 infix 0 _—→_
+\end{code}
+\begin{code}
 data _—→_ : Rel₀ Term where
-  β :
-      ──────────────────────────────
-      (ƛ x ⇒ t) · t′ —→ t [ x / t′ ]
-      -- (ƛ t̂) · t —→ t̂ [ t ] -- "grown-up" substitution
+  β    :  ──────────────────────────────
+          (ƛ x ⇒ t) · t′ —→ t [ x / t′ ]
 
-  ζ_ :
-      t —→ t′
-      ───────────────────
-      ƛ x ⇒ t —→ ƛ x ⇒ t′
+  ζ_   :  t —→ t′
+          ───────────────────
+          ƛ x ⇒ t —→ ƛ x ⇒ t′
 
-  ξ₁_ :
-      t —→ t′
-      ─────────────────
-      t · t″ —→ t′ · t″
+  ξ₁_  :  t —→ t′
+          ─────────────────
+          t · t″ —→ t′ · t″
 
-  ξ₂_ :
-      t —→ t′
-      ─────────────────
-      t″ · t —→ t″ · t′
+  ξ₂_  :  t —→ t′
+          ─────────────────
+          t″ · t —→ t″ · t′
 
+open ReflexiveTransitiveClosure _—→_ using (_—↠_)
+\end{code}
+\begin{code}[hide]
+open ReflexiveTransitiveClosure _—→_ hiding (_—↠_)
 postulate
   supp-conc : supp (conc t̂ y) ⊆ y ∷ supp (t̂ .term)
   supp-conc♯ : t̂ .atom ∉ supp (conc t̂ y)
-
-{-# TERMINATING #-}
-supp-[] : supp (t [ x / t′ ]) ⊆ supp t ++ supp t′
-supp-[] {` y}{x}{t′}
-  with y ≟ x
-... | yes refl
-  = ∈-++⁺ʳ _
-... | no x≠y
-  = λ where (here refl) → here refl
-supp-[] {L · M}{x}{t′} x∈
-  with ∈-++⁻ (supp (L [ x / t′ ])) (∈-nub⁻ x∈)
-... | inj₁ x∈ = case ∈-++⁻ (supp L) $ supp-[] {t = L} x∈ of λ where
-  (inj₁ x∈) → ∈-++⁺ˡ $ ∈-nub⁺ $ ∈-++⁺ˡ x∈
-  (inj₂ x∈) → ∈-++⁺ʳ (nub $ supp L ++ supp M) x∈
-... | inj₂ x∈ = case ∈-++⁻ (supp M) $ supp-[] {t = M} x∈ of λ where
-  (inj₁ x∈) → ∈-++⁺ˡ $ ∈-nub⁺ $ ∈-++⁺ʳ (supp L) x∈
-  (inj₂ x∈) → ∈-++⁺ʳ (nub $ supp L ++ supp M) x∈
-supp-[] {t₀@(ƛ t̂@(abs _ t))}{x}{t′} {x′} x∈
-  with y ← freshAtom (x ∷ supp t̂ ++ supp t′)
-  with x∈ , x≢ ← ∈-filter⁻ (¬? ∘ (_≟ y)) {xs = supp (conc t̂ y [ x / t′ ])} x∈
-  with ∈-++⁻ (supp $ conc t̂ y) $ supp-[] {t = conc t̂ y} x∈
-... | inj₂ x∈ = ∈-++⁺ʳ (supp t₀) x∈
-... | inj₁ x∈
-  with x∉ ← supp-conc♯ {t̂ = t̂} {y = y}
-  with supp-conc {t̂}{y} x∈
-... | 𝟘 = ⊥-elim $ x≢ refl
-... | there x∈′
-  with x′ ≟ t̂ .atom
-... | yes refl = ⊥-elim $ x∉ x∈
-... | no x≢ = ∈-++⁺ˡ {xs = supp t₀}
-            $ ∈-filter⁺ (¬? ∘ (_≟ t̂ .atom)) {xs = supp t} x∈′ x≢
+  supp-[] : supp (t [ x / t′ ]) ⊆ supp t ++ supp t′
 
 ∉-[] :
   ∙ y ∉ supp t
@@ -89,26 +60,11 @@ supp-[] {t₀@(ƛ t̂@(abs _ t))}{x}{t′} {x′} x∈
     y ∉ supp (t [ x / t′ ])
 ∉-[] {t = t} y∉ y∉′ = ∉-++⁺ y∉ y∉′ ∘ supp-[] {t = t}
 
-fresh-—→ :
-  N —→ N′
-  ───────────────────────────
-  (_∉ supp N) ⊆¹ (_∉ supp N′)
-fresh-—→ (β {t = t}) x∉ =
-  let x∉ , x∉′ = ∉-++⁻ $ ∉-nub⁻ x∉
-  in ∉-[] {t = t} (∉-filter⁻ (¬? ∘ (_≟ _)) x∉ {!!}) x∉′
-fresh-—→ (ζ p) x∉ =
-  let x∉ = ∉-filter⁻ (¬? ∘ (_≟ _)) x∉ {!!}
-  in ∉-filter⁺ (¬? ∘ (_≟ _)) $ fresh-—→ p x∉
-fresh-—→ (ξ₁ p) x∉ =
-  let x∉ , x∉″ = ∉-++⁻ $ ∉-nub⁻ x∉
-      x∉′ = fresh-—→ p x∉
-  in ∉-nub⁺ $ ∉-++⁺ x∉′ x∉″
-fresh-—→ (ξ₂_ {t″ = t″} p) x∉ =
-  let x∉″ , x∉ = ∉-++⁻ {xs = supp t″} $ ∉-nub⁻ x∉
-      x∉′ = fresh-—→ p x∉
-  in ∉-nub⁺ $ ∉-++⁺ x∉″ x∉′
-
-open ReflexiveTransitiveClosure _—→_
+postulate
+  fresh-—→ :
+    N —→ N′
+    ───────────────────────────
+    (_∉ supp N) ⊆¹ (_∉ supp N′)
 
 appL-cong :
   L —↠ L′
@@ -171,7 +127,7 @@ private
     —→≡⟨ cong (λ ◆ → ƛ $z ⇒ (` ◆) [ s / ` z ]) $ swap-noop $z z s (λ where
          (here eq) → freshAtom∉ $ here $′ sym eq
          (there (here eq)) → s≠z eq) ⟩
-      (ƛ $z ⇒ ` s [ s / ` z ])
+      (ƛ $z ⇒ (` s) [ s / ` z ])
     —→≡⟨ cong (λ ◆ → ƛ $z ⇒ ◆) $ if-true $ cong isYes $ ≟-refl s ⟩
       (ƛ $z ⇒ ` z)
     ∎
@@ -248,7 +204,10 @@ pattern ⟨+_ x   = inj₁ x
 pattern done_ x = inj₂ x
 pattern +⟩_ x   = inj₂ x
 infix 0 step_ done_ ⟨+_ +⟩_
-
+\end{code}
+\end{frame}
+\begin{frame}[fragile]{Progress}
+\begin{code}
 progress : (M : Term) → ∃ (M —→_) ⊎ Normal M
 progress (` _) = done auto
 progress (ƛ _ ⇒ N) with progress N
@@ -263,6 +222,8 @@ progress (L@(_ · _) · M) with progress L
 ... | done (⟨+ L∅) with progress M
 ...   | step (_ , M→) = ⟨+ -, ξ₂ M→
 ...   | done M∅       = +⟩ ⟨+ (L∅ , M∅)
+\end{code}
+\begin{code}[hide]
 
 -- ** Evaluation.
 Gas = ℕ
@@ -274,7 +235,6 @@ eval (suc m) L with progress L
 ... | step (M , L→) = map₂′ (map₂ (L —→⟨ L→ ⟩_)) <$> eval m M
 
 {- Ctrl-c Ctrl-n "eval 100 2+2ᶜ" -}
-
 -- ** Confluence
 
 infix -1 _⇛_
@@ -537,7 +497,7 @@ _⁺ : Op₁ Term
 _⁺ = λ where
   (` x)           → ` x
   (ƛ x ⇒ M)       → ƛ x ⇒ (M ⁺)
-  ((ƛ x ⇒ N) · M) → N ⁺ [ x / M ⁺ ]
+  ((ƛ x ⇒ N) · M) → (N ⁺) [ x / M ⁺ ]
   (L · M)         → (L ⁺) · (M ⁺)
 
 par-⦊ :
@@ -581,14 +541,21 @@ par-confluence (_ ⇛⟨ L⇛M₁ ⟩ M₁⇛*M₁′) L⇛*M₂ =
   let _ , M₁⇛*N , M₂⇛N    = strip L⇛M₁ L⇛*M₂
       _ , M₁′⇛*N′ , N⇛*N′ = par-confluence M₁⇛*M₁′ M₁⇛*N
    in -, M₁′⇛*N′ , (_ ⇛⟨ M₂⇛N ⟩ N⇛*N′)
-
+\end{code}
+\end{frame}
+\begin{frame}[fragile]{Confluence}
+\begin{code}
 confluence :
   ∙ L —↠ M₁
   ∙ L —↠ M₂
     ─────────────────────────────
     ∃ λ N → (M₁ —↠ N) × (M₂ —↠ N)
 confluence L↠M₁ L↠M₂ =
-  let _ , M₁⇛N , M₂⇛N = par-confluence (betas-pars L↠M₁) (betas-pars L↠M₂)
-  in -, pars-betas M₁⇛N , pars-betas M₂⇛N
+  let
+    L⇛∗M₁ , L⇛∗M₂ = betas-pars L↠M₁ , betas-pars L↠M₂
+    _ , M₁⇛N , M₂⇛N = par-confluence L⇛∗M₁ L⇛∗M₂
+  in
+    -, pars-betas M₁⇛N , pars-betas M₂⇛N
 \end{code}
+\end{frame}
 \end{document}

@@ -1,7 +1,7 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{Nominal/New.agda}
-\begin{code}%
+\begin{frame}[fragile]{The ``new'' (И) quantifier}
+\begin{code}[hide]%
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{Prelude.Init}\AgdaSymbol{;}\AgdaSpace{}%
@@ -33,7 +33,8 @@
 %
 \\[\AgdaEmptyExtraSkip]%
 \>[0]\AgdaComment{--\ **\ The\ И\ "new"\ quantifier.}\<%
-\\
+\end{code}
+\begin{code}%
 \>[0]\AgdaFunction{И}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaFunction{Pred}\AgdaSpace{}%
@@ -41,8 +42,6 @@
 \AgdaBound{Atom}\AgdaSpace{}%
 \AgdaGeneralizable{ℓ}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaGeneralizable{ℓ}\<%
-\\
-\>[0]\AgdaComment{--\ И\ "for\ all\ except\ finitely\ many"}\<%
 \\
 \>[0]\AgdaFunction{И}\AgdaSpace{}%
 \AgdaBound{φ}\AgdaSpace{}%
@@ -63,21 +62,8 @@
 \AgdaSymbol{→}\AgdaSpace{}%
 \AgdaBound{φ}\AgdaSpace{}%
 \AgdaBound{y}\AgdaSymbol{)}\<%
-\\
-\>[0]\AgdaComment{--\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ∀\ y\ ∉\ xs\ →\ φ\ y}\<%
-\\
-\>[0]\AgdaComment{--\ ⅁\ for\ "generous",\ i.e.\ "for\ infinitely\ many"}\<%
-\\
-\>[0]\AgdaComment{--\ ⅁\ φ\ =\ ∀\ (xs\ :\ List\ Atom)\ →\ (∃\ y\ →\ (y\ ∈\ xs)\ →\ φ\ y)}\<%
-\\
-\>[0]\AgdaComment{--\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ∃\ y\ ∉\ xs\ →\ φ\ y}\<%
-\\
-\>[0]\AgdaComment{--\ NB:\ И\ is\ *self-dual*}\<%
-\\
-\>[0]\AgdaComment{--\ И̅\ =\ ⅁}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+\begin{code}[hide]%
 \>[0]\AgdaFunction{И⅁}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaFunction{Pred}\AgdaSpace{}%
@@ -261,4 +247,5 @@
 \\
 \>[0]\AgdaComment{--\ И\ P\ =\ powᶜᵒᶠ\ P}\<%
 \end{code}
+\end{frame}
 \end{document}

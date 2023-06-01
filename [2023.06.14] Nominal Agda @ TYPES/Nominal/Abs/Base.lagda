@@ -1,7 +1,7 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{Nominal/Abs/Base.agda}
-\begin{code}
+\begin{frame}[fragile]{Nominal abstraction}
+\begin{code}[hide]
 {-# OPTIONS --v equivariance:100 #-}
 open import Prelude.Init; open SetAsType
 open L.Mem
@@ -16,13 +16,20 @@ open import Nominal.New     Atom
 open import Nominal.Swap    Atom
 
 -- T0D0: maybe this is broken, user has access to `atom`
+\end{code}
+\begin{code}
 record Abs (A : Type ℓ) : Type ℓ where
   constructor abs
   field atom : Atom
         term : A
+\end{code}
+\begin{code}[hide]
 open Abs public
 
 module _ {A : Type ℓ} ⦃ _ : Swap A ⦄ where
+
+\end{code}
+\begin{code}
 
   conc : Abs A → Atom → A
   conc (abs 𝕒 x) 𝕓 = swap 𝕓 𝕒 x
@@ -30,6 +37,9 @@ module _ {A : Type ℓ} ⦃ _ : Swap A ⦄ where
   instance
     Swap-Abs : Swap (Abs A)
     Swap-Abs .swap 𝕒 𝕓 (abs 𝕔 x) = abs (swap 𝕒 𝕓 𝕔) (swap 𝕒 𝕓 x)
+\end{code}
+\begin{AgdaAlign}
+\begin{code}[hide]
     -- this is the conjugation action for nominal abstractions
     -- (terminology from G-sets, sets with a group action)
 
@@ -99,7 +109,13 @@ module _ {A : Type ℓ} ⦃ _ : Swap A ⦄ where
     open ≈-Reasoning
 
     instance
+\end{code}
+\hspace{2em}
+\begin{code}
       SwapLaws-Abs : SwapLaws (Abs A)
+\end{code}
+\end{AgdaAlign}
+\begin{code}[hide]
       SwapLaws-Abs .cong-swap {f@(abs 𝕩 t)}{g@(abs 𝕪 t′)}{a}{b} (xs , f≈g)
         = a ∷ b ∷ xs , λ x x∉  →
           begin
@@ -180,4 +196,5 @@ module _ {A : Type ℓ} ⦃ _ : Swap A ⦄ where
     --   mor : Abs A —𝔾→ A
     --   mor = record { f = concₓ ; equivariant = {!swap-swap!} }
 \end{code}
+\end{frame}
 \end{document}

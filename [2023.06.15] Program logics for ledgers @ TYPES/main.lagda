@@ -16,7 +16,7 @@
 %% \subtitle{Modular reasoning of UTxO-based blockchains}
 
 \author{\alert{Orestis Melkonian}, Wouter Swierstra, James Chapman}
-\date{May 15th 2023, AIM XXXVI @ Delft}
+\date{15 June 2023, TYPES @ Valencia}
 
 \begin{document}
 
@@ -131,7 +131,7 @@ Agda as a design guide, rather than merely a verification tool of existing syste
 \end{frame}
 
 \begin{frame}[standout]{}
-Questions? Suggestions?
+Questions?
 \end{frame}
 
 \end{document}

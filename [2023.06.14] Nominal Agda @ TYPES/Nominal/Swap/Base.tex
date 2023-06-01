@@ -1,9 +1,6 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{Nominal/Swap/Base.agda}
-\begin{code}%
-\>[0]\AgdaComment{\{-\ MOTTO:\ permutations\ distribute\ over\ everything\ -\}}\<%
-\\
+\begin{code}[hide]%
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{Prelude.Init}\AgdaSymbol{;}\AgdaSpace{}%
@@ -32,12 +29,18 @@
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{Prelude.InferenceRules}\<%
-\\
+\end{code}
+\begin{frame}[fragile]{Swapping}
+\begin{code}[inline]%
+\>[0]\AgdaKeyword{module}\<%
+\end{code}
+\begin{code}[hide,inline]%
+\>[0][@{}l@{\AgdaIndent{1}}]%
+\>[2]\AgdaModule{Nominal.Swap.Base}\<%
+\end{code}$\ \dots$
+\begin{code}[inline]%
 %
-\\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaKeyword{module}\AgdaSpace{}%
-\AgdaModule{Nominal.Swap.Base}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{Atom}\AgdaSpace{}%
+\>[2]\AgdaSymbol{(}\AgdaBound{Atom}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitive{Type}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaSymbol{⦃}\AgdaSpace{}%
@@ -47,17 +50,17 @@
 \AgdaBound{Atom}\AgdaSpace{}%
 \AgdaSymbol{⦄}\AgdaSpace{}%
 \AgdaKeyword{where}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+\begin{code}[hide]%
 \>[0]\AgdaFunction{Atoms}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaDatatype{List}\AgdaSpace{}%
 \AgdaBound{Atom}\<%
 \\
-%
-\\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaComment{--\ T0D0:\ use\ sized\ types\ to\ enforce\ size-preserving\ swap}\<%
+\>[0]\<%
+\end{code}
+\begin{code}%
+\>[0]\<%
 \\
 \>[0]\AgdaKeyword{record}\AgdaSpace{}%
 \AgdaRecord{Swap}\AgdaSpace{}%
@@ -83,28 +86,17 @@
 \AgdaBound{A}\<%
 \\
 %
-\>[2]\AgdaComment{--\ T0D0:\ ++\ swap\ forms\ a\ group\ action\ by\ the\ group\ of\ atom\ permutations}\<%
-\\
-%
-\>[2]\AgdaComment{--\ i.e.\ ∙\ id\ x\ =\ x}\<%
-\\
-%
-\>[2]\AgdaComment{--\ \ \ \ \ \ ∙\ p\ (p′\ x)\ =\ (p\ ∘\ p′)\ x}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
-\>[2]\AgdaKeyword{infixr}\AgdaSpace{}%
-\AgdaNumber{10}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⦅\AgdaUnderscore{}↔\AgdaUnderscore{}⦆\AgdaUnderscore{}}}\<%
-\\
-%
 \>[2]\AgdaOperator{\AgdaFunction{⦅\AgdaUnderscore{}↔\AgdaUnderscore{}⦆\AgdaUnderscore{}}}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaField{swap}\<%
 \\
-%
-\>[2]\AgdaComment{--\ NB:\ equivariant\ functions\ commute\ with\ this\ group\ action}\<%
+\>[0]\<%
+\end{code}
+\begin{code}[hide]%
+\>[0][@{}l@{\AgdaIndent{1}}]%
+\>[2]\AgdaKeyword{infixr}\AgdaSpace{}%
+\AgdaNumber{10}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⦅\AgdaUnderscore{}↔\AgdaUnderscore{}⦆\AgdaUnderscore{}}}\<%
 \\
 %
 \\[\AgdaEmptyExtraSkip]%
@@ -147,9 +139,8 @@
 \AgdaModule{Swap}\AgdaSpace{}%
 \AgdaSymbol{⦃...⦄}\AgdaSpace{}%
 \AgdaKeyword{public}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+\begin{code}%
 \>[0]\AgdaKeyword{instance}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
@@ -168,41 +159,27 @@
 \\
 \>[2][@{}l@{\AgdaIndent{0}}]%
 \>[4]\AgdaOperator{\AgdaFunction{if}}%
-\>[12]\AgdaBound{z}\AgdaSpace{}%
+\>[13]\AgdaBound{z}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{==}}\AgdaSpace{}%
-\AgdaBound{x}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{then}}\AgdaSpace{}%
-\AgdaBound{y}\<%
+\AgdaBound{x}%
+\>[21]\AgdaOperator{\AgdaFunction{then}}%
+\>[27]\AgdaBound{y}\<%
 \\
 %
 \>[4]\AgdaOperator{\AgdaFunction{else}}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{if}}\AgdaSpace{}%
-\AgdaBound{z}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{if}}%
+\>[13]\AgdaBound{z}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{==}}\AgdaSpace{}%
-\AgdaBound{y}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{then}}\AgdaSpace{}%
-\AgdaBound{x}\<%
+\AgdaBound{y}%
+\>[21]\AgdaOperator{\AgdaFunction{then}}%
+\>[27]\AgdaBound{x}\<%
 \\
 %
 \>[4]\AgdaOperator{\AgdaFunction{else}}%
-\>[24]\AgdaBound{z}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaComment{--\ T0D0:\ permutations\ as\ bijections\ on\ `Atom`\ (infinite\ variant)}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaComment{--\ T0D0:\ to\ connect\ everything\ with\ the\ group\ theory\ behind}\<%
-\\
-\>[0]\AgdaComment{--\ π∘π′\ =\ (π′\textasciicircum{}π)∘π,\ where\ \AgdaUnderscore{}\textasciicircum{}\AgdaUnderscore{}\ is\ the\ group\ conjugation\ action}\<%
-\\
-\>[0]\AgdaComment{--\ \ \ \ \ \ =\ (π∘π′∘π⁻¹)∘π}\<%
-\\
-\>[0]\AgdaComment{--\ \ \ \ \ \ =\ (π·π′)∘π}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
+\>[27]\AgdaBound{z}\<%
+\end{code}
+\end{frame}
+\begin{code}[hide]%
 \>[0]\AgdaKeyword{record}\AgdaSpace{}%
 \AgdaRecord{CongSetoid}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
@@ -229,7 +206,7 @@
 \>[2]\AgdaKeyword{field}\AgdaSpace{}%
 \AgdaField{≈-cong}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[117I]\AgdaSymbol{∀}\AgdaSpace{}%
+\>[110I]\AgdaSymbol{∀}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{B}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitive{Set}\AgdaSpace{}%
@@ -248,7 +225,7 @@
 \AgdaSymbol{⦄}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[117I]%
+\>[.][@{}l@{}]\<[110I]%
 \>[17]\AgdaSymbol{∀}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{f}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -510,8 +487,6 @@
 \AgdaInductiveConstructor{there}\AgdaSpace{}%
 \AgdaInductiveConstructor{𝟚}\<%
 \\
-%
-\\[\AgdaEmptyExtraSkip]%
 \>[0]\AgdaKeyword{module}\AgdaSpace{}%
 \AgdaModule{\AgdaUnderscore{}}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
@@ -551,9 +526,9 @@
 \AgdaGeneralizable{𝕕}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaBound{Atom}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+\begin{frame}{Swapping laws}
+\begin{code}%
 %
 \>[2]\AgdaKeyword{record}\AgdaSpace{}%
 \AgdaRecord{SwapLaws}\AgdaSpace{}%
@@ -636,7 +611,7 @@
 \\
 %
 \>[6]\AgdaField{swap-swap}%
-\>[394I]\AgdaSymbol{:}\AgdaSpace{}%
+\>[387I]\AgdaSymbol{:}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⦅}}\AgdaSpace{}%
 \AgdaGeneralizable{𝕒}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{↔}}\AgdaSpace{}%
@@ -649,7 +624,7 @@
 \AgdaOperator{\AgdaFunction{⦆}}\AgdaSpace{}%
 \AgdaGeneralizable{x}\<%
 \\
-\>[.][@{}l@{}]\<[394I]%
+\>[.][@{}l@{}]\<[387I]%
 \>[16]\AgdaOperator{\AgdaField{≈}}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⦅}}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⦅}}\AgdaSpace{}%
@@ -673,9 +648,10 @@
 \AgdaOperator{\AgdaFunction{⦆}}\AgdaSpace{}%
 \AgdaGeneralizable{x}\<%
 \\
-%
-\\[\AgdaEmptyExtraSkip]%
-%
+\>[0]\<%
+\end{code}
+\begin{code}[hide]%
+\>[0][@{}l@{\AgdaIndent{1}}]%
 \>[4]\AgdaComment{--\ **\ derived\ properties}\<%
 \\
 %
@@ -890,7 +866,7 @@
 \AgdaGeneralizable{x}\AgdaSpace{}%
 \AgdaOperator{\AgdaField{≈}}\AgdaSpace{}%
 \AgdaGeneralizable{y}%
-\>[576I]\AgdaSymbol{→}\AgdaSpace{}%
+\>[569I]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⦅}}\AgdaSpace{}%
 \AgdaGeneralizable{𝕒}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{↔}}\AgdaSpace{}%
@@ -903,7 +879,7 @@
 \AgdaOperator{\AgdaFunction{⦆}}\AgdaSpace{}%
 \AgdaGeneralizable{x}\<%
 \\
-\>[.][@{}l@{}]\<[576I]%
+\>[.][@{}l@{}]\<[569I]%
 \>[23]\AgdaOperator{\AgdaField{≈}}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⦅}}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⦅}}\AgdaSpace{}%
@@ -956,8 +932,9 @@
 \AgdaPrimitive{Type}\AgdaSpace{}%
 \AgdaGeneralizable{ℓ}\<%
 \\
-%
-\\[\AgdaEmptyExtraSkip]%
+\>[0]\<%
+\end{code}
+\begin{code}%
 \>[0]\AgdaKeyword{instance}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
@@ -965,7 +942,8 @@
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaRecord{SwapLaws}\AgdaSpace{}%
 \AgdaBound{Atom}\<%
-\\
+\end{code}
+\begin{code}[hide]%
 %
 \>[2]\AgdaFunction{SwapLaws-Atom}\AgdaSpace{}%
 \AgdaSymbol{.}\AgdaField{cong-swap}\AgdaSpace{}%
@@ -2448,4 +2426,5 @@
 \>[15]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaBound{z≢w}\<%
 \end{code}
+\end{frame}
 \end{document}

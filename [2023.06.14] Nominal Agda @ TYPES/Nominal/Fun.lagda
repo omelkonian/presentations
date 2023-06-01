@@ -1,7 +1,6 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{Nominal/Fun.agda}
-\begin{code}
+\begin{code}[hide]
 open import Prelude.Init; open SetAsType
 open L.Mem
 open import Prelude.General
@@ -173,42 +172,6 @@ module _
   ⦃ _ : Swap A ⦄ ⦃ _ : SwapLaws A ⦄
   where
 
-  --  * in the case of _→_, Equivariant′ is equivalent to Equivariant
-  equivariant-equiv : ∀ {f : A → A} →
-    Equivariant f
-    ══════════════
-    Equivariant′ f
-  equivariant-equiv {f = f} = ↝ , ↜
-      where
-        open ≈-Reasoning
-
-        ↝ : Equivariant f
-            ─────────────────
-            Equivariant′ f
-        ↝ equiv-f = fin-f , refl
-          where
-            fin-f : FinSupp f
-            fin-f = [] , (λ x y _ _ a →
-              begin
-                ⦅ y ↔ x ⦆ (f $ ⦅ y ↔ x ⦆ a)
-              ≈˘⟨ cong-swap $ equiv-f _ _ ⟩
-                ⦅ y ↔ x ⦆ ⦅ y ↔ x ⦆ f a
-              ≈⟨ swap-sym′ ⟩
-                f a
-              ∎) , λ _ _ ()
-
-        ↜ : Equivariant′ f
-            ─────────────────
-            Equivariant f
-        ↜ (fin-f , refl) a b {x} =
-          begin
-            ⦅ a ↔ b ⦆ f x
-          ≈˘⟨ cong-swap $ fin-f .proj₂ .proj₁ _ _ (λ ()) (λ ()) _ ⟩
-            ⦅ a ↔ b ⦆ ⦅ a ↔ b ⦆ f (⦅ a ↔ b ⦆ x)
-          ≈⟨ swap-sym′ ⟩
-            f (⦅ a ↔ b ⦆ x)
-          ∎
-
   private
     f′ : A → A
     f′ = id
@@ -224,11 +187,8 @@ module _
     f≈g : f′ ≈ g′
     f≈g _ = ≈-refl
 
-    ∃fin-f : ∃FinSupp f′
-    ∃fin-f = suppF′ , λ _ _ _ _ _ → swap-sym′
-
     fin-f : FinSupp f′
-    fin-f = suppF′ , (λ _ _ _ _ _ → swap-sym′) , (λ _ _ ())
+    fin-f = suppF′ , λ _ _ _ _ _ → swap-sym′
 
     equiv-f : Equivariant f′
     equiv-f _ _ = ≈-refl
@@ -252,7 +212,7 @@ module _
     suppF = List Atom ∋ x ∷ y ∷ []
     -- fresh f = False
 
-    finF : ∃FinSupp f
+    finF : FinSupp f
     finF = -, go
       where
         ∀x∉suppF : ∀ {z} → z ∉ suppF → f z ≡ false
@@ -278,7 +238,7 @@ module _
     -- fresh g = True
     -- NB: g is infinite, but has finite support!
 
-    finG : ∃FinSupp g
+    finG : FinSupp g
     finG = -, go
       where
         ∀x∉suppG : ∀ {z} → z ∉ suppG → g z ≡ true
@@ -294,17 +254,5 @@ module _
         ... | no _ with z ≟ 𝕒
         ... | yes refl rewrite ∀x∉suppG 𝕒∉ | ∀x∉suppG 𝕓∉ = refl
         ... | no _ = refl
-
-    -- T0D0: example where _≗_ is not the proper notion of equality
-    -- module _ ⦃ _ : Toℕ Atom ⦄ where
-    --   h : Atom → Bool
-    --   h z = even? (toℕ z)
-    --   -- ∄ supp h ⇔ ∄ fresh h
-
-  -- Find the non-finSupp swappable example.
-  -- ∙ ZFA ↝ ZFA+choice
-  -- ∙ the set of all total orderings on atoms
-  -- (empty support on the outside, infinite support inside each order)
-  -- ∙ FOL: ultra-filter construction
 \end{code}
 \end{document}

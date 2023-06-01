@@ -1,7 +1,7 @@
 \documentclass[main]{subfiles}
 \begin{document}
-\section*{Nominal/New.agda}
-\begin{code}
+\begin{frame}[fragile]{The ``new'' (И) quantifier}
+\begin{code}[hide]
 open import Prelude.Init; open SetAsType
 open L.Mem
 open import Prelude.DecEq
@@ -9,16 +9,12 @@ open import Prelude.DecEq
 module Nominal.New (Atom : Type) ⦃ _ : DecEq Atom ⦄ where
 
 -- ** The И "new" quantifier.
+\end{code}
+\begin{code}
 И : Pred (Pred Atom ℓ) ℓ
--- И "for all except finitely many"
 И φ = ∃ λ (xs : List Atom) → (∀ y → y ∉ xs → φ y)
---                            ∀ y ∉ xs → φ y
--- ⅁ for "generous", i.e. "for infinitely many"
--- ⅁ φ = ∀ (xs : List Atom) → (∃ y → (y ∈ xs) → φ y)
---                            ∃ y ∉ xs → φ y
--- NB: И is *self-dual*
--- И̅ = ⅁
-
+\end{code}
+\begin{code}[hide]
 И⅁ : Pred (Atom → Atom → Type ℓ) ℓ
 И⅁ φ = ∃ λ (xs : List Atom) →
    (∀ y z → y ∉ xs → z ∈ xs → φ y z)
@@ -42,4 +38,5 @@ module Nominal.New (Atom : Type) ⦃ _ : DecEq Atom ⦄ where
 -- И : Pred (Pred Atom ℓ) (lsuc ℓ)
 -- И P = powᶜᵒᶠ P
 \end{code}
+\end{frame}
 \end{document}
