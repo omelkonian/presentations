@@ -121,8 +121,8 @@ instance
   ⟦T⟧ .⟦_⟧ tx s = M.when (isValidTx tx s) (s ─ stxoTx tx ∪ utxoTx tx)
 
   ⟦L⟧ : Denotable L
-  ⟦L⟧ .⟦_⟧ []      s = just s
-  ⟦L⟧ .⟦_⟧ (t ∷ l) = ⟦ t ⟧ >=> ⟦ l ⟧
+  ⟦L⟧ .⟦_⟧  []       s  = just s
+  ⟦L⟧ .⟦_⟧  (t ∷ l)  =  ⟦ t ⟧ >=> ⟦ l ⟧
 \end{code}
 \begin{code}[hide]
   ⟦L⟧₀ : Denotable₀ L

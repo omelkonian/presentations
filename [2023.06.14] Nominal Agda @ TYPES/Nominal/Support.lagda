@@ -35,6 +35,7 @@ private variable A : Type ℓ; B : Type ℓ′
 module _ ⦃ _ : ISetoid A ⦄ ⦃ _ : Swap A ⦄ where
 \end{code}
 \begin{code}
+
   FinSupp : Pred A _
   FinSupp x = И² λ 𝕒 𝕓 → swap 𝕓 𝕒 x ≈ x
 

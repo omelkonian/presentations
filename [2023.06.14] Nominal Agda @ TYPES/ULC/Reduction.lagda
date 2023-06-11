@@ -209,19 +209,19 @@ infix 0 step_ done_ ⟨+_ +⟩_
 \begin{frame}[fragile]{Progress}
 \begin{code}
 progress : (M : Term) → ∃ (M —→_) ⊎ Normal M
-progress (` _) = done auto
-progress (ƛ _ ⇒ N) with progress N
-... | step (_ , N→) = ⟨+ -, ζ N→
-... | done N∅       = +⟩ +⟩ N∅
-progress (` _ · N) with progress N
-... | step (_ , N→) = ⟨+ -, ξ₂ N→
-... | done N∅       = +⟩ ⟨+ auto , N∅
-progress ((ƛ _) · _) = ⟨+ -, β
-progress (L@(_ · _) · M) with progress L
-... | step (_ , L→) = ⟨+ -, ξ₁ L→
-... | done (⟨+ L∅) with progress M
-...   | step (_ , M→) = ⟨+ -, ξ₂ M→
-...   | done M∅       = +⟩ ⟨+ (L∅ , M∅)
+progress (` _)            = done auto
+progress (ƛ _ ⇒ N)        with progress N
+... | step (_ , N→)       = ⟨+ -, ζ N→
+... | done N∅             = +⟩ +⟩ N∅
+progress (` _ · N)        with progress N
+... | step (_ , N→)       = ⟨+ -, ξ₂ N→
+... | done N∅             = +⟩ ⟨+ auto , N∅
+progress ((ƛ _) · _)      = ⟨+ -, β
+progress (L@(_ · _) · M)  with progress L
+... | step (_ , L→)       = ⟨+ -, ξ₁ L→
+... | done (⟨+ L∅)        with progress M
+...   | step (_ , M→)     = ⟨+ -, ξ₂ M→
+...   | done M∅           = +⟩ ⟨+ (L∅ , M∅)
 \end{code}
 \begin{code}[hide]
 
@@ -552,8 +552,8 @@ confluence :
     ∃ λ N → (M₁ —↠ N) × (M₂ —↠ N)
 confluence L↠M₁ L↠M₂ =
   let
-    L⇛∗M₁ , L⇛∗M₂ = betas-pars L↠M₁ , betas-pars L↠M₂
-    _ , M₁⇛N , M₂⇛N = par-confluence L⇛∗M₁ L⇛∗M₂
+    L⇛∗M₁ , L⇛∗M₂    = betas-pars L↠M₁ , betas-pars L↠M₂
+    _ , M₁⇛N , M₂⇛N  = par-confluence L⇛∗M₁ L⇛∗M₂
   in
     -, pars-betas M₁⇛N , pars-betas M₂⇛N
 \end{code}

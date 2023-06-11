@@ -259,8 +259,9 @@ instance
   ⟦T⟧ .⟦_⟧ tx s = M.when (isValidTx tx s) (s ─ outputRefs tx ∪ utxoTx tx)
 
   ⟦L⟧ : Denotable L
-  ⟦L⟧ .⟦_⟧ []      s = just s
-  ⟦L⟧ .⟦_⟧ (t ∷ l) = ⟦ t ⟧ >=> ⟦ l ⟧
+  ⟦L⟧ .⟦_⟧  []       s  = just s
+  ⟦L⟧ .⟦_⟧  (t ∷ l)  =  ⟦ t ⟧ >=> ⟦ l ⟧
+
 \end{code}
 \begin{code}[hide]
   ⟦L⟧₀ : Denotable₀ L
@@ -271,13 +272,12 @@ comp₀ : ∀ x → ⟦ l ++ l′ ⟧₀ x ≡ (⟦ l′ ⟧₀ ∘ ⟦ l ⟧₀
 comp₀ {l = []}    _ = refl
 comp₀ {l = t ∷ l} x = comp₀ {l} (⟦ t ⟧₀ x)
 \end{code}
-
 \begin{code}
 comp : ∀ x → ⟦ l ++ l′ ⟧ x ≡ (⟦ l ⟧ >=> ⟦ l′ ⟧) x
-comp {l = []}    x = refl
-comp {l = t ∷ l} x with ⟦ t ⟧ x
-... | nothing = refl
-... | just s  = comp {l} s
+comp {[]}     _  = refl
+comp {t ∷ l}  x  with ⟦ t ⟧ x
+... | nothing  = refl
+... | just s   = comp {l} s
 \end{code}
 \begin{code}[hide]
 -- valid ledgers w.r.t. a given initial state
@@ -513,6 +513,7 @@ postulate instance
 \end{code}
 
 \begin{code}
+
 [FRAME] : ∀ R →
   ∙ l ♯ R
   ∙ ⟨ P ⟩ l ⟨ Q ⟩

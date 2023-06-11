@@ -1,11 +1,10 @@
 MAIN=main
 PRE=agda.sty $(MAIN).agda-lib
 AGDA=agda -i. --latex --latex-dir=. --only-scope-checking
-LATEX=xelatex -shell-escape -halt-on-error # -interaction=batchmode # -pdf -f -cd
+LATEX=xelatex -shell-escape -halt-on-error -interaction=non-stop
 
-.PHONY: default all clean
-default: all
-all: $(MAIN).pdf
+.PHONY: default clean
+default: $(MAIN).pdf
 
 %.tex : %.lagda
 	$(AGDA) $<
@@ -14,13 +13,12 @@ all: $(MAIN).pdf
 	$(LATEX) -output-directory=$(dir $@) $<
 	bibtex $* &> /dev/null
 
-main.tex: \
-  $(patsubst %.lagda, %.tex, $(shell find . -type f -name '*.lagda'))
+NOM_DEPS=$(patsubst %.lagda, %.tex, $(shell find Nominal/. -type f -name '*.lagda'))
+ULC_DEPS=$(patsubst %.lagda, %.tex, $(shell find ULC/. -type f -name '*.lagda'))
 
-redo :
-	$(LATEX) $(MAIN).tex
-	bibtex $(MAIN) &> /dev/null
+$(MAIN).pdf: $(NOM_DEPS) $(ULC_DEP)
 
 clean:
 	rm -rf *.aux *.log *.out *.bbl *.lof *.blg *.lot *.gz *.toc *.ptb *.dvi \
-	       $(MAIN).pdf *~ *.agdai _build/
+	       *~ *.agdai _build/ \
+	       $(MAIN).pdf $(NOM_DEPS) $(ULC_DEPS)

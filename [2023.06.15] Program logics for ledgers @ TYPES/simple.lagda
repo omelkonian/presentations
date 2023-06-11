@@ -14,10 +14,14 @@ open import ValueSepInt.Maps
 
 \begin{document}
 \begin{frame}[fragile]{Simple Model}
-\begin{code}
-module _ (Part : Type) ⦃ _ : DecEq Part ⦄ where
-
-
+\begin{code}[inline]
+module
+\end{code}
+\begin{code}[hide,inline]
+  _
+\end{code}$\ \dots$
+\begin{code}[inline]
+  (Part : Type) ⦃ _ : DecEq Part ⦄ where
 \end{code}
 \begin{code}[hide]
 instance
@@ -28,8 +32,8 @@ instance
 
 postulate TODO : ∀ {A : Type ℓ} → A
 \end{code}
-
 \begin{code}
+
 S = Map⟨ Part ↦ ℤ ⟩
 
 record Tx : Type where
@@ -37,8 +41,13 @@ record Tx : Type where
   field sender    : Part
         value     : ℤ
         receiver  : Part
-open Tx public
+
 unquoteDecl DecEq-Tx = DERIVE DecEq [ quote Tx , DecEq-Tx ]
+\end{code}
+\begin{code}[hide]
+open Tx public
+\end{code}
+\begin{code}
 
 L = List Tx
 \end{code}
@@ -61,25 +70,30 @@ Domain = S → S
 
 record Denotable (A : Type) : Type where
   field ⟦_⟧ : A → Domain
+\end{code}
+\begin{code}[hide]
 open Denotable ⦃...⦄ public
-
+\end{code}
+\begin{code}
 instance
   ⟦T⟧ : Denotable Tx
   ⟦T⟧ .⟦_⟧ (A —→⟨ v ⟩ B) s = s [ A ↝ _- v ] [ B ↝ _+ v ]
 
   ⟦L⟧ : Denotable L
-  ⟦L⟧ .⟦_⟧ []      = id
-  ⟦L⟧ .⟦_⟧ (t ∷ l) = ⟦ l ⟧ ∘ ⟦ t ⟧
+  ⟦L⟧ .⟦_⟧ []       = id
+  ⟦L⟧ .⟦_⟧ (t ∷ l)  = ⟦ l ⟧ ∘ ⟦ t ⟧
 
 comp : ∀ x → ⟦ l ++ l′ ⟧ x ≡ (⟦ l′ ⟧ ∘ ⟦ l ⟧) x
-comp {l = []}    _ = refl
-comp {l = t ∷ l} x = comp {l} (⟦ t ⟧ x)
+comp {[]}     _  = refl
+comp {t ∷ l}  x  = comp {l} (⟦ t ⟧ x)
 \end{code}
 \end{frame}
 \begin{frame}[fragile]{Simple Model: Operational Semantics}
 \begin{minipage}{.4\textwidth}
-\begin{code}
+\begin{code}[hide]
 infix 0 _—→_
+\end{code}
+\begin{code}
 data _—→_ : L × S → S → Type where
 
   base :
@@ -115,6 +129,7 @@ denot⇔oper :
   ⟦ l ⟧ s ≡ s′
   ════════════
   l , s —→ s′
+
 \end{code}
 \begin{code}[hide]
 denot⇔oper = denot⇒oper , oper⇒denot
@@ -134,6 +149,7 @@ oper-comp = TODO
 \begin{frame}[fragile]{Simple Model: Axiomatic Semantics (Hoare Logic)}
 \begin{code}
 Assertion = Pred₀ S
+
 \end{code}
 \begin{code}[hide]
 variable P P′ P₁ P₂ Q Q′ Q₁ Q₂ R : Assertion
@@ -142,17 +158,26 @@ variable P P′ P₁ P₂ Q Q′ Q₁ Q₂ R : Assertion
 ⟨_⟩_⟨_⟩ : Assertion → L → Assertion → Type
 ⟨ P ⟩ l ⟨ Q ⟩ = P ⊢ Q ∘ ⟦ l ⟧
 
+
+\end{code}
+\begin{minipage}{.3\textwidth}
+\begin{code}
 hoare-base :
   ──────────────
   ⟨ P ⟩ [] ⟨ P ⟩
 hoare-base = id
-
+\end{code}
+\end{minipage}
+\hfill\vrule\hfill
+\begin{minipage}{.5\textwidth}
+\begin{code}
 hoare-step :
   ⟨ P ⟩ l ⟨ Q ⟩
   ──────────────────────────
   ⟨ P ∘ ⟦ t ⟧ ⟩ t ∷ l ⟨ Q ⟩
 hoare-step PlQ {_} = PlQ
 \end{code}
+\end{minipage}
 \end{frame}
 \begin{frame}[fragile]{Simple Model: Axiomatic Semantics (Hoare Logic)}
 \begin{minipage}{.3\textwidth}
@@ -167,7 +192,7 @@ consequence ⊢P Q⊢ PlQ
           = Q⊢ ∘ PlQ ∘ ⊢P
 \end{code}
 \end{minipage}
-~~~\vrule~~~
+\hfill\vrule\hfill
 \begin{minipage}{.6\textwidth}
 \begin{code}
 hoare-step′ :
@@ -213,6 +238,7 @@ _∗_ : Op₂ Assertion
   ⟨ s₁ ◇ s₂ ⟩≡ s
   ─────────────────────
   ⟨ ⟦ l ⟧ s₁ ◇ s₂ ⟩≡ ⟦ l ⟧ s
+
 \end{code}
 \begin{code}[hide]
 ◇-⟦⟧ = TODO
@@ -240,6 +266,7 @@ _∗_ : Op₂ Assertion
 \end{code}
 
 \begin{code}
+
 [PAR] :
   ∙ l₁ ∥ l₂ ≡ l
   ∙ ⟨ P₁ ⟩ l₁ ⟨ Q₁ ⟩

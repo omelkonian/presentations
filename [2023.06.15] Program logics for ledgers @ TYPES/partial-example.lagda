@@ -42,6 +42,7 @@ _↜_ : ∀ A B → ℝ⟨ A ↦ v′ ∗ B ↦ v ⟩ [ B —→⟨ v ⟩ A ] �
 _↜_ = mkℝ_ ∘₂ _↜⁰_
 \end{code}
 \begin{code}
+
 t₁ = A —→⟨ 1 ⟩ B; t₂ = D —→⟨ 1 ⟩ C; t₃ = B —→⟨ 1 ⟩ A; t₄ = C —→⟨ 1 ⟩ D
 t₁-₄ = L ∋ ⟦ t₁ , t₂ , t₃ , t₄ ⟧
 

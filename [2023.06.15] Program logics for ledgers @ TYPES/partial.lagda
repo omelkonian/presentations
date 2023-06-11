@@ -120,14 +120,11 @@ comp {l = t ∷ l} x with ⟦ t ⟧ x
 ... | nothing = refl
 ... | just s  = comp {l} s
 
--- Executing transactions never introduces new keys in the resulting map out-of-thin-air.
--- ** Operational semantics
--- We model configurations of the transition system as pairs of a ledger and its current state.
+infix 0 _—→_
 \end{code}
 \end{frame}
 \begin{frame}{Adding Partiality: Operational Semantics}
 \begin{code}
-infix 0 _—→_
 data _—→_ : L × S → S → Type where
 
   base :
@@ -179,8 +176,8 @@ oper⇒denot {l = A —→⟨ v ⟩ B ∷ _}{s} (step v≤ p)
   rewrite dec-yes (v ≤? s A) v≤ .proj₂
   = oper⇒denot p
 \end{code}
-
 \begin{code}
+
 denot⇔oper :
   ⟦ l ⟧ s ≡ just s′
   ═════════════════
@@ -223,6 +220,7 @@ strong↑  = M.Any.Any
 
 _↑∘_ : Pred₀ S → (S → Maybe S) → Pred₀ S
 P ↑∘ f = strong↑ P ∘ f
+
 \end{code}
 \begin{code}[hide]
 lift↑ = strong↑
@@ -241,6 +239,7 @@ pattern ret↑ x = M.Any.just x
   ∙ ⟨ s₁ ◇ s₂ ⟩≡ s
     ────────────────────────────
     (⟨ s₁′ ◇ s₂ ⟩≡_ ↑∘ ⟦ l ⟧) s
+
 \end{code}
 \begin{code}[hide]
 ◇-⟦⟧ = TODO

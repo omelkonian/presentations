@@ -650,19 +650,13 @@
 \\
 %
 \\[\AgdaEmptyExtraSkip]%
-\>[0]\AgdaComment{--\ Executing\ transactions\ never\ introduces\ new\ keys\ in\ the\ resulting\ map\ out-of-thin-air.}\<%
-\\
-\>[0]\AgdaComment{--\ **\ Operational\ semantics}\<%
-\\
-\>[0]\AgdaComment{--\ We\ model\ configurations\ of\ the\ transition\ system\ as\ pairs\ of\ a\ ledger\ and\ its\ current\ state.}\<%
+\>[0]\AgdaKeyword{infix}\AgdaSpace{}%
+\AgdaNumber{0}\AgdaSpace{}%
+\AgdaOperator{\AgdaDatatype{\AgdaUnderscore{}—→\AgdaUnderscore{}}}\<%
 \end{code}
 \end{frame}
 \begin{frame}{Adding Partiality: Operational Semantics}
 \begin{code}%
-\>[0]\AgdaKeyword{infix}\AgdaSpace{}%
-\AgdaNumber{0}\AgdaSpace{}%
-\AgdaOperator{\AgdaDatatype{\AgdaUnderscore{}—→\AgdaUnderscore{}}}\<%
-\\
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaOperator{\AgdaDatatype{\AgdaUnderscore{}—→\AgdaUnderscore{}}}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -993,8 +987,9 @@
 \AgdaFunction{oper⇒denot}\AgdaSpace{}%
 \AgdaBound{p}\<%
 \end{code}
-
 \begin{code}%
+\>[0]\<%
+\\
 \>[0]\AgdaFunction{denot⇔oper}\AgdaSpace{}%
 \AgdaSymbol{:}\<%
 \\
@@ -1217,6 +1212,8 @@
 \AgdaBound{P}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∘}}\AgdaSpace{}%
 \AgdaBound{f}\<%
+\\
+\>[0]\<%
 \end{code}
 \begin{code}[hide]%
 \>[0]\AgdaFunction{lift↑}\AgdaSpace{}%
@@ -1300,6 +1297,8 @@
 \AgdaGeneralizable{l}\AgdaSpace{}%
 \AgdaOperator{\AgdaPostulate{⟧}}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaGeneralizable{s}\<%
+\\
+\>[0]\<%
 \end{code}
 \begin{code}[hide]%
 \>[0]\AgdaFunction{◇-⟦⟧}\AgdaSpace{}%

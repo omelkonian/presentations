@@ -30,7 +30,7 @@ infix 60 _[_/_]
 _[_/_] : Term → Atom → Term → Term
 (` x)    [ 𝕒 / N ]  = if x == 𝕒 then N else ` x
 (L · M)  [ 𝕒 / N ]  = L [ 𝕒 / N ] · M [ 𝕒 / N ]
-(ƛ t̂)    [ 𝕒 / N ]  = ƛ y ⇒ conc t̂ y [ 𝕒 / N ]
+(ƛ t̂)   [ 𝕒 / N ]  = ƛ y ⇒ conc t̂ y [ 𝕒 / N ]
   where y = fresh-var (𝕒 , t̂ , N)
 
 \end{code}

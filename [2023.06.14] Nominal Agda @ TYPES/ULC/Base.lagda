@@ -19,9 +19,9 @@ open import Nominal Atom
 \end{code}
 \begin{code}
 data Term : Type where
-  `_  : Atom → Term
-  _·_ : Term → Term → Term
-  ƛ_  : Abs Term → Term
+  `_   : Atom → Term
+  _·_  : Term → Term → Term
+  ƛ_   : Abs Term → Term
 pattern ƛ_⇒_ x y = ƛ abs x y
 
 \end{code}

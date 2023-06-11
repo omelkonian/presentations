@@ -1,11 +1,10 @@
 MAIN=main
 PRE=agda.sty $(MAIN).agda-lib preamble.tex
 AGDA=agda -i. --latex --latex-dir=. --only-scope-checking
-LATEX=xelatex -shell-escape -halt-on-error # -interaction=batchmode # -pdf -f -cd
+LATEX=xelatex -shell-escape -halt-on-error -interaction=non-stop
 
-.PHONY: default all clean
-default: all
-all: $(MAIN).pdf
+.PHONY: default clean
+default: $(MAIN).pdf
 
 %.tex : %.lagda
 	$(AGDA) $<
@@ -14,18 +13,11 @@ all: $(MAIN).pdf
 	$(LATEX) $<
 	bibtex $* &> /dev/null
 
-$(MAIN).tex : simple.tex simple-example.tex \
-              partial.tex partial-example.tex \
-	      utxo.tex utxo-example.tex \
-	      autxo.tex autxo-example.tex \
-	      sound-abstraction.tex
+DEPS=$(patsubst %.lagda, %.tex, $(shell find . -type f -name '*.lagda'))
+
+$(MAIN).pdf : $(DEPS)
 
 clean:
 	rm -rf *.aux *.log *.out *.bbl *.lof *.blg *.lot *.gz *.toc *.ptb *.dvi \
 	       *.pdf *~ *.agdai _build/ \
-	       $(MAIN).tex \
-	       simple.tex simple-example.tex \
-               partial.tex partial-example.tex \
-	       utxo.tex utxo-example.tex \
-	       autxo.tex autxo-example.tex \
-	       sound-abstraction.tex
+	       $(MAIN).tex $(MAIN).pdf $(DEPS)
