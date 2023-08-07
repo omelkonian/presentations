@@ -1,0 +1,150 @@
+%% \documentclass[aspectratio=43]{beamer}
+\documentclass[aspectratio=169]{beamer}
+\usetheme[
+  block=fill,
+  background=light,
+  titleformat=smallcaps,
+  progressbar=frametitle,
+  numbering=none,
+]{metropolis}
+%% \setbeamersize{text margin left=.5cm,text margin right=.5cm}
+\usepackage{appendixnumberbeamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{subfiles} % for modular TeX development
+\usepackage{xargs} % multiple optional arguments
+\usepackage{xspace} % no-argument aliases
+\usepackage{environ} % flexible environments
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,matrix,fit,backgrounds,decorations.text,decorations.pathmorphing,calc,shapes}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{contour}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+
+% Quotes
+\usepackage{csquotes}
+\SetBlockThreshold{2}
+\newcommand\myblockquote[2]{%
+  \blockquote{\hspace*{2em}\emph{`#1'}#2}\par}
+
+% Agda
+\usepackage{agda}
+\usepackage{fontspec}
+\newcommand\agdaFont{%
+JuliaMono%
+%% DejaVuSansMono%
+%% mononoki%
+%% Linux Libertine O%
+}
+\setlength{\mathindent}{0em}
+%% \AtBeginEnvironment{code}{\fontsize{9}{12}\selectfont}
+\newfontfamily{\AgdaSerifFont}{\agdaFont}
+\newfontfamily{\AgdaSansSerifFont}{\agdaFont}
+\newfontfamily{\AgdaTypewriterFont}{\agdaFont}
+\renewcommand{\AgdaFontStyle}[1]{{\AgdaSansSerifFont{}#1}}
+\renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaSansSerifFont{}#1}}
+\renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaCommentFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaBoundFontStyle}[1]{\textit{\AgdaSerifFont{}#1}}
+
+%% \usepackage{amsxtra}
+%% \usepackage{newunicodechar}
+%% \newunicodechar{∷}{::}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \usepackage{relsize}
+%% \usepackage[tt=false]{libertine}
+%% \usepackage{yfonts}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+\title{Nominal techniques as an Agda library}
+
+\author{Murdoch J. Gabbay, \alert{Orestis Melkonian}}
+\date{20 June 2023, ProgLog seminar @ Chalmers}
+
+\begin{document}
+
+% ** Agda setup
+\AgdaNoSpaceAroundCode{}
+
+\setbeamerfont{title}{size=\LARGE}
+\setbeamerfont{subtitle}{size=\Large}
+
+%% \titlegraphic{}
+
+\begin{center}
+\maketitle
+\end{center}
+
+\begin{frame}{\alert{No need} for special language support?}
+\myblockquote{\textit{
+While nominal techniques provide a general approach to define and reason about syntax with binders, I actually hesitate to include it here because it seems to require special language support to use effectively, which Agda does not have.
+}}{\\---Jesper Cockx's blog: 1001 Representations of Syntax with Binding}
+\end{frame}
+
+\begin{frame}{Motivation}
+\begin{itemize}
+\item Explore another \alert{point in the design space} of already existing nominal implementations (e.g. Nominal Isabelle)
+\item Provide a \alert{constructive} perspective on nominal techniques
+\item Do this \alert{without changing the system itself} --- as an Agda library
+\item Make it \alert{ergonomic} for the user to use the library as a tool for dealing with names
+(e.g. working on some syntax with binding)
+\item Mechanise existing (but also new?) \alert{meta-theoretical results}
+\end{itemize}
+\end{frame}
+
+\section{The nominal universe}
+\subfile{Nominal/Swap/Base.tex}
+\subfile{Nominal/Abs/Base.tex}
+\subfile{Nominal/New.tex}
+\subfile{Nominal/Support.tex}
+\subfile{Nominal/Abs/Support.tex}
+
+\section{Case study: the untyped $\lambda$-calculus}
+\subfile{ULC/Base.tex}
+\subfile{ULC/Alpha.tex}
+\subfile{ULC/Substitution.tex}
+\subfile{ULC/Reduction.tex}
+
+\begin{frame}{Future Work}
+\begin{itemize}
+\item More meta-programming automation to minimise overhead
+  \begin{itemize}
+  \item corresponding laws and equivariance lemmas follow the same type-directed structure
+ as the swap operation itself
+  \end{itemize}
+\item Another case study on \emph{cut elimination} for first-order logic
+  \begin{itemize}
+  \item need to work with entities that are not finitely supported
+  \item also includes name abstraction over proof trees
+  \end{itemize}
+\item Formalise the constructive \emph{total} concretion function, which seems novel
+\end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+Questions?
+\vfill
+\begin{center}
+\alert{\url{https://omelkonian.github.io/nominal-agda}}
+\end{center}
+\end{frame}
+
+\end{document}
