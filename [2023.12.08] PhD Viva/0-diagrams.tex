@@ -1,0 +1,94 @@
+\tikzset{
+  % global
+  every matrix/.style =
+  { ampersand replacement = \&,
+    matrix of nodes,
+    nodes in empty cells },
+  % nodes
+  boxx/.style = {align = center},
+  box/.style =
+  { %draw, rectangle,
+    align          = center,
+    minimum width  = .5cm,
+    minimum height = 1.5cm },
+  BG/.style =
+  { rectangle,
+    inner sep       = 0.2cm,
+    rounded corners = 5mm,
+    line width      = 1mm },
+  MSc/.style =
+  { BG, fill=yellow!25, text=yellow!25 },
+  MSc-label/.style =
+  { label={[name=msc]above left:\contour{yellow!25}{}} },
+  PhD/.style =
+  { BG, fill=orange!20, text=orange!20 },
+  PhD-label/.style =
+  { label={[name=phd]below:\contour{orange!20}{}} },
+  PhD2/.style =
+  { BG, fill=orange!30, text=orange!30 },
+  PhD2-label/.style =
+  { label={[name=phd]#1:\contour{orange!30}{}} },
+  PhD3/.style =
+  { BG, fill=green!25, text=green!25 },
+  PhD3-label/.style =
+  { label={[name=phd]#1:\contour{green!25}{}} },
+  greenBox/.style =
+  { BG, fill=green!15, },
+%%   greenDot/.style =
+%%   { BG , left color = red!35, middle color = green!55
+%%   , bottom color = green!55, right color = green!55 },
+  redDot/.style =
+  { BG, draw=red!55, dashed },
+  %% font=\small,
+  txt/.style    = {align=center},
+  note/.style   = {font=\small\itshape},
+  accept/.style = {fill = green!15},
+  reject/.style = {fill = red!15},
+  cit/.style =
+  { inner sep = 0.3cm, rounded corners = 2mm, font=\normalsize, align=center },
+  % edges
+  to/.style = {->, thick},
+  squig/.style = {decorate, decoration={zigzag}}
+}
+
+\newcommand\bitml{
+  \matrix (mat)
+    [ column sep = 1.5cm,
+      row sep = 2cm,
+      every node/.style = txt
+    ] {
+    \node {\textbf{\underline{Syntax}}};
+    \& \node (operA) {};
+    \& \node (operB) {};
+    \& \node {\textbf{\underline{Game-theoretic}}\\\textbf{\underline{Semantics}}}; \\[-1cm]
+    \node (contracts) {BitML\\Contracts};
+    \& \node (lts) {Small-step\\LTS};
+    \& \node (sm) {Symbolic\\Runs};
+    \& \node (ss) {Symbolic\\Strategies}; \\
+    \node (transactions) {Bitcoin\\Transactions};
+    \& \node (bc) {Blockchain\\Consistency};
+    \& \node (cm) {Computational\\Runs};
+    \& \node (cs) {Computational\\Strategies}; \\
+  };
+  \node[fit=(operA)(operB)]{\textbf{\underline{Operational Semantics}}};
+  \path
+  (contracts) edge[to]
+    node[right] (comp) {$\mathcal{C}$}
+  (transactions)
+  (sm) edge[<->, bend left = 40]
+    node[right] (coh) {$\sim$}
+  (cm)
+  (cm) edge[to]
+    node[left] (parsing) {\textit{\alert{parse}}}
+  (sm)
+  (ss) edge[to]
+    node[left] (n) {$\aleph$}
+  (cs)
+  (coh.east) edge[<->, double]
+    node[above] (compsA) {\textit{\alert{computational}}}
+    node[below] (compsB) {\textit{\alert{soundness}}}
+  (n.west)
+  (lts) edge[squig] (sm)
+  (bc) edge[squig] (cm)
+  ;
+}
