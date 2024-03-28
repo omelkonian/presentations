@@ -137,7 +137,7 @@ mechanized in Agda}
 
 \author{Andre Knispel, \alert{Orestis Melkonian}, James Chapman,
 Alasdair Hill, Joosep Jääger, William DeMeo, Ulf Norell}
-\date{21 March 2024, FM meeting \@ IOG}
+\date{21 March 2024, FM meeting $@$ IOG}
 
 \begin{document}
 
@@ -214,20 +214,93 @@ Some quotes are worth more than others.
 \setTheory{}
 \end{frame}
 
+\begin{frame}{Formalization: basic entities}
+\begin{itemize}
+\item crypto
+\item addresses
+\item tunable parameters
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Formalization: the hierarchy of transitions}
+\begin{itemize}
+\item CHAIN
+  %% \begin{itemize}
+  %% \item NEWEPOCH
+  %%   \begin{itemize}
+  %%   \item RATIFY
+  %%     \begin{itemize}
+  %%     \item ENACT
+  %%     \end{itemize}
+  %%   \end{itemize}
+  %% \item LEDGER*
+  %%   \begin{itemize}
+  %%   \item UTXOW
+  %%     \begin{itemize}
+  %%     \item UTXO
+  %%     \end{itemize}
+  %%   \item CERT*
+  %%   \item GOV*
+  %%   \end{itemize}
+  %% \end{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Formalization: CHAIN block-by-block transition}
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Formalization: LEDGER transaction-by-transaction transition}
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Formalization: UTXO rule (the ``core'')}
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Formalization: the transaction type}
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Compiling to Haskell}
+\begin{itemize}
+\item computational proofs
+\item manually implementing coercions
+\item UTXOW example
+\end{itemize}
+\end{frame}
 
 \begin{frame}{Future Work}
 \begin{itemize}
-\item More meta-programming automation to minimise overhead
+\item Prove more interesting meta-theoretical properties
+\item Finalize conformance testing integration
   \begin{itemize}
-  \item corresponding laws and equivariance lemmas follow the same type-directed structure
- as the swap operation itself
+  \item Develop missing infrastructure
+  \item \alert{Randomly test} difficult-to-prove properties
+    by translating their Agda statements to Quickcheck properties
   \end{itemize}
-\item Another case study on \emph{cut elimination} for first-order logic
+\item Optimizations $\to$ refinements
+\item Smoother with less boilerplate
   \begin{itemize}
-  \item need to work with entities that are not finitely supported
-  \item also includes name abstraction over proof trees
+  \item Transition from builtin GHC backend to \alert{agda2hs}
   \end{itemize}
-\item Formalise the constructive \emph{total} concretion function, which seems novel
 \end{itemize}
 \end{frame}
 
@@ -235,7 +308,7 @@ Some quotes are worth more than others.
 Questions?
 \vfill
 \begin{center}
-\alert{\url{https://omelkonian.github.io/nominal-agda}}
+\alert{\url{https://intersectmbo.github.io/formal-ledger-specifications/}}
 \end{center}
 \end{frame}
 
