@@ -22,31 +22,20 @@ open import Ledger.Ratify txs
 open import Ledger.Utxo txs abs
 \end{code}
 
-\AF{CHAIN} is the main state machine describing the ledger. Since it is not
-invoked from any other state machine, it does not have an
-environment. It invokes two other state machines, \AF{NEWEPOCH} and
-\AF{LEDGER*}, where the former detects if the new block \AB{b} is in
-a new epoch. In that case, \AF{NEWEPOCH} takes care of various bookkeeping
-tasks, such as counting votes for the governance system and updating
-stake distributions for consensus. For a basic version that detects
-whether a new epoch has been entered, see Appendix~\ref{appendix:epochs}. The
-potentially updated state is then given to \AF{LEDGER*}, which is the
-reflexive-transitive closure of \AF{LEDGER} and applies all the
-transactions in the block in sequence. Finally, \AF{CHAIN} updates
-\ChainState with the resulting states.
-
-\begin{minipage}{.3\textwidth}
+\newcommand\chain{%
+\begin{minipage}{.35\textwidth}
 \begin{code}
-record NewEpochEnv : Type where
-  field  stakeDistrs : StakeDistrs
-
 record Block : Type where
   field  ts    : List Tx
          slot  : Slot
 \end{code}
 \end{minipage}
 \hfill\vrule\hfill
-\begin{minipage}{.5\textwidth}
+\begin{minipage}{.6\textwidth}
+\begin{code}[hide]
+record NewEpochEnv : Type where
+  field  stakeDistrs : StakeDistrs
+\end{code}
 \begin{AgdaMultiCode}
 \begin{code}
 record   NewEpochState : Type where
@@ -65,7 +54,6 @@ record ChainState : Type where
 \end{AgdaMultiCode}
 \end{minipage}
 
-\newcommand\newEpoch{%
 \begin{code}[hide]
 private variable
   s : ChainState
@@ -84,10 +72,8 @@ instance _ = +-0-monoid; _ = +-0-commutativeMonoid
 data _⊢_⇀⦇_,NEWEPOCH⦈_ : NewEpochEnv → NewEpochState → Epoch → NewEpochState → Type where
 \end{code}
 \begin{AgdaMultiCode}
-\begin{code}
-  NEWEPOCH-New :
-\end{code}
 \begin{code}[hide]
+  NEWEPOCH-New :
     ∀ {Γ} → let
       open NewEpochState nes hiding (es)
       open RatifyState fut using (removed) renaming (es to esW)
@@ -133,8 +119,6 @@ data _⊢_⇀⦇_,NEWEPOCH⦈_ : NewEpochEnv → NewEpochState → Epoch → New
       acnt' = record acnt
         { treasury = treasury + fees + unclaimed + donations ∸ totWithdrawals }
     in
-\end{code}
-\begin{code}
     ∙  e ≡ sucᵉ lastEpoch
     ∙  record { currentEpoch = e ; treasury = treasury ; GState gState ; NewEpochEnv Γ }
          ⊢ ⟦ es ⊗ ∅ ⊗ false ⟧ʳ ⇀⦇ govSt' ,RATIFY∗⦈ fut'
@@ -142,16 +126,12 @@ data _⊢_⇀⦇_,NEWEPOCH⦈_ : NewEpochEnv → NewEpochState → Epoch → New
        Γ ⊢ nes ⇀⦇ e ,NEWEPOCH⦈ ⟦ e ⊗ acnt' ⊗ ls' ⊗ es ⊗ fut' ⟧ⁿ
 
   NEWEPOCH-Not-New :
-\end{code}
-\begin{code}[hide]
    ∀ {Γ} → let open NewEpochState nes in
-\end{code}
-\begin{code}
     e ≢ sucᵉ lastEpoch
     ────────────────────────────────
     Γ ⊢ nes ⇀⦇ e ,NEWEPOCH⦈ nes
 \end{code}
-\end{AgdaMultiCode}}
+\end{AgdaMultiCode}
 
 \begin{code}[hide]
 -- TODO: do we still need this for anything?
@@ -196,29 +176,35 @@ calculateStakeDistrs ls =
   record
     { stakeDistr = govActionDeposits ls
     }
-
-mkNewEpochEnv : LState → NewEpochEnv
-mkNewEpochEnv ls = record { stakeDistrs = calculateStakeDistrs ls }
-
-updateChainState : ChainState → NewEpochState → LState → ChainState
-updateChainState cs nes ls = record cs { newEpochState = record nes { ls = ls } }
 \end{code}
 \hrule
 \begin{AgdaMultiCode}
 \begin{code}[hide]
+open ChainState; open NewEpochState
+
+mkNewEpochEnv : ChainState → NewEpochEnv
+mkNewEpochEnv cs = record
+  { stakeDistrs = calculateStakeDistrs (cs .newEpochState .ls) }
+
+updateChainState : ChainState → NewEpochState → ChainState
+updateChainState cs nes = record cs
+  { newEpochState = record nes { ls = cs .newEpochState .ls } }
+
 data  _⊢_⇀⦇_,CHAIN⦈_ : ⊤ → ChainState → Block → ChainState → Type where
 \end{code}
 \begin{code}
   CHAIN :
 \end{code}
 \begin{code}[hide]
-    let open ChainState s; open Block b; open NewEpochState newEpochState; open EnactState es in
+    let open Block b; es = s .newEpochState .es; open EnactState es
+    in
 \end{code}
 \begin{code}
-      ∙  mkNewEpochEnv ls ⊢ newEpochState ⇀⦇ epoch slot ,NEWEPOCH⦈ nes
+      ∙  mkNewEpochEnv s ⊢ s .newEpochState ⇀⦇ epoch slot ,NEWEPOCH⦈ nes
       ∙  ⟦ slot ⊗ constitution .proj₁ .proj₂ ⊗ pparams .proj₁ ⊗ es ⟧ˡ
-            ⊢ nes .NewEpochState.ls ⇀⦇ ts ,LEDGER∗⦈ ls'
-         ────────────────────────────────
-         _  ⊢ s ⇀⦇ b ,CHAIN⦈ updateChainState s nes ls
+           ⊢ nes .ls ⇀⦇ ts ,LEDGER∗⦈ ls'
+         ───────────────────────────────────────
+         _  ⊢ s ⇀⦇ b ,CHAIN⦈ updateChainState s nes
 \end{code}
 \end{AgdaMultiCode}
+}

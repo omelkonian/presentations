@@ -10,12 +10,8 @@ default: $(MAIN).pdf
 latex/%.tex : %.lagda
 	$(RUN_AGDA) $<
 
-%.pdf: %.tex
+%.pdf: %.tex $(shell find latex/ -type f -name '*.tex') Makefile
 	$(RUN_LATEX) $<
-
-DEPS=$(patsubst %.lagda, latex/%.tex, $(shell find . -type f -name '*.lagda'))
-
-$(MAIN).tex: $(DEPS)
 
 clean:
 	rm -rf *.aux *.log *.out *.bbl *.lof *.blg *.lot *.gz *.toc *.ptb *.dvi \

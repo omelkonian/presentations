@@ -1,13 +1,3 @@
-Accounting is handled by the UTXO state machine. The preconditions for
-\AgdaInductiveConstructor{UTXO-inductive} ensure various properties or
-prevent attacks. For example, if \txins was allowed to be empty, one
-could make a transaction that only spends from reward accounts. This
-does not require a specific hash to be present in the transaction
-body, so such a transaction could be repeatable in certain
-scenarios. The equation between \produced and \consumed ensures that
-the transaction is properly balanced. For details on some of these
-functions, see Appendix~\ref{appendix:utxo}.
-
 \begin{code}[hide]
 {-# OPTIONS --safe #-}
 
@@ -178,6 +168,7 @@ instance
 Deposits = DepositPurpose ⇀ Coin
 \end{code}
 }
+\newcommand\utxo{%
 \begin{minipage}{.4\textwidth}
 \begin{AgdaMultiCode}
 \begin{code}
@@ -301,7 +292,7 @@ private variable
 \begin{code}[hide]
 data  _⊢_⇀⦇_,UTXO⦈_ : UTxOEnv → UTxOState → Tx → UTxOState → Type where
 \end{code}
-\begin{code}
+\begin{code}[inline]
   UTXO-inductive :
 \end{code}
 \begin{code}[hide]
@@ -309,12 +300,12 @@ data  _⊢_⇀⦇_,UTXO⦈_ : UTxOEnv → UTxOState → Tx → UTxOState → Typ
         open UTxOEnv Γ renaming (pparams to pp)
         open UTxOState s
     in
-      ∙ inInterval slot txvldt
+      ∙  inInterval slot txvldt
 \end{code}
 \begin{code}
-      ∙ txins ≢ ∅                               ∙ txins ⊆ dom utxo
-      ∙ minfee pp tx ≤ txfee                    ∙ txsize ≤ maxTxSize pp
-      ∙ consumed pp s txb ≡ produced pp s txb   ∙ coin mint ≡ 0
+      ∙  txins ≢ ∅                               ∙ txins ⊆ dom utxo
+      ∙  minfee pp tx ≤ txfee                    ∙ txsize ≤ maxTxSize pp
+      ∙  consumed pp s txb ≡ produced pp s txb   ∙ coin mint ≡ 0
 \end{code}
 \begin{code}[hide]
       ∙  ∀[ (_ , txout) ∈ txouts .proj₁ ]  inject (utxoEntrySize txout * minUTxOValue pp) ≤ᵗ getValue txout
@@ -324,14 +315,14 @@ data  _⊢_⇀⦇_,UTXO⦈_ : UTxOEnv → UTxOState → Tx → UTxOState → Typ
       ∙  ∀[ a ∈ dom  txwdrls ]             a .RwdAddr.net ≡ networkId
 \end{code}
 \begin{code}
-         ────────────────────────────────
+         ───────────────────────────────────────
 \end{code}
-\begin{minipage}{.15\textwidth}
+\begin{minipage}{.17\textwidth}
 \begin{code}
          Γ ⊢  s ⇀⦇ tx ,UTXO⦈
 \end{code}
 \end{minipage}
-\begin{minipage}{.7\textwidth}
+\begin{minipage}{.6\textwidth}
 \begin{code}
               ⟦ (utxo ∣ txins ᶜ) ∪ˡ outs txb
               , updateDeposits pp txb deposits
@@ -362,3 +353,4 @@ instance
       ... | yes _ = refl
       ... | no ¬p = ⊥-elim $ ¬p p
 \end{code}
+}

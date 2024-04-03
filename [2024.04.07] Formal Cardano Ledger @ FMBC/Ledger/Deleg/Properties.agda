@@ -1,5 +1,5 @@
 open import Ledger.Prelude
-open import Ledger.GovStructure
+open import Ledger.Types.GovStructure
 
 open import Data.Maybe.Properties
 open import Relation.Nullary.Decidable

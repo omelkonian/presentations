@@ -1,7 +1,7 @@
 open import Data.Nat.Properties using (+-0-commutativeMonoid; +-0-monoid)
 
 open import Ledger.Prelude
-open import Ledger.GovStructure
+open import Ledger.Types.GovStructure
 
 module Ledger.GovernanceActions.Properties (gs : _) (open GovStructure gs) where
 

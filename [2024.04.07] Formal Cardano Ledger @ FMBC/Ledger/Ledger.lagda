@@ -23,10 +23,7 @@ open import Ledger.Utxow txs abs
 open Tx
 \end{code}
 
-Transaction processing is broken down into three separate parts:
-accounting \& witnessing, application of certificates and processing of
-governance votes \& proposals.
-
+\newcommand\ledger{%
 \begin{minipage}{.4\textwidth}
 \begin{AgdaMultiCode}
 \begin{code}
@@ -97,7 +94,7 @@ data  _⊢_⇀⦇_,LEDGER⦈_ : LEnv → LState → Tx → LState → Type where
       ∙  mkUTxOEnv Γ ⊢ utxoSt ⇀⦇ tx ,UTXOW⦈ utxoSt'
       ∙  ⟦ epoch slot ⊗ pparams ⊗ txvote ⊗ txwdrls ⟧ᶜ ⊢ certState ⇀⦇ txcerts ,CERT∗⦈ certState'
       ∙  ⟦ txid ⊗ epoch slot ⊗ pparams ⊗ enactState ⟧ᵍ ⊢ govSt ⇀⦇ txgov txb ,GOV∗⦈ govSt'
-         ────────────────────────────────
+         ───────────────────────────────────────
          Γ ⊢ s ⇀⦇ tx ,LEDGER⦈ ⟦ utxoSt' ⊗ govSt' ⊗ certState' ⟧
 \end{code}
 \end{AgdaMultiCode}
@@ -105,3 +102,4 @@ data  _⊢_⇀⦇_,LEDGER⦈_ : LEnv → LState → Tx → LState → Type where
 _⊢_⇀⦇_,LEDGER∗⦈_ = ReflexiveTransitiveClosure _⊢_⇀⦇_,LEDGER⦈_
 pattern LEDGER⋯ x y z w = LEDGER (x , y , z , w)
 \end{code}
+}

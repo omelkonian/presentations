@@ -22,20 +22,7 @@ record PKKScheme : Type₁ where
   field
 \end{code}
 
-There are two types of credentials that can be used on Cardano: VKey
-and script credentials. VKey credentials use a public key signing
-scheme (Ed25519) for verification. Some serialized (\Ser) data can be
-signed, and \isSigned is the property that a public \VKey signed some
-data with a given signature. There are also other cryptographic
-primitives in the Cardano ledger, for example KES and VRF used in the
-consensus layer, but we omit those here.
-
-Script credentials correspond to a hash of a script that has to be
-executed by the ledger as part of transaction validation. There are
-two different types of scripts, native and Plutus, but the details of
-this are not relevant for the rest of this paper.
-
-\begin{minipage}{.25\textwidth}
+\newcommand\crypto{%
 \begin{code}
         VKey Sig Ser : Type
 \end{code}
@@ -43,9 +30,6 @@ this are not relevant for the rest of this paper.
         SKey : Type
         sign : SKey → Ser → Sig
 \end{code}
-\end{minipage}
-\hfill
-\begin{minipage}{.45\textwidth}
 \begin{code}
         isSigned   : VKey → Ser → Sig → Type
 \end{code}
@@ -53,7 +37,7 @@ this are not relevant for the rest of this paper.
         isKeyPair  : SKey → VKey → Type
   KeyPair = Σ[ sk ∈ SKey ] Σ[ vk ∈ VKey ] isKeyPair sk vk
 \end{code}
-\end{minipage}
+}
 
 \begin{code}[hide]
   field ⦃ Dec-isSigned ⦄ : isSigned ⁇³
@@ -78,15 +62,3 @@ record Crypto : Type₁ where
 
 -- TODO: KES and VRF
 \end{code}
-
-In the specification, all definitions that require these primitives
-must accept these as additional arguments. To streamline this process,
-these definitions are bundled into a record and, using Agda's module
-system, are quantified only once per file. We are using this pattern
-many times, either to introduce additional abstraction barriers or to
-effectively provide foreign functions within a safe
-environment. Additionally, particularly fundamental interfaces like
-the one presented above are sometimes re-bundled transitively into
-larger records, which further streamlines the interface. This is in
-stark contrast to the Haskell implementation, which often needs to
-repeat tens of type class constraints on many functions in a module.

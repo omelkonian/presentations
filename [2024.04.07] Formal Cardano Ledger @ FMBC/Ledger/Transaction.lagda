@@ -11,8 +11,8 @@ import Data.Maybe.Base as M
 open import Ledger.Prelude
 
 open import Ledger.Crypto
-open import Ledger.Epoch
-open import Ledger.GovStructure
+open import Ledger.Types.Epoch
+open import Ledger.Types.GovStructure
 import Ledger.PParams
 import Ledger.Script
 import Ledger.GovernanceActions
@@ -33,25 +33,11 @@ record TransactionStructure : Type₁ where
   field
 \end{code}
 
-A transaction is made up of a transaction body and a collection of
-witnesses. Some key ingredients in the transaction body are:
-
-\begin{itemize}
-  \item A set of transaction inputs, each of which identifies an output from a previous transaction.
-    A transaction input consists of a transaction id and an index to uniquely identify the output.
-  \item An indexed collection of transaction outputs.
-    The \TxOut type is an address paired with a coin value.
-  \item A transaction fee. This value will be added to the fee pot.
-  \item The size and the hash of the serialized form of the transaction that was included in the block.
-    Cardano's serialization is not canonical, so any information that is necessary but lost
-    during deserialisation must be preserved by attaching it to the data like this.
-\end{itemize}
-
-\begin{minipage}{.4\textwidth}
+\newcommand\txType{%
+\begin{AgdaMultiCode}
 \begin{code}
         Ix TxId : Type
 \end{code}
-\end{minipage}
 \begin{code}[hide]
         AuxiliaryData : Type
         ⦃ DecEq-Ix   ⦄ : DecEq Ix
@@ -97,10 +83,10 @@ witnesses. Some key ingredients in the transaction body are:
   open Ledger.GovernanceActions govStructure hiding (Vote; yes; no; abstain) public
   open Ledger.Deleg             govStructure public
 \end{code}
-\hfill
-\begin{minipage}{.4\textwidth}
 \begin{code}
   TxIn     = TxId × Ix
+\end{code}
+\begin{code}
   TxOut    = Addr × Value × Maybe DataHash
   UTxO     = TxIn ⇀ TxOut
 \end{code}
@@ -108,12 +94,13 @@ witnesses. Some key ingredients in the transaction body are:
   Wdrl     = RwdAddr ⇀ Coin
   RdmrPtr  = Tag × Ix
 \end{code}
-\end{minipage}
+\end{AgdaMultiCode}
 \begin{code}[hide]
   ProposedPPUpdates  = KeyHash ⇀ PParamsUpdate
   Update             = ProposedPPUpdates × Epoch
 \end{code}
 \hrule
+\begin{minipage}{.4\textwidth}
 \begin{AgdaMultiCode}
 \begin{code}
   record TxBody : Type where
@@ -121,19 +108,14 @@ witnesses. Some key ingredients in the transaction body are:
 \begin{code}[hide]
     field
 \end{code}
-\begin{minipage}{.45\textwidth}
 \begin{code}
       txins       : ℙ TxIn
       txouts      : Ix ⇀ TxOut
       txfee       : Coin
-\end{code}
-\end{minipage}
-\begin{minipage}{.35\textwidth}
-\begin{code}
-      txvote         : List GovVote
-      txprop         : List GovProposal
-      txsize         : ℕ
-      txid           : TxId
+      txvote      : List GovVote
+      txprop      : List GovProposal
+      txsize      : ℕ
+      txid        : TxId
 \end{code}
 \begin{code}[hide]
       mint        : Value
@@ -148,16 +130,14 @@ witnesses. Some key ingredients in the transaction body are:
       txcerts  : List DCert
       txwdrls  : Wdrl
 \end{code}
-\end{minipage}
 \end{AgdaMultiCode}
-\hrule
-
+\end{minipage}
 \begin{minipage}{.4\textwidth}
 \begin{AgdaMultiCode}
 \begin{code}
   record TxWitnesses : Type where
 \end{code}
-\begin{code}[hide]
+\begin{code}[hide,inline]
     field
 \end{code}
 \begin{code}
@@ -168,19 +148,16 @@ witnesses. Some key ingredients in the transaction body are:
       txdats   : DataHash ⇀ Datum
       txrdmrs  : RdmrPtr  ⇀ Redeemer × ExUnits
 \end{code}
-\end{AgdaMultiCode}
-\end{minipage}
-\hfill
-\begin{minipage}{.4\textwidth}
-\begin{AgdaMultiCode}
 \begin{code}[hide]
     scriptsP1 : ℙ P1Script
     scriptsP1 = mapPartial isInj₁ scripts
 \end{code}
 \begin{code}
+
+
   record Tx : Type where
 \end{code}
-\begin{code}[hide]
+\begin{code}[hide,inline]
     field
 \end{code}
 \begin{code}
@@ -224,3 +201,4 @@ witnesses. Some key ingredients in the transaction body are:
     HasCoin-TxOut : HasCoin TxOut
     HasCoin-TxOut .getCoin = coin ∘ proj₁ ∘ proj₂
 \end{code}
+}

@@ -37,14 +37,14 @@ module _
   data _⊢_⇀⦉_⦊*_ : Env → State → List Signal → State → Type where
 \end{code}
 \AgdaNoSpaceAroundCode{}
-\begin{minipage}{.4\textwidth}
+\begin{minipage}{.35\textwidth}
 \begin{code}
     base :
-         ───────────────────────────
+         ────────────
          Γ ⊢ s ⇀⦉ []  ⦊* s
 \end{code}
 \end{minipage}
-\begin{minipage}{.5\textwidth}
+\begin{minipage}{.6\textwidth}
 \begin{code}
     step :
       ∙  Γ ⊢ s   ⇀⦉ b       ⦊   s'
@@ -56,23 +56,20 @@ module _
 \end{AgdaAlign}
 }
 
-\newcommand\setTheory{%
 \begin{code}[hide]
 module _ (ℙ_ : Type → Type) (_∈_ : ∀ {A} → A → ℙ A → Type) where
 \end{code}
-\begin{minipage}{.4\textwidth}
+\newcommand\setTheory{%
 \begin{code}
   _⊆_ _≡ᵉ_ : {A : Type} → ℙ A → ℙ A → Type
   X ⊆   Y = ∀ {x} → x ∈ X → x ∈ Y
   X ≡ᵉ  Y = X ⊆ Y × Y ⊆ X
 \end{code}
-\end{minipage}
-\hfill
-\begin{minipage}{.5\textwidth}
+}
+\newcommand\setTheoryMaps{%
 \begin{code}
   _⇀_ : Type → Type → Type
   A ⇀ B = ∃ λ (ℛ : ℙ (A × B)) →
     ∀ {a b b'} → (a , b) ∈ ℛ → (a , b') ∈ ℛ → b ≡ b'
 \end{code}
-\end{minipage}
 }

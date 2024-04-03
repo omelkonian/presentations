@@ -9,7 +9,7 @@ open import Tactic.Derive.DecEq
 open import Tactic.MkRecord
 
 open import Ledger.Prelude hiding (yes; no)
-open import Ledger.GovStructure
+open import Ledger.Types.GovStructure
 
 module Ledger.GovernanceActions (gs : _) (open GovStructure gs) where
 
@@ -20,15 +20,6 @@ defer = 1ℚ Data.Rational.+ 1ℚ
 maximum : ℙ ℚ → ℚ
 maximum x = foldl Data.Rational._⊔_ 0ℚ (proj₁ $ finiteness x)
 \end{code}
-
-The governance framework has three bodies of governance, the
-constitutional committee, delegated representatives and stake pool
-operators, corresponding to the roles \CC, \DRep and \SPO. Proposals
-relevant to the governance system come in the form of Governance
-Actions. They are identified by their \GovActionID, which consists of
-the \TxId belonging to the transaction that proposed it and the index
-within that transaction (a transaction can propose multiple governance
-actions at once).
 
 \begin{minipage}{.3\textwidth}
 \begin{code}
@@ -115,17 +106,6 @@ canVote : PParams → GovAction → GovRole → Type
 canVote pp a r = Is-just (threshold pp nothing a r)
 \end{code}
 }
-
-\subsection{Votes and proposals}
-\label{sec:votes-and-proposals}
-
-Before a \Vote can be cast it must be packaged together with further
-information, such as who is voting and for which governance action. This
-information is combined in the \GovVote record.
-
-To propose a governance action, a \GovProposal needs to be
-submitted. Beside the proposed action, it requires a deposit, which
-will be returned to \returnAddr.
 
 \newcommand\govNeedsHash{%
 

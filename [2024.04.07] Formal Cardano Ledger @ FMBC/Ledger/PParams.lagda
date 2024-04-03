@@ -1,14 +1,3 @@
-We start with adjustable protocol parameters. In contrast to constants
-such as the length of an \Epoch, these parameters can be changed while
-the system is running via the governance mechanism. They can affect
-various features of the system, such as minimum fees, maximum and
-minimum sizes of certain components, and more.
-
-The full specification contains well over 20 parameters, while we only
-list a few. The maximum sizes should be self-explanatory, while
-\minFeeA and \minFeeB are the coefficients of a polynomial used in the
-\minFee function.
-
 \begin{code}[hide]
 {-# OPTIONS --safe #-}
 
@@ -21,7 +10,7 @@ open import Relation.Nullary.Decidable
 open import Tactic.Derive.DecEq
 
 open import Ledger.Prelude
-open import Ledger.Epoch
+open import Ledger.Types.Epoch
 open import Ledger.Crypto
 open import Ledger.Script
 
@@ -40,6 +29,7 @@ record Acnt : Type where
 data PParamGroup : Type where
   NetworkGroup EconomicGroup TechnicalGroup GovernanceGroup : PParamGroup
 \end{code}
+\newcommand\parameters{%
 \begin{AgdaMultiCode}
 \begin{code}[hide]
 ProtVer = ℕ × ℕ
@@ -86,6 +76,7 @@ record PParams : Type where
         maxHeaderSize maxValSize maxCollateralInputs : ℕ
 \end{code}
 \end{AgdaMultiCode}
+}
 
 \begin{code}[hide]
 paramsWellFormed : PParams → Type

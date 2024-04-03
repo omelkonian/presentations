@@ -64,6 +64,14 @@ Scale=0.80
 \newcommand\AC[1]{\AgdaInductiveConstructor{#1}}
 \newcommand\AF[1]{\AgdaFunction{#1}}
 \newcommand\AB[1]{\AgdaBound{#1}}
+\renewcommand\AgdaMacro[1]{\AC{#1}}
+\usepackage{agda-latex-macros}
+
+% Haskell
+\usepackage{minted}
+\newcommand\hs[1]{\mintinline{haskell}{#1}}
+%% \setminted[haskell]{fontsize=\footnotesize}
+%% \usemintedstyle{friendly}
 
 % Math fonts
 \usepackage{unicode-math}
@@ -132,12 +140,12 @@ Scale=0.80
 \usepackage{longtable}
 
 \title{%
-Formal specification of the Cardano ledger,
+Formal specification of the Cardano ledger,\\
 mechanized in Agda}
 
-\author{Andre Knispel, \alert{Orestis Melkonian}, James Chapman,
-Alasdair Hill, Joosep Jääger, William DeMeo, Ulf Norell}
-\date{21 March 2024, FM meeting $@$ IOG}
+\author{\footnotesize Andre Knispel, \alert{Orestis Melkonian}, James Chapman,
+Alasdair Hill, Joosep Jääger, William DeMeo, Ulf Norell\\}
+\date{7 April 2024, FMBC, Luxembourg}
 
 \begin{document}
 
@@ -154,43 +162,73 @@ Alasdair Hill, Joosep Jääger, William DeMeo, Ulf Norell}
 \end{center}
 
 \include{latex/Ledger/Introduction}
+\include{latex/Ledger/Crypto}
+\include{latex/Ledger/Address}
+\include{latex/Ledger/PParams}
+\include{latex/Ledger/Chain}
+\include{latex/Ledger/Ledger}
+\include{latex/Ledger/Transaction}
+\include{latex/Ledger/Utxo}
+\include{latex/Ledger/Utxo/Properties}
+\include{latex/Ledger/Utxow}
+\include{latex/Ledger/Utxow/Properties}
+\include{latex/Haskell}
 
-\begin{frame}{Intro}
-\myblockquote{\textit{
-Some quotes are worth more than others.
-}}{\\---someone}
-\end{frame}
-
+\section{Introduction}
 \begin{frame}{Motivation}
+Much (formally-verified) meta-theoretical work on EUTxO
+  \begin{itemize}
+  \item ...but all on simplified and idealized settings
+  \item ...none cover the full feature set of a realistic blockchain like Cardano
+  \end{itemize}
+\pause
+Previous iterations of Cardano's ledger specification written informally on paper
+  \begin{itemize}
+  \item Lack the rigor of a mechanized formal artifact
+  \item Are not executable and thus require a separate prototype to be implemented
+  \end{itemize}
+\end{frame}
+\begin{frame}{Methodology}
+Separation of Concerns
 \begin{itemize}
-\item Explore another \alert{point in the design space}
-\item Provide a \alert{constructive} perspective on nominal techniques
-\item Do this \alert{without changing the system itself} --- as an Agda library
-\item Make it \alert{ergonomic} for the user to use the library as a tool for dealing with names
-(e.g. working on some syntax with binding)
-\item Mechanise existing (but also new?) \alert{meta-theoretical results}
+\item Networking: deals with sending messages across the internet
+\item Consensus: establishes a common order of valid blocks
+\item \alert{Ledger}: decides whether a sequence of blocks is valid
 \end{itemize}
+
+\pause
+Stay as close to the previous (LaTeX) specification as possible
+\begin{itemize}
+\item Use of \alert{set theory}
+\item System evolution formulated as \alert{state machines}
+\end{itemize}
+
+\pause
+Use the Agda proof assistant to produce a
+\alert{readable} mechanized specification.
 \end{frame}
 
 \section{Agda Preliminaries}
 
-\begin{frame}{Separation of concerns}
-\begin{itemize}
-\item \textbf{Networking}: deals with sending messages across the internet.
-\item \textbf{Consensus}: establishes a common order of valid blocks.
-\item \textbf{Ledger}: decides whether a sequence of blocks is valid.
-\end{itemize}
+\begin{frame}{Axiomatic Set theory}
+Easy to define \alert{common operations}:
+\setTheory
+\pause
+\vfill
+Finite \alert{maps} as set of tuples:
+\setTheoryMaps
 \end{frame}
 
-\begin{frame}{State transitions}
+\begin{frame}{Type of transitions}
 \begin{center}
 \[ Γ ⊢ s \xrightarrow[X]{b} s' \]
 \end{center}
+\pause
 \vfill
-\transitionType{}
+\transitionType
 \end{frame}
 
-\begin{frame}{Triptychs}
+\begin{frame}{Depicting transitions: Triptychs}
 \begin{minipage}{.4\textwidth}
 \emph{Environments}
 
@@ -206,104 +244,195 @@ Some quotes are worth more than others.
 \emph{Possible transitions}
 \end{frame}
 
-\begin{frame}{Reflexive-transitive closure}
-\rtClosure{}
+
+\begin{frame}{Sequencing transitions: Reflexive-transitive closure}
+\rtClosure
 \end{frame}
 
-\begin{frame}{Set theory}
-\setTheory{}
-\end{frame}
+\section{Formalization}
 
-\begin{frame}{Formalization: basic entities}
+\begin{frame}{Basic entities / assumptions}
 \begin{itemize}
-\item crypto
-\item addresses
-\item tunable parameters
+\item Crypto:
+\crypto
+\pause
+\vspace{-.2cm}
+\item Addresses:
+\addresses
+\pause
+\vspace{-.2cm}
+\item Tunable parameters:
+\parameters
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Formalization: the hierarchy of transitions}
-\begin{itemize}
-\item CHAIN
-  %% \begin{itemize}
-  %% \item NEWEPOCH
-  %%   \begin{itemize}
-  %%   \item RATIFY
-  %%     \begin{itemize}
-  %%     \item ENACT
-  %%     \end{itemize}
-  %%   \end{itemize}
-  %% \item LEDGER*
-  %%   \begin{itemize}
-  %%   \item UTXOW
-  %%     \begin{itemize}
-  %%     \item UTXO
-  %%     \end{itemize}
-  %%   \item CERT*
-  %%   \item GOV*
-  %%   \end{itemize}
-  %% \end{itemize}
-\item
-\end{itemize}
+\tikzset{
+  every matrix/.style =
+  { ampersand replacement = \&,
+    matrix of nodes,
+    nodes in empty cells },
+  every node/.style =
+  { minimum height = .5cm
+  },
+  box/.style =
+  { draw, rectangle,
+    rounded corners = 1mm,
+    minimum width   = 2cm },
+  to/.style = {->, thick}
+}
+
+\begin{frame}[fragile]{The hierarchy of transitions}
+\begin{center}
+\begin{tikzpicture}
+  \matrix (mat) [row sep = 1.2cm, every node/.style = {align=center}, font=\Large] {
+    \&
+    \node (chain) {CHAIN}; \\
+    \node (newepoch) {NEWEPOCH}; \& \&
+    \node (ledger) {LEDGER*}; \\
+    \node (ratify) {RATIFY*}; \&
+    \node (cert) {CERT*}; \&
+    \node (gov) {GOV*}; \&
+    \node (utxow) {UTXOW}; \\
+    \node (enact) {ENACT}; \& \& \&
+    \node (utxo) {UTXO}; \\
+  };
+  \path
+  (chain) edge[to] (ledger)
+  (ledger) edge[to] (utxow)
+  (ledger) edge[to] (cert)
+  (ledger) edge[to] (gov)
+  (utxow) edge[to] (utxo)
+
+  (chain) edge[to] (newepoch)
+  (newepoch) edge[to] (ratify)
+  (ratify) edge[to] (enact)
+  ;
+\end{tikzpicture}
+\end{center}
 \end{frame}
 
-\begin{frame}{Formalization: CHAIN block-by-block transition}
-\begin{itemize}
-\item
-\item
-\item
-\end{itemize}
+\begin{frame}[fragile]{The hierarchy of transitions}
+\begin{center}
+\begin{tikzpicture}
+  \matrix (mat) [row sep = 1.2cm, every node/.style = {align=center}, font=\Large] {
+    \&
+    \node[box] (chain) {CHAIN}; \\
+    \node (newepoch) {NEWEPOCH}; \& \&
+    \node[box] (ledger) {LEDGER*}; \\
+    \node (ratify) {RATIFY*}; \&
+    \node (cert) {CERT*}; \&
+    \node (gov) {GOV*}; \&
+    \node[box] (utxow) {UTXOW}; \\
+    \node (enact) {ENACT}; \& \& \&
+    \node[box] (utxo) {UTXO}; \\
+  };
+  \path
+  (chain) edge[to] (ledger)
+  (ledger) edge[to] (utxow)
+  (ledger) edge[to] (cert)
+  (ledger) edge[to] (gov)
+  (utxow) edge[to] (utxo)
+
+  (chain) edge[to] (newepoch)
+  (newepoch) edge[to] (ratify)
+  (ratify) edge[to] (enact)
+  ;
+\end{tikzpicture}
+\end{center}
 \end{frame}
 
-\begin{frame}{Formalization: LEDGER transaction-by-transaction transition}
-\begin{itemize}
-\item
-\item
-\item
-\end{itemize}
+\begin{frame}{CHAIN: processing blocks}
+\chain
 \end{frame}
 
-\begin{frame}{Formalization: UTXO rule (the ``core'')}
-\begin{itemize}
-\item
-\item
-\item
-\end{itemize}
+\begin{frame}{LEDGER: processing transactions}
+\scalebox{.9}{\vbox{%
+\ledger
+}}
 \end{frame}
 
-\begin{frame}{Formalization: the transaction type}
-\begin{itemize}
-\item
-\item
-\item
-\end{itemize}
+\begin{frame}{LEDGER: The transaction type}
+\txType
 \end{frame}
 
-\begin{frame}{Compiling to Haskell}
-\begin{itemize}
-\item computational proofs
-\item manually implementing coercions
-\item UTXOW example
-\end{itemize}
+\begin{frame}{UTXOW: witnesses \& scripts}
+\utxow
 \end{frame}
 
+\begin{frame}{UTXO: the ``core'' transition}
+\utxo
+\end{frame}
+
+\begin{frame}{UTXO: the property of Value Preservation}
+\begin{property}[\textbf{Value preservation}]
+\pov
+\end{property}
+\end{frame}
+
+\section{Compiling to executable Haskell}
+
+\begin{frame}{Proving transitions are \alert{computational}}
+\computational
+\end{frame}
+
+\begin{frame}{Example: \alert{compiling} the UTXOW transition (\alert{Agda} source)}
+\scalebox{.8}{\vbox{%
+\utxowComp
+\vspace{.2cm}\hrule\vspace{.2cm}
+\utxowStep
+}}
+\end{frame}
+
+\begin{frame}[fragile]{Example: \alert{running} the UTXOW transition (\alert{Haskell} target)}
+\begin{minted}[fontsize=\footnotesize]{haskell}
+import Lib (utxowStep)
+
+utxowSteps :: UTxOEnv -> UTxOState -> [Tx] -> Maybe UTxOState
+utxowSteps = foldM . utxowStep
+\end{minted}
+\end{frame}
+\begin{frame}[fragile]{Example: \alert{running} the UTXOW transition (\alert{Haskell} target)}
+\begin{minted}[fontsize=\scriptsize]{haskell}
+spec :: Spec
+spec = describe "utxowSteps" $ it "results in the expected state" $
+  utxowSteps initEnv initState [testTx1, testTx2] @?= Just (MkUTxOState
+    { utxo = [ (1,0) .-> (a0, (890, Nothing))
+             , (2,0) .-> (a2, (10,  Nothing))
+             , (2,1) .-> (a1, (80,  Nothing)) ]
+    , fees = 20 })
+  where
+  testTx1, testTx2 :: Tx
+
+  initEnv :: UTxOEnv
+  initEnv = MkUTxOEnv {slot = 0, pparams = ...}
+
+  initUTxO :: UTxO
+  initUTxO = [ (0, 0) .-> (a0, (1000, Nothing)) ]
+
+  initState :: UTxOState
+  initState = MkUTxOState {utxo = initUTxO, fees = 0}
+\end{minted}
+\end{frame}
+
+\section{Conclusion}
 \begin{frame}{Future Work}
-\begin{itemize}
-\item Prove more interesting meta-theoretical properties
-\item Finalize conformance testing integration
+Compilation issues:
   \begin{itemize}
-  \item Develop missing infrastructure
-  \item \alert{Randomly test} difficult-to-prove properties
-    by translating their Agda statements to Quickcheck properties
+  \item Automate away \alert{boilerplate}
+  \item Finalize \alert{conformance-testing} integration
+  \item Randomly test (proven) Agda statements by translating
+    to \alert{Quickcheck} properties
+  \item Optimizations in implementation $\to$ \alert{refinements} in formalization
   \end{itemize}
-\item Optimizations $\to$ refinements
-\item Smoother with less boilerplate
-  \begin{itemize}
-  \item Transition from builtin GHC backend to \alert{agda2hs}
-  \end{itemize}
-\end{itemize}
-\end{frame}
 
+\pause
+Expand the scope of the formalization
+  \begin{itemize}
+  \item Prove more interesting meta-theoretical \alert{properties}
+  \item Cover previous \alert{eras}: ``keeping up with the past''
+  \item Towards verifying \alert{smart contracts}
+  \end{itemize}
+\end{frame}
 \begin{frame}[standout]
 Questions?
 \vfill

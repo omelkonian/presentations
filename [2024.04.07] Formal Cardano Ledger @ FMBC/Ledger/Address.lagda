@@ -12,18 +12,7 @@ module Ledger.Address
   where
 \end{code}
 
-There are various types of addresses used for storing funds in the
-UTxO set, which all contain a payment \Credential and optionally a
-staking \Credential. \Addr is the union of all of those types. A
-\Credential is a hash of a public key or script, types for which are
-kept abstract. The most common type of address is a \BaseAddr which
-must include a staking \Credential.
-
-There is also a special type of address without a payment credential,
-called a reward address. It is not used for interacting with the UTxO
-set, but instead it is used to refer to reward accounts
-\cite{chimeric}. It is not included in \Addr.
-
+\newcommand\addresses{%
 \begin{AgdaMultiCode}
 \begin{code}
 Credential = KeyHash ⊎ ScriptHash
@@ -138,3 +127,4 @@ instance abstract
     ∷ (quote RwdAddr       , DecEq-RwdAddr)
     ∷ [] )
 \end{code}
+}

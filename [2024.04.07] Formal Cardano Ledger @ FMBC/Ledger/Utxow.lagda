@@ -42,12 +42,7 @@ private variable
   tx : Tx
 \end{code}
 
-Transaction witnessing checks that all required signatures are present
-and all required scripts accept the validity of the given
-transaction. \AgdaBound{witsKeyHashes} and
-\AgdaBound{witsScriptHashes} is the set of hashes of keys/scripts
-included in the transaction.
-
+\newcommand\utxow{%
 \begin{AgdaMultiCode}
 \begin{code}[hide]
 data  _⊢_⇀⦇_,UTXOW⦈_ : UTxOEnv → UTxOState → Tx → UTxOState → Type where
@@ -83,3 +78,4 @@ pattern UTXOW-inductive⋯ p₁ p₂ p₃ p₄ p₅ h
 unquoteDecl UTXOW-inductive-premises =
   genPremises UTXOW-inductive-premises (quote UTXOW-inductive)
 \end{code}
+}
