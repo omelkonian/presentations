@@ -37,6 +37,9 @@
 \newcommand\myblockquote[2]{%
   \blockquote{\hspace*{2em}\emph{`#1'}#2}\par}
 
+% URLs as QR codes
+\usepackage{qrcode}
+
 % Agda
 \usepackage{agda}
 %% \renewcommand\\[1][XXX]{\newline} % fix `\\[\AgdaEmptyExtraSkip]%` occurrences
@@ -434,10 +437,14 @@ Expand the scope of the formalization
   \end{itemize}
 \end{frame}
 \begin{frame}[standout]
-Questions?
+
+{\Huge Questions?}
+
 \vfill
 \begin{center}
 \alert{\url{https://intersectmbo.github.io/formal-ledger-specifications/}}
+
+\qrcode[height=1.5in]{https://intersectmbo.github.io/formal-ledger-specifications/}
 \end{center}
 \end{frame}
 
