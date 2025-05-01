@@ -1,0 +1,5 @@
+include: .
+depend:
+  standard-library
+  formal-prelude
+  hoare-ledgers
