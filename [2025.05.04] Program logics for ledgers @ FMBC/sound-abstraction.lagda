@@ -208,12 +208,9 @@ absVL : ℂ.ValidLedger s l → ∃ λ l̂ → 𝔸.ValidLedger (absS s) l̂
 \end{code}
 \end{frame}
 \begin{frame}{Sound Abstraction: Denotations Coincide}
-\begin{code}
+\begin{code}[hide]
 denot-abs-t : ∀ (vt : ℂ.IsValidTx t s) →
   𝔸.⟦ absT vt ⟧ (absS s) ≡ (absS <$> ℂ.⟦ t ⟧ s)
-\end{code}
-
-\begin{code}[hide]
 denot-abs-t {t}{s} vt =
   begin
     𝔸.⟦ absT vt ⟧ (absS s)
@@ -262,6 +259,21 @@ denot-l̂ : ∀ {l : 𝔸.L} {s : 𝔸.S} (vl : 𝔸.ValidLedger s l) →
 denot-l̂ [] = refl
 denot-l̂ (_ ⊣ vt ∷ vl) rewrite denot-t̂ vt | denot-l̂ vl = refl
 \end{code}
+\begin{center}
+\begin{tikzpicture}
+  \matrix (m) [row sep = 2cm, column sep = 3cm]
+    { $\AB{s}$ \& $\AB{s′}$ \\
+      $\AB{ŝ}$ \& $\AB{ŝ′}$ \\
+    };
+  \path
+    (m-1-1) edge [->] node [left] {$\AF{absS}$} (m-2-1)
+    (m-1-2) edge [->] node [right] {$\AF{absS}$} (m-2-2)
+    (m-1-1) edge [->] node [above] {$\AR{\mathbb{C}.\llbracket\_\rrbracket}$} (m-1-2)
+    (m-2-1) edge [->] node [below] {$\AR{\mathbb{A}.\llbracket\_\rrbracket}\ \AF{\circ}\ \AF{absL}$} (m-2-2)
+    ;
+\end{tikzpicture}
+\end{center}
+\vfill
 \begin{code}
 denot-abs : ∀ (vl : ℂ.ValidLedger s l) →
   𝔸.⟦ absL vl ⟧ (absS s) ≡ (absS <$> ℂ.⟦ l ⟧ s)
@@ -298,20 +310,6 @@ denot-sound′ : ∀ (vl : ℂ.ValidLedger s l) →
     ↑ Q (absS <$> ℂ.⟦ l ⟧ s)
 denot-sound′ vl Ps = subst (↑ _) (denot-abs vl)
 \end{code}
-\begin{center}
-\begin{tikzpicture}
-  \matrix (m) [row sep = 2cm, column sep = 3cm]
-    { $\AB{s}$ \& $\AB{s′}$ \\
-      $\AB{ŝ}$ \& $\AB{ŝ′}$ \\
-    };
-  \path
-    (m-1-1) edge [->] node [left] {$\AF{absS}$} (m-2-1)
-    (m-1-2) edge [->] node [right] {$\AF{absS}$} (m-2-2)
-    (m-1-1) edge [->] node [above] {$\AR{\mathbb{C}.\llbracket\_\rrbracket}$} (m-1-2)
-    (m-2-1) edge [->] node [below] {$\AR{\mathbb{A}.\llbracket\_\rrbracket}\ \AF{\circ}\ \AF{abs}$} (m-2-2)
-    ;
-\end{tikzpicture}
-\end{center}
 \end{frame}
 \begin{frame}{Sound Abstraction}
 \begin{code}[hide]

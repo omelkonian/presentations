@@ -1308,7 +1308,7 @@
 \end{code}
 \end{frame}
 \begin{frame}{Sound Abstraction: Denotations Coincide}
-\begin{code}%
+\begin{code}[hide]%
 \>[0]\AgdaFunction{denot-abs-t}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaSymbol{∀}\AgdaSpace{}%
@@ -1333,9 +1333,7 @@
 \AgdaGeneralizable{t}\AgdaSpace{}%
 \AgdaOperator{\AgdaField{⟧}}\AgdaSpace{}%
 \AgdaGeneralizable{s}\AgdaSymbol{)}\<%
-\end{code}
-
-\begin{code}[hide]%
+\\
 \>[0]\AgdaFunction{denot-abs-t}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{t}\AgdaSymbol{\}\{}\AgdaBound{s}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaBound{vt}\AgdaSpace{}%
@@ -1727,6 +1725,21 @@
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaInductiveConstructor{refl}\<%
 \end{code}
+\begin{center}
+\begin{tikzpicture}
+  \matrix (m) [row sep = 2cm, column sep = 3cm]
+    { $\AB{s}$ \& $\AB{s′}$ \\
+      $\AB{ŝ}$ \& $\AB{ŝ′}$ \\
+    };
+  \path
+    (m-1-1) edge [->] node [left] {$\AF{absS}$} (m-2-1)
+    (m-1-2) edge [->] node [right] {$\AF{absS}$} (m-2-2)
+    (m-1-1) edge [->] node [above] {$\AR{\mathbb{C}.\llbracket\_\rrbracket}$} (m-1-2)
+    (m-2-1) edge [->] node [below] {$\AR{\mathbb{A}.\llbracket\_\rrbracket}\ \AF{\circ}\ \AF{absL}$} (m-2-2)
+    ;
+\end{tikzpicture}
+\end{center}
+\vfill
 \begin{code}%
 \>[0]\AgdaFunction{denot-abs}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -2012,20 +2025,6 @@
 \AgdaSymbol{(}\AgdaFunction{denot-abs}\AgdaSpace{}%
 \AgdaBound{vl}\AgdaSymbol{)}\<%
 \end{code}
-\begin{center}
-\begin{tikzpicture}
-  \matrix (m) [row sep = 2cm, column sep = 3cm]
-    { $\AB{s}$ \& $\AB{s′}$ \\
-      $\AB{ŝ}$ \& $\AB{ŝ′}$ \\
-    };
-  \path
-    (m-1-1) edge [->] node [left] {$\AF{absS}$} (m-2-1)
-    (m-1-2) edge [->] node [right] {$\AF{absS}$} (m-2-2)
-    (m-1-1) edge [->] node [above] {$\AR{\mathbb{C}.\llbracket\_\rrbracket}$} (m-1-2)
-    (m-2-1) edge [->] node [below] {$\AR{\mathbb{A}.\llbracket\_\rrbracket}\ \AF{\circ}\ \AF{abs}$} (m-2-2)
-    ;
-\end{tikzpicture}
-\end{center}
 \end{frame}
 \begin{frame}{Sound Abstraction}
 \begin{code}[hide]%

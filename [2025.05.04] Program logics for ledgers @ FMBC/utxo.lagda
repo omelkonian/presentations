@@ -21,6 +21,7 @@ open import Prelude.Apartness
 open import Prelude.Maps as Map hiding (_⊣_)
 open import Prelude.Monad
 open import Prelude.InferenceRules
+open import Prelude.Allable hiding (All)
 
 open import Common public
 
@@ -178,6 +179,7 @@ module _ {K V : Type} ⦃ _ : DecEq K ⦄ ⦃ _ : DecEq V ⦄ where
 \begin{code}
 S = Map⟨ TxOutputRef ↦ TxOutput ⟩
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
 mkUtxo : ∀ {out} tx → out L.Mem.∈ outputs tx → TxOutputRef × TxOutput
 mkUtxo {out} tx out∈ = (tx ♯) indexed-at toℕ (L.Any.index out∈) , out
@@ -263,6 +265,7 @@ instance
   ⟦L⟧ .⟦_⟧  (t ∷ l)  =  ⟦ t ⟧ >=> ⟦ l ⟧
 
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
   ⟦L⟧₀ : Denotable₀ L
   ⟦L⟧₀ .⟦_⟧₀ []      = id
@@ -360,6 +363,7 @@ emp m = ∀ k → k ∉ᵈ m
 _∗_ : Op₂ Assertion
 (P ∗ Q) s = ∃ λ s₁ → ∃ λ s₂ → ⟨ s₁ ⊎ s₂ ⟩≡ s × P s₁ × Q s₂
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
 _↦_ : TxOutputRef → TxOutput → Assertion
 or ↦ o = _[ or ↦ o ]∅

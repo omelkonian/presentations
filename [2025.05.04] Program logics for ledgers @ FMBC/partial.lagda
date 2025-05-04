@@ -30,8 +30,8 @@ variable
 \end{code}
 \begin{code}
 S = Map⟨ Part ↦ ℕ ⟩
-
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
 record Tx : Type where
   constructor _—→⟨_⟩_
@@ -55,8 +55,8 @@ variable
 \end{code}
 \begin{code}
 Domain = S → Maybe S
-
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
 record Denotable (A : Type) : Type where
   field ⟦_⟧ : A → Domain
@@ -105,6 +105,7 @@ instance
   ⟦L⟧ .⟦_⟧ []      s = just s
   ⟦L⟧ .⟦_⟧ (t ∷ l) = ⟦ t ⟧ >=> ⟦ l ⟧
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
 comp₀ : ∀ x → ⟦ l ++ l′ ⟧₀ x ≡ (⟦ l′ ⟧₀ ∘ ⟦ l ⟧₀) x
 comp₀ {l = []}    _ = refl
@@ -124,6 +125,7 @@ infix 0 _—→_
 \end{code}
 \end{frame}
 \begin{frame}{Adding Partiality: Operational Semantics}
+\begin{minipage}{.5\textwidth}
 \begin{code}
 data _—→_ : L × S → S → Type where
 
@@ -137,6 +139,8 @@ data _—→_ : L × S → S → Type where
       ──────────────────
       t ∷ l , s —→ s′
 \end{code}
+\end{minipage}
+\hspace{1pt}\vrule\hspace{1pt}
 \begin{code}[hide]
 oper-comp :
   ∙ l       , s  —→ s′
@@ -176,13 +180,14 @@ oper⇒denot {l = A —→⟨ v ⟩ B ∷ _}{s} (step v≤ p)
   rewrite dec-yes (v ≤? s A) v≤ .proj₂
   = oper⇒denot p
 \end{code}
+\begin{minipage}{.44\textwidth}
 \begin{code}
-
 denot⇔oper :
   ⟦ l ⟧ s ≡ just s′
   ═════════════════
   l , s —→ s′
 \end{code}
+\end{minipage}
 \begin{code}[hide]
 denot⇔oper = denot⇒oper , oper⇒denot
 

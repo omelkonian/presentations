@@ -1,6 +1,6 @@
 MAIN=main
 PRE=agda.sty $(MAIN).agda-lib preamble.tex
-AGDA=agda -i. --latex --latex-dir=. --only-scope-checking
+AGDA=agda-2.6.3 -i. --latex --latex-dir=. --only-scope-checking
 LATEX=xelatex -shell-escape -halt-on-error -interaction=non-stop
 
 .PHONY: default clean
@@ -11,7 +11,6 @@ default: $(MAIN).pdf
 
 %.pdf: %.tex $(PRE)
 	$(LATEX) $<
-	bibtex $* &> /dev/null
 
 DEPS=$(patsubst %.lagda, %.tex, $(shell find . -type f -name '*.lagda'))
 

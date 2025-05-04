@@ -19,6 +19,7 @@ open import Prelude.Monad
 open import Prelude.Membership
 open import Prelude.Setoid
 open import Prelude.Lists using (_∥_≡_)
+open import Prelude.Allable hiding (All)
 
 open import Prelude.Bags hiding (_⊣_)
 instance
@@ -34,6 +35,7 @@ postulate ⋯ : ∀ {A : Set ℓ} → A
 \begin{code}
 S = Bag⟨ TxOutput ⟩
 \end{code}
+\vfill\hrule\vfill
 \begin{code}[hide]
 stxoTx utxoTx : Tx → S
 stxoTx = fromList ∘ outputRefs
@@ -197,6 +199,10 @@ denot⇔oper :
 denot⇔oper = denot⇒oper , oper⇒denot
 \end{code}
 \end{frame}
+
+{\usebackgroundtemplate{
+\includegraphics[width=\paperwidth,height=\paperheight]{monty-rejoicing}}
+\begin{frame}{}\end{frame}}
 \begin{frame}{Abstract UTxO: Monoidal Separation once again}
 \begin{code}[hide]
 Assertion = Pred₀ S
@@ -212,6 +218,7 @@ emp m = ∀ k → k ∉ˢ m
 _∗_ : Op₂ Assertion
 (P ∗ Q) s = ∃ λ s₁ → ∃ λ s₂ → ⟨ s₁ ◇ s₂ ⟩≡ s × P s₁ × Q s₂
 \end{code}
+\vspace{5pt}\hrule\vspace{5pt}
 \begin{code}[hide]
 _↦_ : Address → Value → Assertion
 (f ↦ v) m = m ≈ˢ singleton (f at v)

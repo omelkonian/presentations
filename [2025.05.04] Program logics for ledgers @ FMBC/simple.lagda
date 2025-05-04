@@ -32,23 +32,24 @@ instance
 
 postulate TODO : ∀ {A : Type ℓ} → A
 \end{code}
+\vfill\hrule\vfill
 \begin{code}
-
 S = Map⟨ Part ↦ ℤ ⟩
-
+\end{code}
+\vfill\hrule\vfill
+\begin{code}
 record Tx : Type where
   constructor _—→⟨_⟩_
   field sender    : Part
         value     : ℤ
         receiver  : Part
-
-unquoteDecl DecEq-Tx = DERIVE DecEq [ quote Tx , DecEq-Tx ]
 \end{code}
 \begin{code}[hide]
+unquoteDecl DecEq-Tx = DERIVE DecEq [ quote Tx , DecEq-Tx ]
 open Tx public
 \end{code}
+\vfill\hrule\vfill
 \begin{code}
-
 L = List Tx
 \end{code}
 \begin{code}[hide]
@@ -67,7 +68,9 @@ variable
 \begin{frame}[fragile]{Simple Model: Denotational Semantics}
 \begin{code}
 Domain = S → S
-
+\end{code}
+\vfill\hrule\vfill
+\begin{code}
 record Denotable (A : Type) : Type where
   field ⟦_⟧ : A → Domain
 \end{code}
@@ -82,7 +85,9 @@ instance
   ⟦L⟧ : Denotable L
   ⟦L⟧ .⟦_⟧ []       = id
   ⟦L⟧ .⟦_⟧ (t ∷ l)  = ⟦ l ⟧ ∘ ⟦ t ⟧
-
+\end{code}
+\vfill\hrule\vfill
+\begin{code}
 comp : ∀ x → ⟦ l ++ l′ ⟧ x ≡ (⟦ l′ ⟧ ∘ ⟦ l ⟧) x
 comp {[]}     _  = refl
 comp {t ∷ l}  x  = comp {l} (⟦ t ⟧ x)
@@ -212,14 +217,20 @@ hoare-step′ {P}{l}{Q}{l′}{R} PlQ QlR =
 \begin{code}[hide]
 infixr 10 _∗_
 \end{code}
+\begin{minipage}{.35\textwidth}
 \begin{code}
 emp : Assertion
 emp m = ∀ k → m k ≡ ε
-
+\end{code}
+\end{minipage}
+\begin{minipage}{.64\textwidth}
+\begin{code}
 _∗_ : Op₂ Assertion
 (P ∗ Q) s = ∃ λ s₁ → ∃ λ s₂ → ⟨ s₁ ◇ s₂ ⟩≡ s × P s₁ × Q s₂
-
-
+\end{code}
+\end{minipage}
+\vfill\hrule\vfill
+\begin{code}
 ∗↔ : P ∗ Q ⊢ Q ∗ P
 ∗↔ (s₁ , s₂ , ≡s , Ps₁ , Qs₂) = s₂ , s₁ , ◇≡-comm {x = s₁}{s₂} ≡s , Qs₂ , Ps₁
 
