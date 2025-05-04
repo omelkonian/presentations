@@ -24,7 +24,7 @@ Consistency s = ∀ {p p′ b ch ch′} ⦃ _ : Honest p ⦄ ⦃ _ : Honest p′
 
 \vspace{-3mm}
 \noindent
-\begin{minipage}[t]{0.3\textwidth}
+\begin{minipage}[t]{0.4\textwidth}
 \begin{code}
   ∙ (b ∷ ch) chain-∈ ms
   ∙ FinalizedChain ms ch b
