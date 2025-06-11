@@ -17,14 +17,11 @@ open import Protocol.Jolteon.Global.Step ⋯
 \newcommand{\agdartc}{%
 \begin{code}[hide]
 module ALTERNATE:Closures where
-
-  private
-    variable x y z : GlobalState
-    _←—_ = flip _—→_
+  private variable x y z : GlobalState
 \end{code}
 \begin{AgdaMultiCode}
 \begin{code}
-  data _↞—_ : GlobalState → GlobalState → Type where
+  data _—↠_ : GlobalState → GlobalState → Type where
 \end{code}
 
 \vspace{-3mm}
@@ -32,30 +29,30 @@ module ALTERNATE:Closures where
  \begin{code}
     _∎ : ∀ x →
       ──────
-      x ↞— x
+      x —↠ x
  \end{code}
  \hfill
 \end{minipage}%
 \begin{minipage}[t]{0.49\textwidth}
 \begin{code}
-    _⟨_⟩←—_ : ∀ z →
+    _—→⟨_⟩_ : ∀ x →
 \end{code}
 
 \vspace{-3mm}
 \begin{minipage}[t]{0.24\textwidth}
  \begin{code}
-      ∙ z ←— y
+      ∙ x —→ y
  \end{code}
  \hfill
 \end{minipage}%
 \begin{minipage}[t]{0.24\textwidth}
 \begin{code}
-      ∙ y ↞— x
+      ∙ y —↠ z
 \end{code}
 \end{minipage}
  \begin{code}
       ────────────────────
-      z ↞— x
+      x —↠ z
 \end{code}
 \end{minipage}
 \end{AgdaMultiCode}
@@ -66,7 +63,7 @@ module ALTERNATE:Closures where
 \end{code}
 \begin{code}
   Reachable : GlobalState → Type
-  Reachable s = s ↞— s₀
+  Reachable s = s₀ —↠ s₀
 \end{code}
 }
 

@@ -8,10 +8,10 @@ open import Protocol.Jolteon.Traces.Core
 private
   src =
       record
-      { currentTime   = 10
-      ; history       = [ v₂ 𝕃 ⨾ v₂ 𝔸 ⨾ p₂ ⨾ v₁ 𝔸 ⨾ v₁ 𝕃 ⨾ p₁ ]
-      ; networkBuffer = [ 10 , 𝕃 , v₂ 𝔸 ⨾ 10 , 𝕃 , v₂ 𝕃 ]
-      ; stateMap      =
+      { currentTime    = 10
+      ; history        = [ v₂ 𝕃 ⨾ v₂ 𝔸 ⨾ p₂ ⨾ v₁ 𝔸 ⨾ v₁ 𝕃 ⨾ p₁ ]
+      ; networkBuffer  = [ 10 , 𝕃 , v₂ 𝔸 ⨾ 10 , 𝕃 , v₂ 𝕃 ]
+      ; stateMap       =
         ⦅ 2 , 2 , qc₁ , nothing , Receiving , [ p₂ ⨾ v₁ 𝔸 ⨾ v₁ 𝕃 ⨾ p₁ ] , [] , [] , just 20 , false , false ⦆
       ∷ ⦅ 2 , 2 , qc₁ , nothing , EnteringRound , [ p₂ ⨾ p₁ ] , [] , [] , nothing , false , true ⦆
       ∷ ⦅ 0 , 1 , qc₀ , nothing , Voting , [ p₁ ] , [ p₂ ] , [] , just τ , false , false ⦆
@@ -19,10 +19,10 @@ private
       }
   target =
       record
-      { currentTime   = 13
-      ; history       = h₂
-      ; networkBuffer = []
-      ; stateMap      =
+      { currentTime    = 13
+      ; history        = h₂
+      ; networkBuffer  = []
+      ; stateMap       =
         ⦅ 2 , 3 , qc₂ , nothing , Voting , ldb₂ , [ v₁ 𝔹 ⨾ v₂ 𝔹 ] , [ b₁ ] , nothing , false , true ⦆
       ∷ ⦅ 2 , 2 , qc₁ , nothing , EnteringRound , [ p₂ ⨾ p₁ ] , [] , [] , nothing , false , true ⦆
       ∷ ⦅ 2 , 2 , qc₁ , nothing , EnteringRound , [ p₂ ⨾ p₁ ] , [] , [] , nothing , false , true ⦆
@@ -39,28 +39,22 @@ opaque
 \begin{code}
     begin
       record
-      { currentTime   = 10
-      ; history       = [ v₂ 𝕃 ⨾ v₂ 𝔸 ⨾ p₂ ⨾ v₁ 𝔸 ⨾ v₁ 𝕃 ⨾ p₁ ]
-      ; networkBuffer = [ 10 , 𝕃 , v₂ 𝔸 ⨾ 10 , 𝕃 , v₂ 𝕃 ]
-      ; stateMap      =
+      { currentTime  = 10; history = [ v₂ 𝕃 ⨾ v₂ 𝔸 ⨾ p₂ ⨾ v₁ 𝔸 ⨾ v₁ 𝕃 ⨾ p₁ ]; networkBuffer = [ 10 , 𝕃 , v₂ 𝔸 ⨾ 10 , 𝕃 , v₂ 𝕃 ]
+      ; stateMap     =
       [ {- 𝕃 -} ⦅ 2 , 2 , qc₁ , nothing , Receiving , _ , [] , [] , just 20 , false , false ⦆
       ⨾ {- 𝔸 -} ⦅ 2 , 2 , qc₁ , nothing , EnteringRound , _ , [] , [] , nothing , false , true ⦆
       ⨾ {- 𝔹 -} ⦅ 0 , 1 , qc₀ , nothing , Voting , _ , _ , [] , just τ , false , false ⦆ ] }
     —→⟨ 𝔹 :VoteBlock? b₁ ⟩
       record
-      { currentTime   = 10
-      ; history       = v₁ 𝔹 ∷ _
-      ; networkBuffer = [ 10 , 𝕃 , v₂ 𝔸 ⨾ 10 , 𝕃 , v₂ 𝕃 ⨾ 10 , 𝕃 , v₁ 𝔹 ]
-      ; stateMap      =
+      { currentTime  = 10; history = v₁ 𝔹 ∷ _; networkBuffer = _
+      ; stateMap     =
       [ ⦅ 2 , 2 , qc₁ , nothing , Receiving , _ , [] , [] , just 20 , false , false ⦆
       ⨾ ⦅ 2 , 2 , qc₁ , nothing , EnteringRound , _ , [] , [] , nothing , false , true ⦆
       ⨾ ⦅ 1 , 1 , qc₀ , nothing , Receiving , _ , _ , [] , just τ , false , false ⦆ ] }
     —→⟨ 𝔹 :RegisterProposal? ⟩
       record
-      { currentTime   = 10
-      ; history       = _
-      ; networkBuffer = _
-      ; stateMap      =
+      { currentTime  = 10; history = _ ; networkBuffer = _
+      ; stateMap     =
       [ ⦅ 2 , 2 , qc₁ , nothing , Receiving , _ , [] , [] , just 20 , false , false ⦆
       ⨾ ⦅ 2 , 2 , qc₁ , nothing , EnteringRound , _ , [] , [] , nothing , false , true ⦆
       ⨾ ⦅ 1 , 1 , qc₀ , nothing , AdvancingRound , [ p₂ ⨾ p₁ ] , [] , [] , just τ , false , false ⦆ ] }

@@ -7,6 +7,7 @@ open import Protocol.Jolteon.Assumptions
 module Protocol.Jolteon.Properties.Safety.Consistency (⋯ : _) (open Assumptions ⋯) where
 
 open import Protocol.Jolteon ⋯
+  renaming (finalChain to final)
 open import Protocol.Jolteon.Properties.Core ⋯
 open import Protocol.Jolteon.Properties.Steps ⋯
 
@@ -45,8 +46,8 @@ consistency′ {b = b}{b′}{s} Rs cb cb′ =
 -- A more immediate formulation of Theorem 4.
 consistency : ∀ {s} → (Rs : Reachable s) →
   -- For every two committed blocks B, B′...
-  ∙ (∃ λ p → ∃ λ (hp : Honest p) → b  ∈ (s ＠ʰ hp) .finalChain)
-  ∙ (∃ λ p → ∃ λ (hp : Honest p) → b′ ∈ (s ＠ʰ hp) .finalChain)
+  ∙ (∃ λ p → ∃ λ (hp : Honest p) → b  ∈ (s ＠ʰ hp) .final)
+  ∙ (∃ λ p → ∃ λ (hp : Honest p) → b′ ∈ (s ＠ʰ hp) .final)
     ──────────────────────────────────
   -- ...either B ←—∗ B′ or B′ ←—∗ B.
     (b ←—∗ b′) ⊎ (b′ ←—∗ b)
@@ -64,8 +65,8 @@ module _ ⦃ _ : Honest p ⦄ ⦃ _ : Honest p′ ⦄ where
 \end{code}
 \begin{code}
   safety : ∀ {s} → Reachable s →
-    ∙ b   ∈ (s ＠ p)   .finalChain
-    ∙ b′  ∈ (s ＠ p′)  .finalChain
+    ∙ b   ∈ (s ＠ p)   .final
+    ∙ b′  ∈ (s ＠ p′)  .final
       ────────────────────────────
       (b ←—∗ b′) ⊎ (b′ ←—∗ b)
 \end{code}
