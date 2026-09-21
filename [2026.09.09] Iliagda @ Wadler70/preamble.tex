@@ -1,0 +1,84 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{xspace} % no-argument aliases
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{cancel}
+\usepackage{adjustbox}
+
+% Colors
+\usepackage{xcolor}
+\usepackage{pifont}
+\newcommand\greenCheck{\color{green!60!black}\ding{51}\xspace}
+\newcommand\redCross{\color{red}\ding{55}\xspace}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,calc,tikzmark,shapes.arrows,shapes.misc,arrows.meta}
+
+% Images
+\usepackage{graphics}
+\graphicspath{{img/}}
+\newcommand\agdaLogo{\raisebox{-1.5pt}{%
+\includegraphics[keepaspectratio=true,height=2em,trim=0 5ex 0 0]{agda}}}
+
+% Quotes
+\usepackage{csquotes}
+\SetBlockThreshold{2}
+\newcommand\myblockquote[2]{%
+  \blockquote{\hspace*{2em}\emph{`#1'}#2}\par}
+
+% URLs as QR codes
+\usepackage{qrcode}
+
+% Agda
+\usepackage{agda}
+\setlength{\mathindent}{0em}
+\AtBeginEnvironment{code}{\fontsize{9}{12}\selectfont}
+
+\newcommand\agdaFont{JuliaMono}
+\newcommand\agdaSerifFont{JuliaMono}
+\newfontfamily{\AgdaSerifFont}{\agdaSerifFont}
+\newfontfamily{\AgdaSansSerifFont}{\agdaFont}
+\newfontfamily{\AgdaTypewriterFont}{\agdaFont}
+\renewcommand{\AgdaFontStyle}[1]{{\AgdaSansSerifFont{}#1}}
+\renewcommand{\AgdaKeywordFontStyle}[1]{{\AgdaSansSerifFont{}#1}}
+\renewcommand{\AgdaStringFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaCommentFontStyle}[1]{{\AgdaTypewriterFont{}#1}}
+\renewcommand{\AgdaBoundFontStyle}[1]{\textit{\AgdaSerifFont{}#1}}
+
+\newcommand{\AD}[1]{\AgdaDatatype{#1}}
+\newcommand{\AC}[1]{\AgdaInductiveConstructor{#1}}
+\newcommand{\AF}[1]{\AgdaFunction{#1}}
+\newcommand{\AB}[1]{\AgdaBound{#1}}
+\newcommand{\AK}[1]{\AgdaKeyword{#1}}
+\newcommand{\AR}[1]{\AgdaField{#1}}
+
+% vertical ellipsis between (visible parts of) code blocks
+\newcommand\vdotsCode{\par{\hspace{1.5em}\raisebox{.3ex}{\(\smash\vdots\)}}\par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}
+
+% polytonic Greek in prose (same font as the website)
+\newfontfamily\greekfont{GFS Didot}
+\newcommand\gr[1]{{\greekfont #1}}
+% single glyphs only JuliaMono has (ƛ, ϝ, ...)
+\newcommand\jm[1]{{\AgdaSansSerifFont #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand\alert[1]{\textcolor{mLightBrown}{#1}}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+% scansion marks in prose
+\newcommand\qlong{\textbf{--}}
+\newcommand\qshort{\raisebox{.35ex}{\smaller[2]\(\cup\)}}
+
+% Pharr section references
+\newcommand\pharr[1]{{\smaller\color{gray}[\S#1]}}
